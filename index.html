@@ -847,6 +847,10 @@
     <span class="mnav-cat-icon">P</span>
     <span data-i18n="catPolo">بولو</span>
   </a>
+  <a href="#cat-tracksuit" class="mnav-cat" onclick="closeMobileNav()">
+    <span class="mnav-cat-icon">TR</span>
+    <span data-i18n="catTracksuit">تراكسوت</span>
+  </a>
   <a href="#cat-jeans" class="mnav-cat" onclick="closeMobileNav()">
     <span class="mnav-cat-icon">J</span>
     <span data-i18n="catJeans">بنطرون</span>
@@ -1377,9 +1381,10 @@ const I18N = {
     addBag:'أضف إلى السلة', selectSize:'اختر المقاس', selectColor:'اختر اللون', qty:'الكمية',
     empty:'سلتك فارغة.', remove:'إزالة',
     wg:{ '2XL':'95–105 كغ', '3XL':'105–115 كغ', '4XL':'115–125 كغ', '5XL':'125–140 كغ', '6XL':'140–155 كغ', '7XL':'155–175 كغ' },
+    wgJeans:{ '38':'75–85 كغ', '40':'85–95 كغ', '42':'95–110 كغ', '44':'110–125 كغ', '46':'125–140 كغ', '48':'140–155 كغ' },
     free:'مجاني',
     filterBrand:'الماركة', filterColor:'اللون', filterAll:'الكل',
-    filterCat:'الفئة', catAll:'الكل', catTshirt:'تي شيرت', catPolo:'بولو', catShirt:'قميص', catJeans:'بنطرون',
+    filterCat:'الفئة', catAll:'الكل', catTshirt:'تي شيرت', catPolo:'بولو', catShirt:'قميص', catJeans:'بنطرون', catTracksuit:'تراكسوت',
     ratingKicker:'تقييمات زبائننا', ratingScore:'4.9', ratingCount:'من +500 زبون راضٍ',
     ratFabric:'جودة القماش', ratSizes:'صحة المقاسات', ratDelivery:'سرعة التوصيل', ratService:'خدمة العملاء',
     pageNext:'التالي', pagePrev:'السابق',
@@ -1441,9 +1446,10 @@ const I18N = {
     addBag:'Add to Bag', selectSize:'Select Size', selectColor:'Select Color', qty:'Qty',
     empty:'Your bag is empty.', remove:'Remove',
     wg:{ '2XL':'95–105 kg', '3XL':'105–115 kg', '4XL':'115–125 kg', '5XL':'125–140 kg', '6XL':'140–155 kg', '7XL':'155–175 kg' },
+    wgJeans:{ '38':'75–85 kg', '40':'85–95 kg', '42':'95–110 kg', '44':'110–125 kg', '46':'125–140 kg', '48':'140–155 kg' },
     free:'Free',
     filterBrand:'Brand', filterColor:'Color', filterAll:'All',
-    filterCat:'Category', catAll:'All', catTshirt:'T-Shirt', catPolo:'Polo', catShirt:'Shirt', catJeans:'Jeans',
+    filterCat:'Category', catAll:'All', catTshirt:'T-Shirt', catPolo:'Polo', catShirt:'Shirt', catJeans:'Jeans', catTracksuit:'Tracksuit',
     ratingKicker:'Customer Ratings', ratingScore:'4.9', ratingCount:'From 500+ happy customers',
     ratFabric:'Fabric Quality', ratSizes:'True to Size', ratDelivery:'Fast Delivery', ratService:'Customer Service',
     pageNext:'Next', pagePrev:'Prev',
@@ -1505,9 +1511,10 @@ const I18N = {
     addBag:'زیادکردن بۆ سەبەتە', selectSize:'قەبارە هەڵبژێرە', selectColor:'ڕەنگ هەڵبژێرە', qty:'ژمارە',
     empty:'سەبەتەکەت بەتاڵە.', remove:'سڕینەوە',
     wg:{ '2XL':'٩٥–١٠٥ کیلۆ', '3XL':'١٠٥–١١٥ کیلۆ', '4XL':'١١٥–١٢٥ کیلۆ', '5XL':'١٢٥–١٤٠ کیلۆ', '6XL':'١٤٠–١٥٥ کیلۆ', '7XL':'١٥٥–١٧٥ کیلۆ' },
+    wgJeans:{ '38':'٧٥–٨٥ کیلۆ', '40':'٨٥–٩٥ کیلۆ', '42':'٩٥–١١٠ کیلۆ', '44':'١١٠–١٢٥ کیلۆ', '46':'١٢٥–١٤٠ کیلۆ', '48':'١٤٠–١٥٥ کیلۆ' },
     free:'بێبەرامبەر',
     filterBrand:'مارکە', filterColor:'ڕەنگ', filterAll:'هەموو',
-    filterCat:'جۆر', catAll:'هەموو', catTshirt:'تی شێرت', catPolo:'پۆلۆ', catShirt:'کراس', catJeans:'جینز',
+    filterCat:'جۆر', catAll:'هەموو', catTshirt:'تی شێرت', catPolo:'پۆلۆ', catShirt:'کراس', catJeans:'جینز', catTracksuit:'تراکسوت',
     ratingKicker:'هەڵسەنگاندنی کڕیاران', ratingScore:'4.9', ratingCount:'لە +٥٠٠ کڕیارى دلخۆش',
     ratFabric:'کوالیتی پەڕەکە', ratSizes:'ڕاستی سایز', ratDelivery:'خێرایی گەیاندن', ratService:'خزمەتگوزارى',
     pageNext:'دواتر', pagePrev:'پێشتر',
@@ -1590,6 +1597,11 @@ const PRODUCTS_META = {
   25: { sku:'MA-26',  imgKey:'massimo-dutti', brand:'MASSIMO DUTTI',  sub:'since 1985',    colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
   26: { sku:'ZA-27',  imgKey:'zara-Turkey',    brand:'ZARA',           sub:'turkey',        colors:[C.BRN,C.WHT,C.BLK], added:'2026-04-17' },
 
+  // ── فئة التراكسوت (Tracksuit) — imagestracksuit/ ─────────────────
+  // صيغة الصورة: imagestracksuit/01-1-brand-name.jpg
+  // ملاحظة: مقاساته XL مثل التي شيرت (2XL → 7XL)
+  // 30: { sku:'XX-31', imgKey:'tracksuit-brand', brand:'BRAND', sub:'Slim Fit', colors:[C.BLK,C.WHT], category:'tracksuit', catSeq:'01' },
+
   // ── فئة البولو (Polo) — imagespolo/ ──────────────────────────────
   // catSeq = رقم تسلسل خاص بهذا الملف (يبدأ من 01 مستقلاً عن التسلسل العام)
   // صيغة الصورة: imagespolo/01-1-polo-rl.jpg
@@ -1656,17 +1668,36 @@ const COUPONS = [
  * ─────────────────────────────────────────────────────────────────
  */
 const IMG_FOLDERS = {
-  tshirt : 'imagestshirts',
-  polo   : 'imagespolo',
-  shirt  : 'imagesshirts',
-  jeans  : 'imagesjeans',
+  tshirt   : 'imagestshirts',
+  polo     : 'imagespolo',
+  shirt    : 'imagesshirts',
+  jeans    : 'imagesjeans',
+  tracksuit: 'imagestracksuit',
 };
 function imgPath(p, seq){
   const folder = IMG_FOLDERS[p.category] || 'imagestshirts';
   const pfx    = p.catSeq || p.prefix;   // catSeq للمجلدات الجديدة، prefix للتي شيرت
   return `${folder}/${pfx}-${seq}-${p.imgKey}.jpg`;
 }
-const SIZES = ['2XL','3XL','4XL','5XL','6XL','7XL'];
+/* ─────────────────────────────────────────────────────────────────
+   SIZES_BY_CAT — مقاسات مختلفة حسب نوع المنتج
+   ─────────────────────────────────────────────────────────────────
+   ملابس علوية (تي شيرت / بولو / قميص / تراكسوت) → نظام XL
+   بنطرون (jeans) → نظام الأرقام الأوروبي (خصر)
+   ─────────────────────────────────────────────────────────────────
+*/
+const SIZES_BY_CAT = {
+  tshirt   : ['2XL','3XL','4XL','5XL','6XL','7XL'],
+  polo     : ['2XL','3XL','4XL','5XL','6XL','7XL'],
+  shirt    : ['2XL','3XL','4XL','5XL','6XL','7XL'],
+  tracksuit: ['2XL','3XL','4XL','5XL','6XL','7XL'],
+  jeans    : ['38','40','42','44','46','48'],
+};
+/* دالة مساعدة — تُرجع مصفوفة المقاسات الصحيحة لأي منتج */
+function getSizes(p){ return SIZES_BY_CAT[p.category] || SIZES_BY_CAT.tshirt; }
+
+/* SIZES للتوافق مع أي كود قديم يستخدمه (لا تُحذف) */
+const SIZES = SIZES_BY_CAT.tshirt;
 const UNIT_PRICE      = 35000;
 const BULK_UNIT_PRICE = 30000;  // ← سعر القطعة عند 10+ قطع (300,000 لكل 10 قطع)
 const SHIPPING        = 5000;
@@ -1677,10 +1708,11 @@ const BULK_DISCOUNT   = (UNIT_PRICE - BULK_UNIT_PRICE) / UNIT_PRICE; // ≈ 14.3
 const PAGE_SIZE = 8;
 // ترتيب وعناوين المجموعات على الصفحة
 const CATEGORIES = [
-  { key:'tshirt', icon:'T', label:{ar:'تي شيرت', en:'T-Shirt', ku:'تی شێرت'} },
-  { key:'polo',   icon:'P', label:{ar:'بولو',     en:'Polo',    ku:'پۆلۆ'} },
-  { key:'jeans',  icon:'J', label:{ar:'بنطرون',   en:'Jeans',   ku:'جینز'} },
-  { key:'shirt',  icon:'S', label:{ar:'قميص',     en:'Shirt',   ku:'کراس'} },
+  { key:'tshirt',    icon:'T',  label:{ar:'تي شيرت',  en:'T-Shirt',  ku:'تی شێرت'} },
+  { key:'polo',      icon:'P',  label:{ar:'بولو',      en:'Polo',     ku:'پۆلۆ'} },
+  { key:'tracksuit', icon:'TR', label:{ar:'تراكسوت',   en:'Tracksuit',ku:'تراکسوت'} },
+  { key:'jeans',     icon:'J',  label:{ar:'بنطرون',    en:'Jeans',    ku:'جینز'} },
+  { key:'shirt',     icon:'S',  label:{ar:'قميص',      en:'Shirt',    ku:'کراس'} },
 ];
 
 let state = {
@@ -1828,9 +1860,12 @@ function renderCard(p, i){
         </div>
         <div class="mt-3">
           <p class="kicker mb-2">${t.selectSize}</p>
-          <div class="grid grid-cols-3 gap-1.5" data-role="sizes">
-            ${SIZES.map(s=>`<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${t.wg[s]}</div></div>`).join('')}
-          </div>
+          <div class="grid grid-cols-3 gap-1.5" data-role="sizes">${(()=>{
+            /* اختر المقاسات والأوزان حسب فئة المنتج */
+            const sizes  = getSizes(p);
+            const wgMap  = p.category === 'jeans' ? t.wgJeans : t.wg;
+            return sizes.map(s=>`<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${wgMap[s]||''}</div></div>`).join('');
+          })()}</div>
         </div>
         <button class="btn-outline w-full py-2.5 mt-4 text-[11px] tracking-[.2em]" data-role="add">${t.addBag}</button>
       </div>
