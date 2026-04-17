@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SizeMe - Online Plus-Size store</title>
+<meta name="description" content="SizeMe — Specialists in premium brand clothing, unique patterns, and specialized sizes (2XL–7XL)." />
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="shortcut icon" type="image/png" href="favicon.png" />
+<link rel="apple-touch-icon" href="favicon.png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#1a1a1a;
+    --paper:#faf8f5;
+    --accent:#b8312e; /* Hermès-esque red */
+    --line:#e6e1d8;
+    --mute:#7a736a;
+  }
+  html,body{background:var(--paper);color:var(--ink);}
+  body{font-family:'Inter','Tajawal',system-ui,-apple-system,sans-serif;}
+  [dir="rtl"] body{font-family:'Tajawal','Inter',system-ui,sans-serif;}
+  .serif{font-family:'Cormorant Garamond',serif;font-weight:500;letter-spacing:.02em;}
+  .kicker{letter-spacing:.35em;text-transform:uppercase;font-size:.7rem;color:var(--mute);}
+  .hairline{border-color:var(--line);}
+  .btn-ink{background:var(--ink);color:#fff;transition:opacity .2s;}
+  .btn-ink:hover{opacity:.85;}
+  .btn-outline{border:1px solid var(--ink);color:var(--ink);transition:all .2s;}
+  .btn-outline:hover{background:var(--ink);color:#fff;}
+  .chip{border:1px solid var(--line);background:#fff;transition:all .15s;}
+  .chip:hover{border-color:var(--ink);}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .color-dot{width:22px;height:22px;border-radius:999px;border:1px solid #d4d0c8;cursor:pointer;transition:transform .15s;}
+  .color-dot.active{outline:2px solid var(--ink);outline-offset:2px;}
+  .color-dot:hover{transform:scale(1.08);}
+  .product-card{background:#fff;border:1px solid var(--line);transition:all .25s;}
+  .product-card:hover{box-shadow:0 20px 50px -20px rgba(0,0,0,.15);transform:translateY(-2px);}
+  .product-img{aspect-ratio:3/4;background:#f2ece2;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .product-img img{width:100%;height:100%;object-fit:cover;}
+  .brand-watermark{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.6rem);letter-spacing:.08em;color:#2b2b2b;text-align:center;}
+  .brand-sub{letter-spacing:.35em;font-size:.65rem;color:#7a736a;margin-top:.35rem;}
+  .drawer{transform:translateX(100%);transition:transform .35s ease;}
+  [dir="rtl"] .drawer{transform:translateX(-100%);}
+  .drawer.open{transform:translateX(0)!important;}
+  .overlay{background:rgba(10,10,10,.45);backdrop-filter:blur(2px);}
+  .scrollbar-thin::-webkit-scrollbar{width:6px;}
+  .scrollbar-thin::-webkit-scrollbar-thumb{background:#d4d0c8;border-radius:3px;}
+  .logo-badge{background:#b8312e;color:#fff;font-family:'Cormorant Garamond',serif;letter-spacing:.25em;}
+  .size-card{border:1px solid var(--line);padding:.55rem .25rem;text-align:center;border-radius:2px;cursor:pointer;transition:all .15s;background:#fff;}
+  .size-card:hover{border-color:var(--ink);}
+  .size-card.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .size-card .lbl{font-weight:600;font-size:.9rem;}
+  .size-card .wt{font-size:.6rem;color:var(--mute);margin-top:2px;letter-spacing:.02em;}
+  .size-card.active .wt{color:#d4d0c8;}
+  details > summary{list-style:none;cursor:pointer;}
+  details > summary::-webkit-details-marker{display:none;}
+  .fade-in{animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .marquee{white-space:nowrap;overflow:hidden;}
+  .marquee-track{display:inline-block;padding-inline-start:100%;animation:slide 28s linear infinite;}
+  @keyframes slide{from{transform:translateX(0);}to{transform:translateX(-100%);}}
+  [dir="rtl"] .marquee-track{direction:ltr;}
+  .lang-btn{padding:.3rem .6rem;font-size:.75rem;letter-spacing:.1em;color:var(--mute);}
+  .lang-btn.active{color:var(--ink);font-weight:600;border-bottom:1px solid var(--ink);}
+  select,input,textarea{font-family:inherit;}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ink);}
+  /* base glow overridden below in GLOW FOCUS section */
+  .hero-video-wrap{aspect-ratio:16/9;background:linear-gradient(135deg,#1a1a1a 0%,#2d2a24 100%);position:relative;overflow:hidden;border:1px solid var(--line);}
+  .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+  .play-circle{width:78px;height:78px;border-radius:999px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+  .play-circle:hover{transform:scale(1.06);}
+
+  /* =====================================================
+     SLIDER
+     ===================================================== */
+  .slider-wrap{position:relative;overflow:hidden;cursor:grab;}
+  .slider-wrap:active{cursor:grabbing;}
+  .slider-track{display:flex;height:100%;transition:transform .32s cubic-bezier(.4,0,.2,1);will-change:transform;}
+  .slide{min-width:100%;flex-shrink:0;position:relative;height:100%;}
+  .slide img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+  .slider-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+    width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.88);
+    border:none;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:opacity .15s;opacity:0;}
+  .slider-wrap:hover .slider-arrow{opacity:1;}
+  .slider-arrow.prev{inset-inline-start:6px;}
+  .slider-arrow.next{inset-inline-end:6px;}
+  .slider-arrow svg{width:14px;height:14px;pointer-events:none;}
+  .slider-dots{position:absolute;bottom:8px;left:0;right:0;
+    display:flex;justify-content:center;gap:5px;z-index:3;}
+  .sdot{width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,.55);
+    cursor:pointer;transition:all .2s;}
+  .sdot.active{background:#fff;width:14px;}
+
+  /* =====================================================
+     MOBILE FIXES  ·  max-width: 768px
+     ===================================================== */
+  @media (max-width: 768px) {
+
+    /* 1 ── Global font rendering */
+    *,*::before,*::after{
+      -webkit-font-smoothing  : antialiased;
+      -moz-osx-font-smoothing : grayscale;
+      text-rendering          : optimizeLegibility;
+    }
+
+    /* 2 ── Kill ALL letter-spacing on serif & display elements */
+    .serif,.brand-watermark,h1,h2,h3,h4{
+      letter-spacing : 0 !important;
+      word-spacing   : normal !important;
+      width:100%;text-align:center;
+    }
+    .kicker{ letter-spacing:.12em !important; }
+    .product-card h3{ text-align:start; letter-spacing:0 !important; }
+    .size-card .lbl{ letter-spacing:0 !important; font-size:.82rem; }
+    .size-card .wt { letter-spacing:0 !important; font-size:.55rem; }
+    .product-card .text-sm.font-medium{ letter-spacing:0 !important; word-spacing:normal !important; }
+    #bulkBarLabel{ font-size:.78rem; letter-spacing:0 !important; word-spacing:normal !important; }
+    .serif.text-2xl{ letter-spacing:0 !important; word-spacing:normal !important; }
+    .marquee-track span{ font-size:.68rem; letter-spacing:0 !important; }
+    #about h2{ letter-spacing:0 !important; font-size:clamp(1.6rem,6vw,3rem) !important; }
+    #brandFilters .chip,#colorFilters .chip{
+      padding:.25rem .5rem;font-size:.68rem;letter-spacing:0 !important;
+    }
+
+    /* 3 ── Grid: tighter gaps */
+    #productGrid{ gap:10px !important; }
+
+    /* 4 ── Pagination */
+    #pagination button,#pagination span{ width:2rem !important;height:2rem !important;font-size:.75rem; }
+
+    /* 5 ── Forms & drawers */
+    #checkoutModal .bg-white{ max-height:100dvh;border-radius:0; }
+    #coForm input,#coForm select,#coForm textarea{ font-size:16px;letter-spacing:0 !important; }
+    #cartDrawer{ width:100% !important; }
+    header img[alt="SizeMe"]{ height:2.2rem; }
+
+    /* 6 ── Slider arrows always visible on touch */
+    .slider-arrow{ opacity:.8 !important; width:24px; height:24px; }
+  }
+  /* ── end mobile fixes ── */
+
+  /* =====================================================
+     PREMIUM ANIMATIONS — Spring Physics + Micro-interactions
+     Equivalent to Framer Motion whileInView / whileHover / whileTap
+     ===================================================== */
+
+  /* ── Easing tokens (Framer Motion-equivalent springs) ── */
+  :root{
+    --spring : cubic-bezier(0.34, 1.56, 0.64, 1);  /* bouncy spring */
+    --smooth : cubic-bezier(0.4, 0, 0.2, 1);         /* Material smooth */
+    --decel  : cubic-bezier(0, 0, 0.2, 1);           /* entrance decel */
+    --accel  : cubic-bezier(0.4, 0, 1, 1);           /* exit accel */
+  }
+
+  /* ── Scroll-reveal (Framer Motion whileInView) ── */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .55s var(--decel), transform .55s var(--decel);
+    will-change:transform,opacity;
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+  .reveal[data-d="1"]{ transition-delay:60ms; }
+  .reveal[data-d="2"]{ transition-delay:120ms; }
+  .reveal[data-d="3"]{ transition-delay:180ms; }
+  .reveal[data-d="4"]{ transition-delay:240ms; }
+  .reveal[data-d="5"]{ transition-delay:300ms; }
+  .reveal[data-d="6"]{ transition-delay:360ms; }
+  .reveal[data-d="7"]{ transition-delay:420ms; }
+  .reveal[data-d="8"]{ transition-delay:480ms; }
+
+  /* ── Product card — spring hover (Framer Motion whileHover) ── */
+  .product-card{
+    transition:transform .3s var(--spring), box-shadow .3s var(--smooth), border-color .15s;
+  }
+  .product-card:hover{
+    transform:translateY(-5px) scale(1.01);
+    box-shadow:0 28px 56px -18px rgba(0,0,0,.18), 0 6px 14px -6px rgba(0,0,0,.07);
+  }
+  /* Image zoom on hover */
+  .product-img{ overflow:hidden; }
+  .product-img img{
+    transition:transform .65s var(--smooth);
+    will-change:transform;
+  }
+  .product-card:hover .product-img img{ transform:scale(1.07); }
+
+  /* ── Buttons — whileTap scale + ripple ── */
+  .btn-ink, .btn-outline{
+    transition:all .28s var(--smooth);
+    position:relative; overflow:hidden;
+  }
+  .btn-ink:active, .btn-outline:active{ transform:scale(0.96); }
+  .ripple-wave{
+    position:absolute; border-radius:50%;
+    background:rgba(255,255,255,.22);
+    width:10px; height:10px;
+    transform:scale(0); opacity:1;
+    animation:ripple .55s var(--smooth) forwards;
+    pointer-events:none;
+  }
+  @keyframes ripple{ to{ transform:scale(40); opacity:0; } }
+
+  /* ── Size card spring select ── */
+  .size-card{ transition:all .2s var(--spring) !important; }
+  .size-card:hover{ transform:translateY(-1px); }
+  .size-card.active{ transform:scale(1.04); }
+
+  /* ── Filter chip spring ── */
+  .chip{ transition:all .2s var(--spring) !important; }
+  .chip:active{ transform:scale(0.93); }
+
+  /* ── Cart drawer — spring entrance ── */
+  .drawer{
+    transition:transform .45s var(--spring) !important;
+  }
+
+  /* ── Cart badge bounce (whileAnimate) ── */
+  @keyframes badge-pop{
+    0%  { transform:scale(1); }
+    40% { transform:scale(1.6) rotate(-5deg); }
+    70% { transform:scale(0.88); }
+    100%{ transform:scale(1); }
+  }
+  .badge-pop{ animation:badge-pop .42s var(--spring); }
+
+  /* ── Add to bag success flash ── */
+  @keyframes add-flash{
+    0%  { background:var(--ink); transform:scale(1); }
+    25% { background:#1f6e1f; transform:scale(0.96); }
+    60% { background:#1f6e1f; transform:scale(1.02); }
+    100%{ background:var(--ink); transform:scale(1); }
+  }
+  .add-flash{ animation:add-flash .55s var(--smooth) forwards; }
+
+  /* ── Modal entrance ── */
+  @keyframes modal-enter{
+    from{ opacity:0; transform:scale(0.94) translateY(12px); }
+    to  { opacity:1; transform:scale(1)    translateY(0); }
+  }
+  .modal-enter > .bg-white,
+  .modal-enter > div{ animation:modal-enter .38s var(--spring) forwards; }
+
+  /* ── Hero entrance (page load) ── */
+  @keyframes hero-rise{
+    from{ opacity:0; transform:translateY(36px); filter:blur(3px); }
+    to  { opacity:1; transform:translateY(0);    filter:blur(0); }
+  }
+  .hero-rise    { animation:hero-rise .9s var(--decel) both; }
+  .hero-rise-1  { animation:hero-rise .9s var(--decel) .12s both; }
+  .hero-rise-2  { animation:hero-rise .9s var(--decel) .26s both; }
+
+  /* ── Toast notification ── */
+  #sm-toast{
+    position:fixed; bottom:1.5rem; left:50%;
+    transform:translate(-50%, 16px) scale(0.94);
+    background:var(--ink); color:#fff;
+    padding:.55rem 1.25rem; border-radius:2px;
+    font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+    white-space:nowrap; z-index:200; pointer-events:none;
+    opacity:0; transition:all .35s var(--spring);
+    box-shadow:0 8px 32px rgba(0,0,0,.35);
+  }
+  #sm-toast.show{
+    opacity:1; transform:translate(-50%, 0) scale(1);
+  }
+  @media(max-width:768px){ #sm-toast{ bottom:5.5rem; } }
+
+  /* ── Mobile floating checkout bar ── */
+  #mobileBar{
+    display:none;
+    position:fixed; bottom:0; left:0; right:0; z-index:44;
+    background:var(--ink); color:#fff;
+    padding:.9rem 1.25rem;
+    align-items:center; justify-content:space-between;
+    transform:translateY(100%);
+    transition:transform .45s var(--spring);
+    box-shadow:0 -6px 28px rgba(0,0,0,.25);
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  #mobileBar.show{ transform:translateY(0); }
+  @media(max-width:768px){
+    #mobileBar{ display:flex; }
+    main, footer{ padding-bottom:72px; }
+  }
+
+  /* =====================================================
+     FORM VALIDATION
+     ===================================================== */
+  .field-wrap{ position:relative; }
+  .field-error-input{ border-color:var(--accent) !important; background:#fff8f8 !important; }
+  .field-error-msg{
+    display:none; color:var(--accent);
+    font-size:.68rem; margin-top:.3rem; padding-inline-start:.1rem;
+  }
+  .field-error-msg.show{ display:flex; align-items:center; gap:.3rem; }
+  #coForm input:focus, #coForm select:focus, #coForm textarea:focus{
+    border-color:var(--ink); outline:none;
+    box-shadow:0 0 0 3px rgba(26,26,26,.08);
+    transition:box-shadow .22s var(--smooth), border-color .22s var(--smooth);
+  }
+  /* Notes placeholder — smaller, muted, italic */
+  #coNotesTxt::placeholder{
+    font-size:.75rem; color:var(--mute);
+    font-style:italic; opacity:.85; line-height:1.5;
+  }
+  @media(max-width:768px){
+    #coNotesTxt::placeholder{ font-size:.7rem; }
+  }
+
+  /* =====================================================
+     PAYMENT METHOD
+     ===================================================== */
+  .pay-card{
+    flex:1; border:1px solid var(--line); padding:.65rem .5rem;
+    text-align:center; cursor:pointer; transition:all .15s; position:relative;
+    background:#fff; border-radius:2px;
+  }
+  .pay-card.active{ border-color:var(--ink); background:var(--ink); color:#fff; }
+  .pay-card.active .pay-sub{ color:rgba(255,255,255,.65); }
+  .pay-card.disabled{ opacity:.45; cursor:not-allowed; }
+  .pay-card svg{ display:block; margin:0 auto .3rem; }
+  .pay-name{ font-size:.72rem; font-weight:600; letter-spacing:.04em; line-height:1.2; }
+  .pay-sub{ font-size:.62rem; color:var(--mute); margin-top:.2rem; }
+  .pay-badge{
+    position:absolute; top:-7px; inset-inline-end:-4px;
+    background:var(--accent); color:#fff;
+    font-size:.52rem; letter-spacing:.06em; padding:1px 5px; border-radius:2px;
+  }
+  @media(max-width:768px){ .pay-name{ font-size:.68rem; letter-spacing:0 !important; } }
+
+  /* =====================================================
+     COUPON INPUT
+     ===================================================== */
+  #couponInput{
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 500;
+  }
+  #couponInput::placeholder{ text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .coupon-success{ color: #2a7a2a; }
+  @media (max-width: 768px){
+    #couponInput{ font-size: 16px !important; letter-spacing: 0 !important; }
+    #couponApplyBtn{ font-size: .75rem; padding: .5rem .75rem; }
+  }
+
+  /* =====================================================
+     NEW BADGE — Pulse ring (21st.dev alert badge pattern)
+     ===================================================== */
+  .new-badge{
+    display:inline-flex; align-items:center; gap:.25rem;
+    font-size:.5rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+    color:#fff; background:var(--accent);
+    padding:2px 7px 2px 6px; border-radius:2px;
+    white-space:nowrap; line-height:1.6;
+    animation:badge-pulse 2.2s ease-out infinite;
+    will-change:box-shadow;
+  }
+  /* Pulse ring radiates from the badge edges */
+  @keyframes badge-pulse{
+    0%  { box-shadow:0 0 0 0   rgba(184,49,46,.55); }
+    55% { box-shadow:0 0 0 6px rgba(184,49,46,0);   }
+    100%{ box-shadow:0 0 0 0   rgba(184,49,46,0);   }
+  }
+  /* Tiny dot before the text */
+  .new-badge::before{
+    content:''; display:inline-block;
+    width:4px; height:4px; border-radius:50%;
+    background:#fff; opacity:.85;
+    animation:dot-blink 1.1s ease-in-out infinite alternate;
+  }
+  @keyframes dot-blink{
+    from{ opacity:.4; transform:scale(.8); }
+    to  { opacity:1;  transform:scale(1.15); }
+  }
+  @media(max-width:768px){ .new-badge{ font-size:.46rem; padding:2px 5px; } }
+
+  /* =====================================================
+     SKELETON LOADER — 21st.dev shimmer pattern
+     ===================================================== */
+  .skeleton-block{
+    background:linear-gradient(90deg, var(--line) 25%, #f0ece4 50%, var(--line) 75%);
+    background-size:200% 100%;
+    animation:sk-shimmer 1.4s ease infinite;
+    border-radius:2px;
+  }
+  @keyframes sk-shimmer{
+    from{ background-position:200% 0; }
+    to  { background-position:-200% 0; }
+  }
+  .skeleton-card{
+    background:#fff;
+    border:1px solid var(--line);
+    overflow:hidden;
+    pointer-events:none;
+    /* stagger shimmer phase so cards feel organic */
+  }
+  .skeleton-card:nth-child(2) .skeleton-block{ animation-delay:.18s; }
+  .skeleton-card:nth-child(3) .skeleton-block{ animation-delay:.36s; }
+  .skeleton-card:nth-child(4) .skeleton-block{ animation-delay:.54s; }
+
+  /* =====================================================
+     FILTER SLIDING INDICATOR — 21st.dev tab underline
+     ===================================================== */
+  #brandFilters, #colorFilters{ position:relative; }
+  .filter-indicator{
+    position:absolute;
+    bottom:-4px; height:2px;
+    background:var(--ink);
+    border-radius:1px;
+    transition:left .38s var(--spring), width .38s var(--spring), opacity .2s;
+    pointer-events:none;
+    will-change:left,width;
+  }
+  [dir="rtl"] .filter-indicator{
+    right:auto; /* override any RTL interference */
+  }
+
+  /* =====================================================
+     GLOW FOCUS — Light elegant (21st.dev input style)
+     ===================================================== */
+  input:focus, textarea:focus, select:focus{
+    outline:none;
+    border-color:var(--ink) !important;
+    box-shadow:0 0 0 3px rgba(26,26,26,.08);
+    transition:box-shadow .22s var(--smooth), border-color .22s var(--smooth);
+  }
+  /* Coupon input special glow */
+  #couponInput:focus{
+    box-shadow:0 0 0 3px rgba(26,26,26,.08);
+    border-color:var(--ink);
+  }
+  /* Cart qty buttons — no glow needed */
+  #cartItems button:focus{ box-shadow:none; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ================= ANNOUNCEMENT BAR ================= -->
+<div class="bg-[color:var(--ink)] text-white text-xs py-2 marquee">
+  <div class="marquee-track">
+    <span class="mx-8" data-i18n="bar1">Free shipping on orders of 10+ pieces · 20% bulk discount · Specialized sizes 2XL–7XL</span>
+    <span class="mx-8" data-i18n="bar2">Replacement guarantee if size doesn't fit</span>
+    <span class="mx-8" data-i18n="bar1">Free shipping on orders of 10+ pieces · 20% bulk discount · Specialized sizes 2XL–7XL</span>
+    <span class="mx-8" data-i18n="bar2">Replacement guarantee if size doesn't fit</span>
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="border-b hairline sticky top-0 z-40 bg-[color:var(--paper)]/95 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <button id="menuBtn" class="md:hidden p-2" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <nav class="hidden md:flex items-center gap-7 text-sm">
+        <a href="#shop" class="hover:underline underline-offset-4" data-i18n="navShop">Shop</a>
+        <a href="#about" class="hover:underline underline-offset-4" data-i18n="navAbout">About</a>
+        <a href="#contact" class="hover:underline underline-offset-4" data-i18n="navContact">Contact</a>
+      </nav>
+    </div>
+
+    <a href="#top" class="flex flex-col items-center leading-none">
+      <img src="images/logo.jpg" alt="SizeMe" class="h-10 md:h-12 w-auto object-contain"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+      <span class="serif text-3xl md:text-4xl tracking-[.25em]" style="display:none">SIZEME</span>
+      <span class="text-[9px] tracking-[.4em] text-[color:var(--mute)] mt-1" data-i18n="tagline">PREMIUM · PLUS SIZES</span>
+    </a>
+
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-1 border-s hairline ps-3">
+        <button class="lang-btn active" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ku">KU</button>
+      </div>
+      <button id="cartBtn" class="relative p-2" aria-label="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h2l2 12h10l2-9H7"/><circle cx="9" cy="21" r="1"/><circle cx="17" cy="21" r="1"/></svg>
+        <span id="cartCount" class="absolute -top-0 -end-0 bg-[color:var(--accent)] text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+  <!-- mobile lang -->
+  <div class="sm:hidden flex items-center justify-center gap-1 pb-2">
+    <button class="lang-btn active" data-lang="ar">العربية</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ku">KU</button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO / VIDEO ================= -->
+<section class="max-w-7xl mx-auto px-5 pt-10 md:pt-16">
+  <div class="text-center mb-8">
+    <p class="kicker hero-rise" data-i18n="heroKicker">Est. Iraq · Specialized Sizes</p>
+    <h1 class="serif text-4xl md:text-6xl mt-3 hero-rise-1" data-i18n="heroTitle">Dressed Well. In Every Size.</h1>
+    <p class="text-[color:var(--mute)] mt-4 max-w-xl mx-auto hero-rise-2" data-i18n="heroSub">Premium brand T-shirts crafted for 2XL through 7XL — unified pricing, unified quality.</p>
+  </div>
+
+  <div class="hero-video-wrap rounded-sm">
+    <video id="heroVideo" class="w-full h-full object-cover" controls preload="metadata" poster="">
+      <source src="video/brand-mission.mp4" type="video/mp4" />
+    </video>
+    <div id="videoFallback" class="play-btn">
+      <div class="text-center">
+        <div class="play-circle mx-auto mb-4">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <p class="text-white/90 serif text-2xl tracking-widest" data-i18n="videoTitle">Our Brand Mission</p>
+        <p class="text-white/60 text-xs mt-2 tracking-[.3em]" data-i18n="videoHint">PLACE video/brand-mission.mp4</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="max-w-4xl mx-auto px-5 py-20 md:py-28 text-center">
+  <p class="kicker" data-i18n="aboutKicker">Our Craft</p>
+  <h2 class="serif text-3xl md:text-5xl leading-tight mt-4" data-i18n="aboutTitle">Specialists in premium brand clothing, unique patterns, and specialized sizes.</h2>
+  <div class="flex items-center justify-center gap-3 mt-8 text-xs tracking-[.3em] text-[color:var(--mute)]">
+    <span data-i18n="aboutPt1">FINE COTTON</span><span>·</span>
+    <span data-i18n="aboutPt2">2XL — 7XL</span><span>·</span>
+    <span data-i18n="aboutPt3">FAIR PRICE</span>
+  </div>
+</section>
+
+<!-- ================= TRUST STRIP ================= -->
+<section class="border-y hairline bg-white">
+  <div class="max-w-7xl mx-auto px-5 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
+    <div><div class="serif text-2xl">35,000 IQD</div><div class="kicker mt-1" data-i18n="trust1">Unified Price</div></div>
+    <div><div class="serif text-2xl">2XL → 7XL</div><div class="kicker mt-1" data-i18n="trust2">Size Range</div></div>
+    <div><div class="serif text-2xl">30K <span class="text-sm">/pcs</span></div><div class="kicker mt-1" data-i18n="trust3">10+ Pieces</div></div>
+    <div><div class="serif text-2xl" data-i18n="trust4v">Free Shipping</div><div class="kicker mt-1" data-i18n="trust4">On bulk orders</div></div>
+  </div>
+</section>
+
+<!-- ================= PRODUCT GRID ================= -->
+<section id="shop" class="max-w-7xl mx-auto px-5 py-16 md:py-24">
+
+  <!-- Header row -->
+  <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
+    <div>
+      <p class="kicker" data-i18n="shopKicker">The Collection</p>
+      <h2 class="serif text-3xl md:text-4xl mt-2" data-i18n="shopTitle">Men's T-Shirts</h2>
+    </div>
+    <p class="text-sm text-[color:var(--mute)]" id="shopCount"></p>
+  </div>
+
+  <!-- Bulk discount progress bar -->
+  <div id="bulkBar" class="mb-8 border hairline bg-white p-4 hidden">
+    <div class="flex items-center justify-between mb-2 text-xs">
+      <span id="bulkBarLabel" class="font-medium"></span>
+      <span id="bulkBarBadge" class="kicker text-[color:var(--accent)]"></span>
+    </div>
+    <div class="w-full bg-[color:var(--line)] rounded-full h-1.5">
+      <div id="bulkBarFill" class="bg-[color:var(--ink)] h-1.5 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- ── FILTER TOOLBAR ── -->
+  <div class="mb-8 space-y-4">
+
+    <!-- Brand tabs -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="kicker me-2" data-i18n="filterBrand">Brand</span>
+      <div id="brandFilters" class="flex gap-2 flex-wrap"></div>
+    </div>
+
+    <!-- Color filter -->
+    <div class="flex items-center gap-3 flex-wrap">
+      <span class="kicker me-2" data-i18n="filterColor">Color</span>
+      <div id="colorFilters" class="flex gap-2 flex-wrap items-center"></div>
+    </div>
+
+  </div>
+
+  <!-- Grid -->
+  <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 min-h-[300px]"></div>
+
+  <!-- Pagination -->
+  <div id="pagination" class="flex items-center justify-center gap-3 mt-12"></div>
+
+</section>
+
+<!-- ================= GUARANTEE ================= -->
+<section class="bg-[color:var(--ink)] text-white">
+  <div class="max-w-4xl mx-auto px-5 py-16 text-center">
+    <p class="kicker text-white/50" data-i18n="gKicker">Promise</p>
+    <h3 class="serif text-3xl md:text-4xl mt-3" data-i18n="gTitle">Replacement guarantee if the size doesn't fit.</h3>
+    <p class="text-white/70 mt-4 max-w-lg mx-auto" data-i18n="gSub">Order with confidence — our team follows up on every order personally before dispatch.</p>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="max-w-5xl mx-auto px-5 py-16 md:py-24 text-center">
+  <p class="kicker" data-i18n="cKicker">Reach Us</p>
+  <h3 class="serif text-3xl md:text-4xl mt-3" data-i18n="cTitle">We're one message away.</h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 text-sm">
+    <a href="https://wa.me/9647739334545" target="_blank" class="border hairline p-6 hover:bg-white transition">
+      <div class="serif text-xl">WhatsApp</div>
+      <div class="text-[color:var(--mute)] mt-1 tracking-wider">07739334545</div>
+    </a>
+    <a href="https://instagram.com/sizem.e" target="_blank" class="border hairline p-6 hover:bg-white transition">
+      <div class="serif text-xl">Instagram</div>
+      <div class="text-[color:var(--mute)] mt-1 tracking-wider">@sizem.e</div>
+    </a>
+    <a href="https://tiktok.com/@sizem.e" target="_blank" class="border hairline p-6 hover:bg-white transition">
+      <div class="serif text-xl">TikTok</div>
+      <div class="text-[color:var(--mute)] mt-1 tracking-wider">@sizem.e</div>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="border-t hairline bg-white">
+  <div class="max-w-7xl mx-auto px-5 py-10 grid md:grid-cols-3 gap-8 text-sm">
+    <div>
+      <div class="serif text-2xl tracking-[.25em]">SIZEME</div>
+      <p class="text-[color:var(--mute)] mt-2 max-w-xs" data-i18n="footAbout"> brand T-shirts. Specialized plus sizes. Shipped across all Iraq.</p>
+    </div>
+    <div>
+      <p class="kicker mb-3" data-i18n="footInteract">تفاعل معنا</p>
+      <div class="space-y-3">
+        <button id="suggBtn"
+          class="w-full border hairline px-4 py-2.5 text-sm text-start hover:bg-[color:var(--paper)] transition flex items-center gap-2"
+          data-i18n="footSuggBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          شاركنا اقتراحك
+        </button>
+        <button id="reviewsBtn"
+          class="w-full border hairline px-4 py-2.5 text-sm text-start hover:bg-[color:var(--paper)] transition flex items-center gap-2"
+          data-i18n="footReviewsBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          آراء الزبائن
+        </button>
+        <p class="text-xs text-[color:var(--mute)]" data-i18n="footHelp3"> </p>
+      </div>
+    </div>
+    <div>
+      <p class="kicker mb-3" data-i18n="footFollow">Follow</p>
+      <ul class="space-y-2 text-[color:var(--mute)]">
+        <li>Instagram · @sizem.e</li>
+        <li>TikTok · @sizem.e</li>
+        <li>WhatsApp · 07739334545</li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t hairline">
+    <div class="max-w-7xl mx-auto px-5 py-5 text-xs text-[color:var(--mute)] flex items-center justify-between">
+      <span> جميع الحقوق محفوظة لـ 2026 SizeMe©</span>
+      <span class="tracking-[.3em]">IRAQ-BAGHDAD</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= SUGGESTION POPUP ================= -->
+<div id="suggOverlay" class="fixed inset-0 overlay z-[80] hidden"></div>
+<div id="suggModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
+  <div class="bg-white max-w-md w-full p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="serif text-xl" data-i18n="suggTitle">شاركنا اقتراحك</h3>
+      <button id="suggClose" class="p-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </div>
+    <p class="text-xs text-[color:var(--mute)] mb-4" data-i18n="suggSub">سيتم إرسال اقتراحك مباشرة عبر واتساب.</p>
+    <textarea id="suggText" rows="4" class="w-full border hairline p-3 text-sm resize-none" data-i18n-placeholder="suggPlaceholder" placeholder="اكتب اقتراحك أو مشكلتك هنا..."></textarea>
+    <button id="suggSend" class="btn-ink w-full py-3 mt-4 text-xs tracking-[.2em]" data-i18n="suggSend">إرسال عبر واتساب</button>
+  </div>
+</div>
+
+<!-- ================= REVIEWS POPUP ================= -->
+<div id="reviewsOverlay" class="fixed inset-0 overlay z-[80] hidden"></div>
+<div id="reviewsModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
+  <div class="bg-white max-w-2xl w-full max-h-[90vh] flex flex-col">
+    <div class="flex items-center justify-between px-5 py-4 border-b hairline flex-shrink-0">
+      <h3 class="serif text-xl" data-i18n="reviewsTitle">آراء الزبائن</h3>
+      <button id="reviewsClose" class="p-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </div>
+    <!-- Reviews slider -->
+    <div class="flex-1 overflow-hidden relative">
+      <div id="reviewsTrack" class="flex h-full transition-transform duration-300 ease-in-out"></div>
+      <button id="rvPrev" class="slider-arrow prev" style="opacity:.9">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button id="rvNext" class="slider-arrow next" style="opacity:.9">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <div id="reviewsDots" class="slider-dots"></div>
+    </div>
+    <p id="reviewsEmpty" class="text-center text-[color:var(--mute)] py-10 text-sm hidden" data-i18n="reviewsEmpty">لا توجد صور مراجعات حتى الآن. ضع صورًا في مجلد reviews/</p>
+  </div>
+</div>
+
+<!-- ================= CART DRAWER ================= -->
+<div id="cartOverlay" class="fixed inset-0 overlay z-50 hidden"></div>
+<aside id="cartDrawer" class="drawer fixed top-0 end-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl flex flex-col">
+  <div class="flex items-center justify-between px-5 py-4 border-b hairline">
+    <h3 class="serif text-xl" data-i18n="cartTitle">Your Bag</h3>
+    <button id="cartClose" class="p-2" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+    </button>
+  </div>
+  <div id="cartItems" class="flex-1 overflow-y-auto scrollbar-thin p-5 space-y-4"></div>
+  <!-- ── COUPON SECTION ── -->
+  <div id="couponSection" class="border-t hairline px-5 py-3 hidden">
+    <!-- Input row (shown before code is applied) -->
+    <div id="couponInputWrap" class="flex gap-2">
+      <input id="couponInput" type="text" autocomplete="off" autocorrect="off" spellcheck="false"
+             class="flex-1 border hairline p-2.5 text-sm bg-white"
+             data-i18n-placeholder="couponPlaceholder" placeholder="كود الخصم" />
+      <button id="couponApplyBtn"
+              class="btn-outline px-4 py-2 text-xs tracking-[.15em] whitespace-nowrap flex-shrink-0"
+              data-i18n="couponApply">تطبيق</button>
+    </div>
+    <!-- Applied confirmation row -->
+    <div id="couponAppliedWrap" class="hidden items-center justify-between mt-1.5">
+      <span id="couponAppliedLabel" class="text-xs coupon-success font-medium"></span>
+      <button id="couponRemoveBtn"
+              class="text-xs underline hover:text-[color:var(--accent)] text-[color:var(--mute)]"
+              data-i18n="couponRemove">إزالة</button>
+    </div>
+    <!-- Error message -->
+    <p id="couponError" class="hidden text-xs mt-1.5" style="color:var(--accent)"
+       data-i18n="couponInvalid">الكود غير صحيح أو منتهي الصلاحية.</p>
+  </div>
+
+  <!-- ── PAYMENT METHOD ── -->
+  <div id="paySection" class="border-t hairline px-5 py-3 hidden">
+    <p class="kicker text-[.6rem] mb-2" data-i18n="payTitle">طريقة الدفع</p>
+    <div class="flex gap-2">
+
+      <!-- Cash on Delivery — active by default -->
+      <div id="payCOD" class="pay-card active" role="button" tabindex="0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2" y="7" width="20" height="14" rx="1"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+          <line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+        </svg>
+        <div class="pay-name" data-i18n="payCOD">الدفع عند الاستلام</div>
+        <div class="pay-sub" data-i18n="payCODSub">ادفع عند استلام طلبك</div>
+      </div>
+
+      <!-- Online Payment — disabled (coming soon) -->
+      <div id="payOnline" class="pay-card disabled" title="" aria-disabled="true">
+        <span class="pay-badge" data-i18n="payOnlineBadge">قريباً</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+        </svg>
+        <div class="pay-name" data-i18n="payOnline">دفع إلكتروني آمن</div>
+        <div class="pay-sub" data-i18n="payOnlineSub">نعمل عليه</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="border-t hairline p-5 space-y-3 text-sm">
+    <div class="flex justify-between"><span data-i18n="sum">Subtotal</span><span id="sumSub">0 IQD</span></div>
+    <div class="flex justify-between text-[color:var(--accent)]" id="discRow" style="display:none"><span data-i18n="disc">Bulk Discount (20%)</span><span id="sumDisc">0 IQD</span></div>
+    <div class="flex justify-between coupon-success" id="couponDiscRow" style="display:none"><span data-i18n="couponDisc">خصم الكوبون</span><span id="sumCouponDisc">0 IQD</span></div>
+    <div class="flex justify-between"><span data-i18n="ship">Delivery</span><span id="sumShip">0 IQD</span></div>
+    <div class="flex justify-between font-semibold text-base pt-2 border-t hairline"><span data-i18n="total">Total</span><span id="sumTotal">0 IQD</span></div>
+    <p id="bulkHint" class="text-xs text-[color:var(--mute)]" data-i18n="bulkHint">Add 10+ pieces to unlock 20% off + free shipping.</p>
+    <button id="checkoutBtn" class="btn-ink w-full py-3 tracking-[.2em] text-xs disabled:opacity-40" disabled data-i18n="checkout">CHECKOUT</button>
+  </div>
+</aside>
+
+<!-- ================= CHECKOUT MODAL ================= -->
+<div id="checkoutOverlay" class="fixed inset-0 overlay z-[60] hidden"></div>
+<div id="checkoutModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+  <div class="bg-white max-w-xl w-full max-h-[92vh] overflow-y-auto scrollbar-thin">
+    <div class="flex items-center justify-between px-6 py-4 border-b hairline">
+      <h3 class="serif text-xl" data-i18n="coTitle">Checkout</h3>
+      <button id="coClose" class="p-2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </div>
+    <form id="coForm" class="p-6 space-y-4 text-sm" novalidate>
+      <div>
+        <label class="kicker block mb-1" data-i18n="coCountry">Country</label>
+        <input type="text" value="Iraq" disabled class="w-full border hairline p-3 bg-[color:var(--paper)]" />
+      </div>
+
+      <!-- Full Name -->
+      <div class="field-wrap">
+        <label class="kicker block mb-1" data-i18n="coName">الاسم الكامل *</label>
+        <input id="coNameInp" name="name" autocomplete="name"
+               class="w-full border hairline p-3 transition-colors" />
+        <p id="errName" class="field-error-msg">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span data-i18n="valName">يرجى إدخال الاسم الكامل</span>
+        </p>
+      </div>
+
+      <!-- Province + City -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="field-wrap">
+          <label class="kicker block mb-1" data-i18n="coProv">المحافظة *</label>
+          <select id="coProvInp" name="province" class="w-full border hairline p-3 bg-white transition-colors">
+            <option value="">—</option>
+            <option>بغداد</option><option>البصرة</option><option>الموصل</option><option>أربيل</option>
+            <option>السليمانية</option><option>الأنبار</option><option>كركوك</option><option>النجف</option>
+            <option>كربلاء</option><option>بابل</option><option>الديوانية</option><option>الناصرية</option>
+            <option>ميسان</option><option>السماوة</option><option>دهوك</option><option>حلبجة</option>
+            <option>سامراء</option><option>صلاح الدين</option><option>ديالى</option>
+          </select>
+          <p id="errProv" class="field-error-msg">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span data-i18n="valProv">يرجى اختيار المحافظة</span>
+          </p>
+        </div>
+        <div class="field-wrap">
+          <label class="kicker block mb-1" data-i18n="coArea">المدينة *</label>
+          <input id="coAreaInp" name="area" class="w-full border hairline p-3 transition-colors" />
+          <p id="errArea" class="field-error-msg">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span data-i18n="valArea">يرجى إدخال المدينة</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="field-wrap">
+        <label class="kicker block mb-1" data-i18n="coAddr">المنطقة أو الحي والشارع *</label>
+        <input id="coAddrInp" name="address" class="w-full border hairline p-3 transition-colors" />
+        <p id="errAddr" class="field-error-msg">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span data-i18n="valAddr">يرجى إدخال العنوان</span>
+        </p>
+      </div>
+
+      <!-- Phone -->
+      <div class="field-wrap">
+        <label class="kicker block mb-1" data-i18n="coPhone">رقم الهاتف *</label>
+        <input id="coPhoneInp" name="phone" inputmode="tel" placeholder="07XXXXXXXXX"
+               class="w-full border hairline p-3 transition-colors" />
+        <p class="text-xs text-[color:var(--mute)] mt-1" data-i18n="coPhoneNote">يجب أن يكون مرتبطًا بواتساب.</p>
+        <p id="errPhone" class="field-error-msg">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="errPhoneText" data-i18n="valPhone">يرجى إدخال رقم الهاتف</span>
+        </p>
+      </div>
+
+      <!-- Notes — Optional -->
+      <div>
+        <label class="kicker block mb-1" data-i18n="coNotes">ملاحظات (اختياري)</label>
+        <textarea id="coNotesTxt" name="notes" rows="3"
+                  class="w-full border hairline p-3 resize-none"
+                  data-i18n-placeholder="coNotesPlaceholder"
+                  placeholder=" يفضل كتابة الطول والوزن هنا او وقت التوصيل الفضل لمساعدتنا في التأكد من ما يناسبك"></textarea>
+      </div>
+      <div class="border-t hairline pt-4 space-y-1 text-sm">
+        <div class="flex justify-between"><span data-i18n="sum">Subtotal</span><span id="coSub">0 IQD</span></div>
+        <div class="flex justify-between text-[color:var(--accent)]" id="coDiscRow" style="display:none"><span data-i18n="disc">Bulk Discount (20%)</span><span id="coDisc">0 IQD</span></div>
+        <div class="flex justify-between coupon-success" id="coCouponDiscRow" style="display:none"><span data-i18n="couponDisc">خصم الكوبون</span><span id="coCouponDisc">0 IQD</span></div>
+        <div class="flex justify-between"><span data-i18n="ship">Delivery</span><span id="coShip">0 IQD</span></div>
+        <div class="flex justify-between font-semibold text-base pt-2 border-t hairline"><span data-i18n="total">Total</span><span id="coTotal">0 IQD</span></div>
+      </div>
+      <button type="submit" class="btn-ink w-full py-3 tracking-[.2em] text-xs" data-i18n="coPlace">PLACE ORDER</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= CONFIRMATION MODAL ================= -->
+<div id="confirmOverlay" class="fixed inset-0 overlay z-[70] hidden"></div>
+<div id="confirmModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
+  <div class="bg-white max-w-md w-full p-8 text-center">
+    <div class="w-14 h-14 rounded-full bg-[color:var(--ink)] text-white mx-auto flex items-center justify-center mb-5">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h3 class="serif text-2xl mb-3" data-i18n="cfTitle">Order Received</h3>
+    <p id="cfMsg" class="text-[color:var(--mute)] leading-relaxed"></p>
+    <button id="cfClose" class="btn-outline mt-6 px-6 py-2 text-xs tracking-[.2em]" data-i18n="cfClose">CLOSE</button>
+  </div>
+</div>
+
+<!-- ================= TOAST NOTIFICATION ================= -->
+<div id="sm-toast" role="status" aria-live="polite"></div>
+
+<!-- ================= MOBILE FLOATING CART BAR ================= -->
+<div id="mobileBar" role="complementary">
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h2l2 12h10l2-9H7"/><circle cx="9" cy="21" r="1"/><circle cx="17" cy="21" r="1"/></svg>
+    <div>
+      <div style="font-size:.62rem;opacity:.6;letter-spacing:.08em;" data-i18n="mbarLabel">السلة</div>
+      <div style="font-size:.82rem;font-weight:700;"><span id="mbarQty">0</span> <span style="opacity:.7;font-size:.7rem;" data-i18n="mbarPcs">قطعة</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <div style="font-size:.62rem;opacity:.6;letter-spacing:.08em;" data-i18n="mbarTotalLbl">المجموع</div>
+    <div style="font-size:.82rem;font-weight:700;" id="mbarTotal">0 IQD</div>
+  </div>
+  <button onclick="closeCart();openCart();" style="background:#fff;color:#1a1a1a;font-size:.68rem;letter-spacing:.12em;font-weight:700;padding:.45rem 1.1rem;border-radius:2px;border:none;cursor:pointer;white-space:nowrap;" data-i18n="mbarBtn">عرض السلة</button>
+</div>
+
+<script>
+/* =================== I18N =================== */
+const I18N = {
+  ar: {
+    dir:'rtl',
+    bar1:'شحن مجاني عند طلب 10 قطع أو أكثر · خصم خاص · مقاسات 2XL–7XL',
+    bar2:'ضمان استبدال إذا لم يناسبك المقاس',
+    navShop:'المتجر', navAbout:'عن SizeMe', navContact:'تواصل',
+    tagline:' للقياسات الخاصة',
+    heroKicker:'   أناقة تناسب كل المقاسات.',
+    heroTitle:'الوجهة الأولى في العراق للمقاسات الخاصة',
+    heroSub:'تشكيلات حصرية  من  دور  الازياء  العالمية  تلائم  اسلوب  حياتك',
+    videoTitle:'رؤيتنا', videoHint:'ضع الفيديو في video/brand-mission.mp4',
+    aboutKicker:'حرفتنا',
+    aboutTitle:'متخصصون بملابس الماركات الحصرية         الأنماط الفاخرة  والألوان المميزة',
+    aboutPt1:'قماش فاخر', aboutPt2:'مقاسات مريحة', aboutPt3:'سعر عادل',
+    trust1:'سعر موحّد', trust2:'مدى المقاسات', trust3:'10+ قطع', trust4:'على الطلبات الكبيرة', trust4v:'شحن مجاني + خصم',
+    shopKicker:'المجموعة', shopTitle:"تيشيرت ", shopNote:'جميع القطع · 35,000 د.ع · مقاسات 2XL–7XL',
+    gKicker:'وعدنا', gTitle:'ضمان الاستبدال في حال عدم مناسبة المقاس',
+    gSub:'اطلب باطمئنان — فريقنا يتواصل شخصيًا لتأكيد الطلب قبل الشحن',
+    cKicker:'تواصل', cTitle:'رسالة واحدة تكفي',
+    footAbout:'تيشيرتات ماركات فاخرة · مقاسات خاصة · شحن لكل العراق.',
+    footHelp:'مساعدة', footHelp1:'سعر جيد: 35,000 د.ع للقطعة', footHelp2:'التوصيل: 5,000 د.ع (العراق)', footHelp3:'شحن مجاني عند 10 قطع فأكثر',
+    footFollow:'تابعنا',
+    cartTitle:'سلة المشتريات', sum:'المجموع الكلي', disc:'خصم الكمية (5,000/قطعة)', ship:'كلفة التوصيل', total:'الإجمالي',
+    bulkHint:'أضف 10 قطع أو أكثر للحصول على سعر 30,000 للقطعة + شحن مجاني.',
+    checkout:'إتمام الطلب',
+    coTitle:'إتمام الشراء', coCountry:'الدولة', coName:'الاسم الكامل *',
+    coProv:'المحافظة *', coArea:'المدينة *', coAddr:'المنطقة أو الحي والشارع *',
+    coPhone:'رقم الهاتف *', coPhoneNote:'يجب أن يكون مرتبطًا بواتساب.',
+    coNotes:'ملاحظات (اختياري)', coPlace:'تأكيد الطلب',
+    coNotesPlaceholder:'(اختياري) يفضل كتابة الطول والوزن هنا لمساعدتنا في التأكد من دقة القياس المناسب لك',
+    valName:'يرجى إدخال الاسم الكامل',
+    valProv:'يرجى اختيار المحافظة',
+    valArea:'يرجى إدخال اسم المدينة أو المنطقة',
+    valAddr:'يرجى إدخال العنوان التفصيلي',
+    valPhone:'يرجى إدخال رقم الهاتف',
+    valPhoneFmt:'رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقماً',
+    cfTitle:'تم استلام طلبك', cfBody: (n)=>`شكراً ${n}, فريق SizeMe سيتواصل معك قريبًا لتأكيد طلبك. ملاحظة: نوفّر ضمان استبدال في حال عدم مناسبة القياس.`,
+    cfClose:'إغلاق',
+    addBag:'أضف إلى السلة', selectSize:'اختر المقاس', selectColor:'اختر اللون', qty:'الكمية',
+    empty:'سلتك فارغة.', remove:'إزالة',
+    wg:{ '2XL':'95–105 كغ', '3XL':'105–115 كغ', '4XL':'115–125 كغ', '5XL':'125–140 كغ', '6XL':'140–155 كغ', '7XL':'155–175 كغ' },
+    free:'مجاني',
+    filterBrand:'الماركة', filterColor:'اللون', filterAll:'الكل',
+    pageNext:'التالي', pagePrev:'السابق',
+    noResults:'لا توجد منتجات تطابق الفلتر المختار.',
+    shopCountFn:(s,t)=>`${s} من ${t} منتج`,
+    bulkProgressFn:(n)=> n>=10 ? '🎉 سعر 30,000 للقطعة + شحن مجاني مفعّل!' : `أضف ${10-n} قطعة للحصول على سعر 30,000 للقطعة وشحن مجاني`,
+    bulkActiveBadge:'مفعّل ✓', bulkPendingBadge:'10 قطع',
+    footInteract:'تفاعل معنا', footSuggBtn:'شاركنا اقتراحك', footReviewsBtn:'آراء الزبائن',
+    suggTitle:'شاركنا اقتراحك', suggSub:'سيتم إرسال اقتراحك مباشرة عبر واتساب.',
+    suggPlaceholder:'اكتب اقتراحك هنا...', suggSend:'إرسال عبر واتساب',
+    reviewsTitle:'آراء الزبائن', reviewsEmpty:'لا توجد صور مراجعات. ضع صورًا في مجلد reviews/',
+    couponPlaceholder:'كود الخصم', couponApply:'تطبيق', couponRemove:'إزالة',
+    couponInvalid:'الكود غير صحيح أو منتهي الصلاحية.', couponDisc:'خصم الكوبون',
+    couponApplied:(code,val)=>`✓ ${code} — خصم ${val} مفعّل`,
+    payTitle:'طريقة الدفع',
+    payCOD:'الدفع عند الاستلام', payCODSub:'ادفع عند استلام طلبك',
+    payOnline:'دفع إلكتروني آمن', payOnlineSub:'قريباً', payOnlineBadge:'قريباً',
+    payWhatsApp:'الدفع عند الاستلام',
+    mbarLabel:'السلة', mbarPcs:'قطعة', mbarTotalLbl:'المجموع', mbarBtn:'عرض السلة',
+    newBadge:'جديد'
+  },
+  en: {
+    dir:'ltr',
+    bar1:'Free shipping on orders of 10+ pieces · Special bulk discount · Sizes 2XL–7XL',
+    bar2:'Replacement guarantee if the size doesn\'t fit',
+    navShop:'Shop', navAbout:'About', navContact:'Contact',
+    tagline:'PREMIUM · PLUS SIZES',
+    heroKicker:'Est. Iraq · Specialized Sizes',
+    heroTitle:'Dressed Well. In Every Size.',
+    heroSub:'Premium brand T-shirts crafted for 2XL through 7XL — unified pricing, unified quality.',
+    videoTitle:'Our Brand Mission', videoHint:'PLACE video/brand-mission.mp4',
+    aboutKicker:'Our Craft',
+    aboutTitle:'Specialists in premium brand clothing, unique patterns, and specialized sizes.',
+    aboutPt1:'FINE COTTON', aboutPt2:'2XL — 7XL', aboutPt3:'FAIR PRICE',
+    trust1:'Unified Price', trust2:'Size Range', trust3:'10+ Pieces', trust4:'On bulk orders', trust4v:'Free Shipping',
+    shopKicker:'The Collection', shopTitle:"Men's T-Shirts", shopNote:'All pieces · 35,000 IQD · Sizes 2XL–7XL',
+    gKicker:'Promise', gTitle:"Replacement guarantee if the size doesn't fit.",
+    gSub:'Order with confidence — our team follows up on every order personally before dispatch.',
+    cKicker:'Reach Us', cTitle:"We're one message away.",
+    footAbout:'Premium brand T-shirts. Specialized plus sizes. Shipped across Iraq.',
+    footHelp:'Help', footHelp1:'Unified price: 35,000 IQD per piece', footHelp2:'Delivery: 5,000 IQD (Iraq)', footHelp3:'Free shipping on 10+ pieces',
+    footFollow:'Follow',
+    cartTitle:'Your Bag', sum:'Subtotal', disc:'Bulk Discount (5K/piece)', ship:'Delivery', total:'Total',
+    bulkHint:'Add 10+ pieces to get 30,000 IQD/piece + free shipping.',
+    checkout:'CHECKOUT',
+    coTitle:'Checkout', coCountry:'Country', coName:'Full Name *',
+    coProv:'Province *', coArea:'City / District *', coAddr:'Street & Area *',
+    coPhone:'Phone *', coPhoneNote:'Preferably linked to WhatsApp.',
+    coNotes:'Notes (optional)', coPlace:'PLACE ORDER',
+    coNotesPlaceholder:'(Optional) We recommend adding your height & weight to help us confirm the best size for you',
+    valName:'Please enter your full name',
+    valProv:'Please select your province',
+    valArea:'Please enter your city or district',
+    valAddr:'Please enter your full address',
+    valPhone:'Please enter your phone number',
+    valPhoneFmt:'Phone must start with 07 and be 11 digits',
+    cfTitle:'Order Received', cfBody:(n)=>`Thank you ${n}, the SizeMe team will contact you shortly to confirm your order. Note: We provide a replacement guarantee if the size is not suitable.`,
+    cfClose:'CLOSE',
+    addBag:'Add to Bag', selectSize:'Select Size', selectColor:'Select Color', qty:'Qty',
+    empty:'Your bag is empty.', remove:'Remove',
+    wg:{ '2XL':'95–105 kg', '3XL':'105–115 kg', '4XL':'115–125 kg', '5XL':'125–140 kg', '6XL':'140–155 kg', '7XL':'155–175 kg' },
+    free:'Free',
+    filterBrand:'Brand', filterColor:'Color', filterAll:'All',
+    pageNext:'Next', pagePrev:'Prev',
+    noResults:'No products match the selected filters.',
+    shopCountFn:(s,t)=>`${s} of ${t} products`,
+    bulkProgressFn:(n)=> n>=10 ? '🎉 30,000 IQD/piece + free shipping unlocked!' : `Add ${10-n} more pieces for 30K/piece & free shipping`,
+    bulkActiveBadge:'Active ✓', bulkPendingBadge:'10 pcs',
+    footInteract:'Interact', footSuggBtn:'Share a Suggestion', footReviewsBtn:'Customer Reviews',
+    suggTitle:'Share Your Suggestion', suggSub:'Your message will be sent via WhatsApp.',
+    suggPlaceholder:'Write your suggestion here...', suggSend:'Send via WhatsApp',
+    reviewsTitle:'Customer Reviews', reviewsEmpty:'No review photos yet. Add images to the reviews/ folder.',
+    couponPlaceholder:'Coupon code', couponApply:'Apply', couponRemove:'Remove',
+    couponInvalid:'Invalid or expired coupon code.', couponDisc:'Coupon Discount',
+    couponApplied:(code,val)=>`✓ ${code} — ${val} off applied`,
+    payTitle:'Payment Method',
+    payCOD:'Cash on Delivery', payCODSub:'Pay when you receive',
+    payOnline:'Secure Online Payment', payOnlineSub:'Coming soon', payOnlineBadge:'Soon',
+    payWhatsApp:'Cash on Delivery',
+    mbarLabel:'Cart', mbarPcs:'pcs', mbarTotalLbl:'Total', mbarBtn:'View Bag',
+    newBadge:'NEW'
+  },
+  ku: {
+    dir:'rtl',
+    bar1:'گەیاندن بێبەرامبەر بۆ داواکاری ١٠ پارچە یان زیاتر · داشکاندن ٢٠٪ · قەبارەکان 2XL–7XL',
+    bar2:'گەرەنتی گۆڕینەوە ئەگەر قەبارەکە گونجاو نەبوو',
+    navShop:'فرۆشگا', navAbout:'دەربارە', navContact:'پەیوەندی',
+    tagline:'قياساتي تايبەت',
+    heroKicker:'لە عێراق · قەبارەی تایبەت',
+    heroTitle:'جلی جوان. بۆ هەموو قەبارەیەک.',
+    heroSub:'تیشێرتی مارکەی جیهانی بۆ قەبارەی 2XL تا 7XL — نرخی یەکسان، کوالێتی یەکسان.',
+    videoTitle:'بینینی ئێمە', videoHint:'ڤیدیۆ دابنێ لە video/brand-mission.mp4',
+    aboutKicker:'پیشەی ئێمە',
+    aboutTitle:'تایبەتمەند لە جلوبەرگی مارکەی فاخر، نەخشی تایبەت، و قەبارەی تایبەت.',
+    aboutPt1:'پەڕۆی فاخر', aboutPt2:'2XL — 7XL', aboutPt3:'نرخی دادپەروەر',
+    trust1:'نرخی یەکسان', trust2:'قەبارە', trust3:'١٠+ پارچە', trust4:'لەسەر داواکاری گەورە', trust4v:'گەیاندن بێبەرامبەر',
+    shopKicker:'کۆمەڵە', shopTitle:'تیشێرتی پیاوان', shopNote:'هەموو پارچەکان · ٣٥،٠٠٠ د.ع · قەبارە 2XL–7XL',
+    gKicker:'بەڵێنمان', gTitle:'گەرەنتی گۆڕینەوە ئەگەر قەبارەکە گونجاو نەبوو.',
+    gSub:'بە دڵنیاییەوە داوا بکە — تیمەکەمان پەیوەندیت پێوە دەکات پێش ناردن.',
+    cKicker:'پەیوەندی', cTitle:'تەنها پەیامێک دوورین.',
+    footAbout:'تیشێرتی مارکەی فاخر · قەبارەی تایبەت · گەیاندن بۆ هەموو عێراق.',
+    footHelp:'یارمەتی', footHelp1:'نرخی یەکسان: ٣٥،٠٠٠ د.ع بۆ هەر پارچەیەک', footHelp2:'گەیاندن: ٥،٠٠٠ د.ع (عێراق)', footHelp3:'گەیاندن بێبەرامبەر لەگەڵ ١٠ پارچە بۆ سەرەوە',
+    footFollow:'شوێنمان بکەوە',
+    cartTitle:'سەبەتەی تۆ', sum:'کۆی بچووک', disc:'داشکاندنی کۆمەڵ (٥٠٠٠/پارچە)', ship:'گەیاندن', total:'کۆی گشتی',
+    bulkHint:'١٠ پارچە یان زیاتر زیاد بکە بۆ نرخی ٣٠،٠٠٠ بۆ هەر پارچەیەک + گەیاندن بێبەرامبەر.',
+    checkout:'تەواوکردن',
+    coTitle:'تەواوکردنی داواکاری', coCountry:'وڵات', coName:'ناوی تەواو *',
+    coProv:'پارێزگا *', coArea:'شار / ناوچە *', coAddr:'ناونیشانی تەواو *',
+    coPhone:'ژمارەی مۆبایل *', coPhoneNote:'پێویستە بە واتساپ بەستراوە بێت.',
+    coNotes:'تێبینی (ئارەزوومەندانە)', coPlace:'پشتڕاستکردنەوەی داواکاری',
+    coNotesPlaceholder:'(ئارەزوومەندانە) باشتره درێژی و کێشت لێرە بنووسیت بۆ دیاریکردنی قەبارەی گونجاو',
+    valName:'تکایە ناوی تەواوت بنووسە',
+    valProv:'تکایە پارێزگاکەت هەڵبژێرە',
+    valArea:'تکایە ناوی شار یان ناوچە بنووسە',
+    valAddr:'تکایە ناونیشانی تەواو بنووسە',
+    valPhone:'تکایە ژمارەی مۆبایلت بنووسە',
+    valPhoneFmt:'ژمارەکە دەبێت بە 07 دەست پێ بکات و ١١ ژمارە بێت',
+    cfTitle:'داواکاریت وەرگیرا', cfBody:(n)=>`سوپاس ${n}, تیمی SizeMe بەم زووانە پەیوەندیت پێوە دەکات بۆ پشتڕاستکردنەوەی داواکاریت. تێبینی: گەرەنتی گۆڕینەوە لەبەردەستە ئەگەر قەبارەکە گونجاو نەبوو.`,
+    cfClose:'داخستن',
+    addBag:'زیادکردن بۆ سەبەتە', selectSize:'قەبارە هەڵبژێرە', selectColor:'ڕەنگ هەڵبژێرە', qty:'ژمارە',
+    empty:'سەبەتەکەت بەتاڵە.', remove:'سڕینەوە',
+    wg:{ '2XL':'٩٥–١٠٥ کیلۆ', '3XL':'١٠٥–١١٥ کیلۆ', '4XL':'١١٥–١٢٥ کیلۆ', '5XL':'١٢٥–١٤٠ کیلۆ', '6XL':'١٤٠–١٥٥ کیلۆ', '7XL':'١٥٥–١٧٥ کیلۆ' },
+    free:'بێبەرامبەر',
+    filterBrand:'مارکە', filterColor:'ڕەنگ', filterAll:'هەموو',
+    pageNext:'دواتر', pagePrev:'پێشتر',
+    noResults:'هیچ بەرهەمێک نەدۆزرایەوە.',
+    shopCountFn:(s,t)=>`${s} لە ${t} بەرهەم`,
+    bulkProgressFn:(n)=> n>=10 ? '🎉 نرخی ٣٠،٠٠٠ بۆ هەر پارچەیەک + گەیاندن بێبەرامبەر چالاکە!' : `${10-n} پارچەی تر زیاد بکە بۆ نرخی ٣٠،٠٠٠`,
+    bulkActiveBadge:'چالاکە ✓', bulkPendingBadge:'١٠ پارچە',
+    footInteract:'پەیوەندی', footSuggBtn:'پێشنیازت بنێرە', footReviewsBtn:'بۆچوونی کڕیار',
+    suggTitle:'پێشنیازت بنێرە', suggSub:'پێشنیازەکەت ڕاستەوخۆ بە واتساپ دەنێردرێت.',
+    suggPlaceholder:'پێشنیازەکەت لێرە بنووسە...', suggSend:'بە واتساپ ',
+    reviewsTitle:'بۆچوونی کڕیار', reviewsEmpty:'هێشتا وێنەی بۆچوون نییە. وێنەکان لە reviews/ دابنێ.',
+    couponPlaceholder:'کۆدی داشکاندن', couponApply:'جێبەجێکردن', couponRemove:'سڕینەوە',
+    couponInvalid:'کۆدەکە هەڵەیە یان کاتی تەواو بووە.', couponDisc:'داشکاندنی کۆپۆن',
+    couponApplied:(code,val)=>`✓ ${code} — داشکاندن ${val} چالاکە`,
+    payTitle:'شێوازی پارەدان',
+    payCOD:'پارەدان لە کاتی وەرگرتن', payCODSub:'پارەدان لەکاتی گەیاندن',
+    payOnline:'پارەدانی ئەلیکترۆنی', payOnlineSub:'بەم زووانە', payOnlineBadge:'بەم زووانە',
+    payWhatsApp:'پارەدان لە کاتی وەرگرتن',
+    mbarLabel:'سەبەتە', mbarPcs:'دانە', mbarTotalLbl:'کۆی گشتی', mbarBtn:'سەبەتەکەت ببینە',
+    newBadge:'نوێ'
+  }
+};
+
+/* =================== PRODUCTS =================== */
+// كيفية إضافة منتج جديد (3 خطوات فقط):
+// 1. ضع صورة المنتج في مجلد images/  باسم:  27-1-brand.jpg
+// 2. أضف سطراً في PRODUCTS_META برقم 27 أدناه
+// 3. غيّر TOTAL_PRODUCTS من 26 إلى 27
+// ← المنتج الجديد يظهر تلقائياً في أول الصفحة دون أي تعديل آخر
+// لإضافة صور إضافية لنفس المنتج: اسحب  27-2-brand.jpg, 27-3-brand.jpg ...  (تُكتشف تلقائياً)
+// ── COLOUR PALETTE (only these 9 codes are used site-wide) ──────────────
+const C = {
+  BLK : {n:'Black',      h:'#111111'},
+  WHT : {n:'White',      h:'#FAFAFA'},
+  DNV : {n:'Dark Navy',  h:'#091E5B'},
+  RBL : {n:'Royal Blue', h:'#1E3FB5'},
+  BRN : {n:'Brown',      h:'#4A2C1D'},
+  BRG : {n:'Burgundy',   h:'#732020'},
+  CHR : {n:'Charcoal',   h:'#2D2D2D'},
+  TPE : {n:'Taupe',      h:'#8E8475'},
+  OLV : {n:'Olive',      h:'#3D4A2A'},
+};
+
+// ╔═══════════════════════════════════════════════════════════════════╗
+// ║  ← غيّر هذا الرقم فقط عند إضافة منتج جديد                      ║
+// ║  مثال: أضف صورة 27-1-brand.jpg ثم غيّر الرقم إلى 27           ║
+// ╚═══════════════════════════════════════════════════════════════════╝
+const TOTAL_PRODUCTS = 26;
+
+// بيانات كل منتج — مرقّمة من 1 إلى TOTAL_PRODUCTS
+// لإضافة منتج جديد: أضف سطراً جديداً برقم prefix التالي هنا
+// ثم غيّر TOTAL_PRODUCTS بالأعلى — يظهر تلقائياً في أول الصفحة
+// حقل sku → كود المنتج الظاهر في رسالة الواتساب والسلة
+// عدّله يدوياً لأي كود تريده (أرقام، حروف، أو مزيج)
+const PRODUCTS_META = {
+   1: { sku:'LA-01',  imgKey:'lacoste-e33',  brand:'LACOSTE',        sub:'E33 Flag',      colors:[C.BLK,C.WHT,C.OLV] },
+   2: { sku:'PO-02',  imgKey:'polo',          brand:'U.S. POLO ASSN', sub:'Polo Classic',  colors:[C.BLK,C.WHT,C.RBL,C.TPE] },
+   3: { sku:'GI-03',  imgKey:'givenchy',      brand:'GIVENCHY',       sub:'Paris',         colors:[C.BLK,C.WHT,C.BRN] },
+   4: { sku:'OW-04',  imgKey:'off-white',     brand:'OFF-WHITE',      sub:'Hand Logo',     colors:[C.BLK,C.WHT,C.RBL] },
+   5: { sku:'HU-05',  imgKey:'hugo',          brand:'HUGO',           sub:'Bold Logo',     colors:[C.BLK,C.WHT,C.DNV] },
+   6: { sku:'LA-07',  imgKey:'lacoste-1927',  brand:'LACOSTE',        sub:'1927 Heritage', colors:[C.BLK,C.WHT] },
+   7: { sku:'BA-08',  imgKey:'balmain',       brand:'BALMAIN',        sub:'Paris',         colors:[C.BLK,C.WHT,C.OLV,C.BRG] },
+   8: { sku:'AL-09',  imgKey:'alo',           brand:'ALO',            sub:'basic',         colors:[C.BLK,C.DNV,C.CHR,C.BRN] },
+   9: { sku:'PR-10',  imgKey:'prada',         brand:'PRADA',          sub:'Milano',        colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
+  10: { sku:'BU-11',  imgKey:'burberry',      brand:'BURBERRY',       sub:'Knight',        colors:[C.BLK,C.WHT,C.CHR] },
+  11: { sku:'TO-12',  imgKey:'tommy',         brand:'TOMMY JEANS',    sub:'Graffiti',      colors:[C.BLK,C.WHT,C.CHR] },
+  12: { sku:'CK-13',  imgKey:'ck',            brand:'CALVIN KLEIN',   sub:'CK Monogram',   colors:[C.BLK,C.WHT] },
+  13: { sku:'KI-14',  imgKey:'kiton',         brand:'KITON',          sub:'Napoli',        colors:[C.BLK,C.WHT] },
+  14: { sku:'LO-15',  imgKey:'loewe',         brand:'LOEWE',          sub:'Madrid 1846',   colors:[C.BLK,C.WHT] },
+  15: { sku:'LV-16',  imgKey:'lv',            brand:'LOUIS VUITTON',  sub:'Paris',         colors:[C.BLK,C.WHT,C.TPE] },
+  16: { sku:'KI-17',  imgKey:'kiton-small',   brand:'KITON',          sub:'Small Logo',    colors:[C.BLK,C.WHT,C.CHR] },
+  17: { sku:'CK-18',  imgKey:'calvin-klein',  brand:'CALVIN KLEIN',   sub:'Classic',       colors:[C.BLK,C.WHT,C.OLV,C.BRN] },
+  18: { sku:'BO-19',  imgKey:'boos',          brand:'BOSS',           sub:'sun logo',      colors:[C.BLK,C.WHT,C.DNV] },
+  19: { sku:'ES-20',  imgKey:'essentials',    brand:'ESSENTIALS',     sub:'NBA',           colors:[C.BLK,C.WHT,C.TPE] },
+  20: { sku:'PO-21',  imgKey:'u-s-polo',      brand:'U.S. POLO ASSN', sub:'Assn horse',    colors:[C.BLK,C.WHT,C.OLV] },
+  21: { sku:'HE-22',  imgKey:'hermes',        brand:'HERMÈS',         sub:'horse Paris',   colors:[C.BLK,C.WHT] },
+  22: { sku:'BA-23',  imgKey:'balenciaga',    brand:'BALENCIAGA',     sub:'balenc shop',   colors:[C.BLK,C.WHT,C.RBL] },
+  23: { sku:'SU-24',  imgKey:'supreme',       brand:'SUPREME',        sub:'Earth Logo',    colors:[C.BLK,C.WHT,C.CHR] },
+  24: { sku:'HE-25',  imgKey:'hermes-h',      brand:'HERMÈS',         sub:'Lines Logo',    colors:[C.BLK,C.WHT] },
+  25: { sku:'MA-26',  imgKey:'massimo-dutti', brand:'MASSIMO DUTTI',  sub:'since 1985',    colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
+  26: { sku:'ZA-27',  imgKey:'zara-Turkey',    brand:'ZARA',           sub:'turkey',        colors:[C.BRN,C.WHT,C.BLK], added:'2026-04-17' },
+  // 27: { sku:'XX-000', imgKey:'brand-key', brand:'BRAND NAME', sub:'subtitle', colors:[C.BLK,C.WHT] },
+};
+
+// ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
+const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
+  const n      = TOTAL_PRODUCTS - i;                   // تنازلي: 26، 25، 24 ...
+  const prefix = String(n).padStart(2, '0');           // 26 → "26", 5 → "05"
+  const m      = PRODUCTS_META[n] || { sku:`P-${prefix}`, imgKey:'product', brand:'SIZEME', sub:'New', colors:[C.BLK] };
+  return { id:`p${n}`, prefix, sku:m.sku||`P-${prefix}`, imgKey:m.imgKey, brand:m.brand, sub:m.sub, colors:m.colors };
+});
+
+/* =================== COUPONS =================== */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  أضف أكواد الخصم هنا أو احذفها يدوياً                          ║
+// ║  type: 'percent' → خصم نسبة مئوية (مثال: 10 = خصم 10%)         ║
+// ║  type: 'fixed'   → خصم مبلغ ثابت بالدينار العراقي              ║
+// ║  expires: 'YYYY-MM-DD'  أو  null  (بدون تاريخ انتهاء)          ║
+// ╚══════════════════════════════════════════════════════════════════╝
+const COUPONS = [
+  { code:'welcome',   type:'percent', value:15,    expires:'2026-12-31' },
+  { code:'SIZEME2026',   type:'percent', value:5,    expires:'2026-12-31' },
+  { code:'VIP15',      type:'percent', value:10,    expires:'2026-09-30' },
+  { code:'WELCOME',  type:'fixed',   value:5000,  expires:null         },
+  // { code:'EID10K',  type:'fixed',   value:10000, expires:'2026-07-01' }, // مثال معطّل
+];
+// ─────────────────────────────────────────────────────────────────────
+
+/* generate image path for a product + sequence number */
+function imgPath(p, seq){ return `images/${p.prefix}-${seq}-${p.imgKey}.jpg`; }
+const SIZES = ['2XL','3XL','4XL','5XL','6XL','7XL'];
+const UNIT_PRICE      = 35000;
+const BULK_UNIT_PRICE = 30000;  // ← سعر القطعة عند 10+ قطع (300,000 لكل 10 قطع)
+const SHIPPING        = 5000;
+const BULK_THRESHOLD  = 10;
+const BULK_DISCOUNT   = (UNIT_PRICE - BULK_UNIT_PRICE) / UNIT_PRICE; // ≈ 14.3% تلقائياً
+
+/* =================== STATE =================== */
+const PAGE_SIZE = 8;
+let state = {
+  lang   : 'ar',
+  cart   : [],        // {pid, brand, sub, img, color, size, qty}
+  filter : { brand:'all', color:'all' },
+  page   : 0,
+  coupon : null       // { code, type, value } — set by applyCoupon()
+};
+
+/* =================== HELPERS =================== */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const fmt = n => new Intl.NumberFormat('en-US').format(n) + ' IQD';
+
+/* =================== FILTER HELPERS =================== */
+// Brands are derived automatically from PRODUCTS array.
+// Add a new product to PRODUCTS → its brand auto-appears as a filter button.
+function uniqueBrands(){
+  const brands = [...new Set(PRODUCTS.map(p=>p.brand))].sort();
+  return ['all', ...brands];
+}
+function uniqueColors(){
+  // Fixed palette order — only show colours actually used by at least one product
+  const used = new Set(PRODUCTS.flatMap(p=>p.colors.map(c=>c.n)));
+  const palette = Object.values(C).filter(c=>used.has(c.n));
+  return [{ n:'all', h:'' }, ...palette];
+}
+function filteredProducts(){
+  return PRODUCTS.filter(p=>{
+    const brandOk = state.filter.brand==='all' || p.brand===state.filter.brand;
+    const colorOk = state.filter.color==='all' || p.colors.some(c=>c.n===state.filter.color);
+    return brandOk && colorOk;
+  });
+}
+
+/* =================== RENDER FILTERS =================== */
+function renderFilters(){
+  const t = I18N[state.lang];
+
+  /* --- Brand tabs --- */
+  const bf = $('#brandFilters');
+  bf.innerHTML = uniqueBrands().map(b=>`
+    <button class="chip px-3 py-1 text-xs tracking-[.12em] rounded-none ${state.filter.brand===b?'active':''}"
+            data-brand="${b}">
+      ${b==='all' ? t.filterAll : b}
+    </button>`).join('');
+  bf.querySelectorAll('[data-brand]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      state.filter.brand = btn.dataset.brand;
+      state.page = 0;
+      renderFilters();
+      renderProducts();
+    });
+  });
+  /* ── Slide indicator to active brand chip ── */
+  requestAnimationFrame(()=>{
+    const activeB = bf.querySelector('.chip.active');
+    if(window.moveFilterIndicator) moveFilterIndicator('brandFilters', activeB);
+  });
+
+  /* --- Color dots --- */
+  const cf = $('#colorFilters');
+  cf.innerHTML = uniqueColors().map(c=>`
+    ${c.n==='all'
+      ? `<button class="chip px-3 py-1 text-xs tracking-[.12em] rounded-none ${state.filter.color==='all'?'active':''}"
+                 data-color="all">${t.filterAll}</button>`
+      : `<span class="color-dot ${state.filter.color===c.n?'active':''}"
+               data-color="${c.n}" style="background:${c.h}" title="${c.n}"></span>`
+    }`).join('');
+  cf.querySelectorAll('[data-color]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      state.filter.color = el.dataset.color;
+      state.page = 0;
+      renderFilters();
+      renderProducts();
+    });
+  });
+  /* ── Slide indicator to active color "All" chip ── */
+  requestAnimationFrame(()=>{
+    const activeC = cf.querySelector('.chip.active');
+    if(window.moveFilterIndicator && activeC) moveFilterIndicator('colorFilters', activeC);
+  });
+}
+
+/* =================== NEW PRODUCT BADGE =================== */
+/**
+ * Returns true if the product was added within the last 3 days.
+ * Reads the `added` field from PRODUCTS_META (format: 'YYYY-MM-DD').
+ * When adding a new product, set: added:'YYYY-MM-DD' in PRODUCTS_META.
+ * The badge disappears automatically after 3 days — no manual action needed.
+ */
+function isNewProduct(p){
+  const num = parseInt(p.id.replace('p',''), 10);
+  const meta = PRODUCTS_META[num];
+  if(!meta || !meta.added) return false;
+  const added = new Date(meta.added + 'T00:00:00');
+  const diffDays = (Date.now() - added.getTime()) / 86400000;
+  return diffDays >= 0 && diffDays <= 3;
+}
+
+/* =================== RENDER PRODUCTS =================== */
+function renderProducts(){
+  /* ── Show skeleton immediately so browser paints it before heavy DOM update ── */
+  showProductSkeleton(4);
+
+  setTimeout(function(){
+  const t    = I18N[state.lang];
+  const all  = filteredProducts();
+  const total= all.length;
+  const pages= Math.ceil(total / PAGE_SIZE);
+  const page = Math.min(state.page, Math.max(0, pages-1));
+  state.page = page;
+  const slice= all.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
+  $('#shopCount').textContent = t.shopCountFn(total, PRODUCTS.length);
+
+  const grid = $('#productGrid');
+  if(slice.length===0){
+    grid.innerHTML = `<p class="col-span-full text-center text-[color:var(--mute)] py-16">${t.noResults}</p>`;
+  } else {
+    grid.innerHTML = slice.map((p,i) => `
+      <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
+
+        <!-- ── IMAGE SLIDER ── -->
+        <div class="product-img slider-wrap" data-idx="0">
+          <div class="slider-track">
+            <div class="slide">
+              <img src="${imgPath(p,1)}" alt="${p.brand}"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+              <div class="absolute inset-0 flex-col items-center justify-center bg-[#f2ece2]" style="display:none">
+                <div class="brand-watermark">${p.brand}</div>
+                <div class="brand-sub">${p.sub}</div>
+              </div>
+            </div>
+          </div>
+          <!-- arrows (hidden until extra slides loaded) -->
+          <button class="slider-arrow prev hidden" aria-label="prev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slider-arrow next hidden" aria-label="next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <!-- dots -->
+          <div class="slider-dots hidden"><span class="sdot active"></span></div>
+        </div>
+
+        <!-- ── INFO ── -->
+        <div class="p-4">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="serif text-lg leading-tight">${p.brand}</h3>
+              <p class="text-[11px] tracking-[.15em] text-[color:var(--mute)] mt-0.5 uppercase">${p.sub}</p>
+            </div>
+            <div class="text-sm font-medium whitespace-nowrap">${fmt(UNIT_PRICE)}</div>
+          </div>
+          <div class="mt-3">
+            <div class="flex items-center justify-between mb-2">
+              <p class="kicker">${t.selectColor}</p>
+              ${isNewProduct(p) ? `<span class="new-badge">${t.newBadge||'جديد'}</span>` : ''}
+            </div>
+            <div class="flex gap-2 flex-wrap" data-role="colors">
+              ${p.colors.map((c,i)=>`<span class="color-dot ${i===0?'active':''}" data-color="${c.n}" style="background:${c.h}" title="${c.n}"></span>`).join('')}
+            </div>
+          </div>
+          <div class="mt-3">
+            <p class="kicker mb-2">${t.selectSize}</p>
+            <div class="grid grid-cols-3 gap-1.5" data-role="sizes">
+              ${SIZES.map(s=>`<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${t.wg[s]}</div></div>`).join('')}
+            </div>
+          </div>
+          <button class="btn-outline w-full py-2.5 mt-4 text-[11px] tracking-[.2em]" data-role="add">${t.addBag}</button>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  /* ── Wire card interactions ── */
+  $$('#productGrid .product-card').forEach(card=>{
+    card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot=>{
+      dot.addEventListener('click',()=>{
+        card.querySelectorAll('[data-role="colors"] .color-dot').forEach(d=>d.classList.remove('active'));
+        dot.classList.add('active');
+      });
+    });
+    card.querySelectorAll('[data-role="sizes"] .size-card').forEach(sc=>{
+      sc.addEventListener('click',()=>{
+        card.querySelectorAll('[data-role="sizes"] .size-card').forEach(x=>x.classList.remove('active'));
+        sc.classList.add('active');
+      });
+    });
+    const addBtn = card.querySelector('[data-role="add"]');
+    addBtn?.addEventListener('click',()=>{
+      const p     = PRODUCTS.find(x=>x.id===card.dataset.pid);
+      const color = card.querySelector('[data-role="colors"] .active')?.dataset.color;
+      const size  = card.querySelector('[data-role="sizes"] .active')?.dataset.size;
+      const t2    = I18N[state.lang];
+      if(!size){ alert(t2.selectSize); return; }
+      if(window.flashAddBtn) flashAddBtn(addBtn);
+      addToCart({pid:p.id, brand:p.brand, sub:p.sub, sku:p.sku, img:imgPath(p,1), color, size, qty:1});
+      openCart();
+    });
+  });
+
+  renderPagination(page, pages);
+
+  /* ── Init sliders + scroll reveal after DOM is ready ── */
+  requestAnimationFrame(()=>{ initSliders(); if(window.observeRevealElements) observeRevealElements(); });
+
+  }, 0); /* end setTimeout — real products replace skeleton */
+}
+
+/* =================== SLIDER ENGINE =================== */
+const MAX_EXTRA_IMAGES = 6; // probe for up to 6 extra images per product
+
+function initSliders(){
+  $$('#productGrid .product-card').forEach(card=>{
+    const p       = PRODUCTS.find(x=>x.id===card.dataset.pid);
+    if(!p) return;
+    const wrap    = card.querySelector('.slider-wrap');
+    const track   = card.querySelector('.slider-track');
+    const dotsWrap= card.querySelector('.slider-dots');
+    const btnPrev = card.querySelector('.slider-arrow.prev');
+    const btnNext = card.querySelector('.slider-arrow.next');
+
+    let currentIdx = 0;
+
+    /* ── Go to slide index ── */
+    function goTo(idx){
+      const slides = track.querySelectorAll('.slide');
+      idx = Math.max(0, Math.min(idx, slides.length-1));
+      currentIdx = idx;
+      track.style.transform = `translateX(${wrap.dir==='rtl'?'':'-'}${idx * 100}%)`;
+      dotsWrap.querySelectorAll('.sdot').forEach((d,i)=>d.classList.toggle('active', i===idx));
+    }
+
+    /* ── RTL-aware direction ── */
+    Object.defineProperty(wrap,'dir',{get:()=>document.documentElement.dir});
+
+    /* ── Arrow clicks ── */
+    btnPrev?.addEventListener('click', e=>{ e.stopPropagation(); goTo(currentIdx-1); });
+    btnNext?.addEventListener('click', e=>{ e.stopPropagation(); goTo(currentIdx+1); });
+
+    /* ── Dot clicks (delegated) ── */
+    dotsWrap?.addEventListener('click', e=>{
+      const dot = e.target.closest('.sdot');
+      if(!dot) return;
+      goTo([...dotsWrap.querySelectorAll('.sdot')].indexOf(dot));
+    });
+
+    /* ── Touch / Swipe ── */
+    let tx0=0, ty0=0, swiping=false;
+    wrap.addEventListener('touchstart', e=>{ tx0=e.touches[0].clientX; ty0=e.touches[0].clientY; swiping=true; }, {passive:true});
+    wrap.addEventListener('touchmove',  e=>{
+      if(!swiping) return;
+      if(Math.abs(e.touches[0].clientY-ty0) > Math.abs(e.touches[0].clientX-tx0)){ swiping=false; return; }
+      e.preventDefault();
+    },{passive:false});
+    wrap.addEventListener('touchend', e=>{
+      if(!swiping) return; swiping=false;
+      const dx = e.changedTouches[0].clientX - tx0;
+      if(Math.abs(dx)<30) return;
+      const isRTL = document.documentElement.dir==='rtl';
+      (dx < 0) !== isRTL ? goTo(currentIdx+1) : goTo(currentIdx-1);
+    });
+
+    /* ── Mouse drag ── */
+    let mx0=0, dragging=false;
+    wrap.addEventListener('mousedown', e=>{ mx0=e.clientX; dragging=true; e.preventDefault(); });
+    wrap.addEventListener('mouseup',   e=>{
+      if(!dragging) return; dragging=false;
+      const dx = e.clientX - mx0;
+      if(Math.abs(dx)<20) return;
+      const isRTL = document.documentElement.dir==='rtl';
+      (dx < 0) !== isRTL ? goTo(currentIdx+1) : goTo(currentIdx-1);
+    });
+    wrap.addEventListener('mouseleave',()=>{ dragging=false; });
+
+    /* ── Probe extra images (2 → MAX_EXTRA_IMAGES+1) ── */
+    for(let seq=2; seq<=MAX_EXTRA_IMAGES+1; seq++){
+      (function(s){
+        const probe = new Image();
+        probe.onload = ()=>{
+          /* add slide */
+          const slide = document.createElement('div');
+          slide.className = 'slide';
+          const img = document.createElement('img');
+          img.src = imgPath(p, s);
+          img.alt = p.brand;
+          slide.appendChild(img);
+          track.appendChild(slide);
+          /* add dot */
+          const dot = document.createElement('span');
+          dot.className = 'sdot';
+          dotsWrap.appendChild(dot);
+          /* show controls */
+          dotsWrap.classList.remove('hidden');
+          btnPrev.classList.remove('hidden');
+          btnNext.classList.remove('hidden');
+          /* reset to current */
+          goTo(currentIdx);
+        };
+        probe.src = imgPath(p, s);
+      })(seq);
+    }
+  });
+}
+
+/* =================== PAGINATION =================== */
+function renderPagination(page, pages){
+  const t   = I18N[state.lang];
+  const pag = $('#pagination');
+  if(pages<=1){ pag.innerHTML=''; return; }
+
+  const btn = (label, pg, disabled=false, active=false) =>
+    `<button class="${active
+        ? 'bg-[color:var(--ink)] text-white w-9 h-9 text-sm'
+        : 'border hairline bg-white w-9 h-9 text-sm hover:bg-[color:var(--paper)]'}
+      ${disabled?'opacity-30 pointer-events-none':''}"
+      data-pg="${pg}">${label}</button>`;
+
+  let html = btn(t.pagePrev, page-1, page===0);
+
+  /* smart page numbers: always show first, last, current ±1 */
+  const shown = new Set([0, pages-1, page, page-1, page+1].filter(n=>n>=0 && n<pages));
+  let prev = -1;
+  [...shown].sort((a,b)=>a-b).forEach(i=>{
+    if(prev>=0 && i-prev>1) html += `<span class="w-9 h-9 flex items-center justify-center text-[color:var(--mute)]">…</span>`;
+    html += btn(i+1, i, false, i===page);
+    prev = i;
+  });
+
+  html += btn(t.pageNext, page+1, page>=pages-1);
+  pag.innerHTML = html;
+
+  pag.querySelectorAll('[data-pg]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      state.page = +b.dataset.pg;
+      renderProducts();
+      document.getElementById('shop').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+}
+
+/* =================== BULK BAR =================== */
+function updateBulkBar(){
+  const t   = I18N[state.lang];
+  const qty = totalQty();
+  const bar = $('#bulkBar');
+  if(qty===0){ bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  const pct = Math.min(100, (qty/10)*100);
+  $('#bulkBarFill').style.width = pct+'%';
+  $('#bulkBarLabel').textContent = t.bulkProgressFn(qty);
+  const badge = $('#bulkBarBadge');
+  if(qty>=10){
+    badge.textContent = t.bulkActiveBadge;
+    badge.style.color = 'var(--accent)';
+    $('#bulkBarFill').style.background = 'var(--accent)';
+  } else {
+    badge.textContent = t.bulkPendingBadge;
+    badge.style.color = 'var(--mute)';
+    $('#bulkBarFill').style.background = 'var(--ink)';
+  }
+}
+
+/* =================== CART =================== */
+function addToCart(item){
+  const key = it => `${it.pid}|${it.size}|${it.color}`;
+  const existing = state.cart.find(c=>key(c)===key(item));
+  if(existing) existing.qty += 1;
+  else state.cart.push(item);
+  updateCart();
+  if(window.bounceCartCount) bounceCartCount();
+  const toastMap = { ar:'✓ تمت الإضافة إلى السلة', en:'✓ Added to bag', ku:'✓ زیادکرا بۆ سەبەتە' };
+  if(window.showToast) showToast(toastMap[state.lang] || '✓ Added to bag');
+}
+function changeQty(idx,delta){
+  state.cart[idx].qty += delta;
+  if(state.cart[idx].qty<=0) state.cart.splice(idx,1);
+  updateCart();
+}
+function totalQty(){ return state.cart.reduce((s,i)=>s+i.qty,0); }
+
+function computeTotals(){
+  const qty         = totalQty();
+  const sub         = qty * UNIT_PRICE;
+  const bulk        = qty >= BULK_THRESHOLD;
+  const bulkDiscount= bulk ? qty * (UNIT_PRICE - BULK_UNIT_PRICE) : 0; // 5,000 × عدد القطع
+
+  // Coupon applied on top of bulk discount
+  let couponDiscount = 0;
+  if(state.coupon && qty > 0){
+    const afterBulk = sub - bulkDiscount;
+    if(state.coupon.type === 'percent'){
+      couponDiscount = Math.round(afterBulk * state.coupon.value / 100);
+    } else {
+      couponDiscount = Math.min(state.coupon.value, afterBulk);
+    }
+  }
+
+  const discount = bulkDiscount + couponDiscount;
+  const shipping  = qty === 0 ? 0 : (bulk ? 0 : SHIPPING);
+  const total     = sub - discount + shipping;
+  return {qty, sub, bulk, bulkDiscount, couponDiscount, discount, shipping, total};
+}
+
+function updateCart(){
+  const t = I18N[state.lang];
+  const items = $('#cartItems');
+  const totals = computeTotals();
+  $('#cartCount').textContent = totals.qty;
+
+  if(state.cart.length===0){
+    items.innerHTML = `<p class="text-center text-[color:var(--mute)] py-10">${t.empty}</p>`;
+  } else {
+    items.innerHTML = state.cart.map((it,i)=>`
+      <div class="flex gap-3 pb-4 border-b hairline">
+        <div class="w-16 h-20 bg-[color:var(--paper)] flex-shrink-0 overflow-hidden">
+          <img src="${it.img}" class="w-full h-full object-cover" onerror="this.style.display='none'"/>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between gap-2">
+            <div class="min-w-0">
+              <div class="font-medium truncate">${it.brand} <span class="text-[10px] tracking-[.12em] text-[color:var(--mute)] font-normal">[${it.sku||''}]</span></div>
+              <div class="text-xs text-[color:var(--mute)]">${it.sub} · ${it.color||'—'} · ${it.size}</div>
+            </div>
+            <button class="text-xs text-[color:var(--mute)] hover:text-[color:var(--accent)]" data-rm="${i}">${t.remove}</button>
+          </div>
+          <div class="flex items-center justify-between mt-3">
+            <div class="inline-flex items-center border hairline">
+              <button class="px-2.5 py-1" data-dec="${i}">−</button>
+              <span class="px-3 text-sm">${it.qty}</span>
+              <button class="px-2.5 py-1" data-inc="${i}">+</button>
+            </div>
+            <div class="text-sm">${fmt(UNIT_PRICE * it.qty)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    items.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>changeQty(+b.dataset.inc,+1));
+    items.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>changeQty(+b.dataset.dec,-1));
+    items.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ state.cart.splice(+b.dataset.rm,1); updateCart(); });
+  }
+
+  $('#sumSub').textContent  = fmt(totals.sub);
+  $('#sumShip').textContent = totals.shipping===0 && totals.qty>0 ? t.free : fmt(totals.shipping);
+  $('#sumTotal').textContent= fmt(totals.total);
+
+  // Bulk discount row
+  if(totals.bulkDiscount > 0){
+    $('#discRow').style.display='flex';
+    $('#sumDisc').textContent = '− ' + fmt(totals.bulkDiscount);
+    $('#bulkHint').textContent = t.free + ' ✓';
+  } else {
+    $('#discRow').style.display='none';
+    $('#bulkHint').textContent = t.bulkHint;
+  }
+
+  // Coupon discount row
+  if(totals.couponDiscount > 0){
+    $('#couponDiscRow').style.display='flex';
+    $('#sumCouponDisc').textContent = '− ' + fmt(totals.couponDiscount);
+  } else {
+    $('#couponDiscRow').style.display='none';
+  }
+
+  // Show/hide coupon + payment sections
+  const cs = $('#couponSection');
+  const ps = $('#paySection');
+  if(state.cart.length > 0){ cs.classList.remove('hidden'); ps.classList.remove('hidden'); }
+  else { cs.classList.add('hidden'); ps.classList.add('hidden'); removeCoupon(true); }
+
+  $('#checkoutBtn').disabled = state.cart.length===0;
+  updateBulkBar();
+  if(window.updateMobileBar) updateMobileBar();
+}
+
+/* =================== COUPON LOGIC =================== */
+function applyCoupon(){
+  const raw   = ($('#couponInput').value || '').trim().toUpperCase();
+  const t     = I18N[state.lang];
+  const err   = $('#couponError');
+  if(!raw) return;
+
+  // Check validity + expiry
+  const today = new Date().toISOString().slice(0,10);
+  const found = COUPONS.find(c => c.code === raw && (!c.expires || c.expires >= today));
+
+  if(!found){
+    err.classList.remove('hidden');
+    $('#couponInput').focus();
+    return;
+  }
+  // Apply
+  state.coupon = found;
+  err.classList.add('hidden');
+  $('#couponInputWrap').classList.add('hidden');
+  $('#couponAppliedWrap').classList.remove('hidden');
+  $('#couponAppliedWrap').classList.add('flex');
+  const discText = found.type==='percent' ? `${found.value}%` : fmt(found.value);
+  $('#couponAppliedLabel').textContent = t.couponApplied(found.code, discText);
+  updateCart();
+}
+
+function removeCoupon(silent=false){
+  state.coupon = null;
+  if(!silent){
+    $('#couponInput').value = '';
+    $('#couponError').classList.add('hidden');
+  }
+  $('#couponInputWrap').classList.remove('hidden');
+  $('#couponAppliedWrap').classList.add('hidden');
+  $('#couponAppliedWrap').classList.remove('flex');
+  if(!silent) updateCart();
+}
+
+/* =================== DRAWERS / MODALS =================== */
+function openCart(){ $('#cartOverlay').classList.remove('hidden'); $('#cartDrawer').classList.add('open'); }
+function closeCart(){ $('#cartOverlay').classList.add('hidden'); $('#cartDrawer').classList.remove('open'); }
+function openCheckout(){
+  const t = I18N[state.lang]; const tot = computeTotals();
+  $('#coSub').textContent  = fmt(tot.sub);
+  $('#coShip').textContent = tot.shipping===0 && tot.qty>0 ? t.free : fmt(tot.shipping);
+  $('#coTotal').textContent= fmt(tot.total);
+  // Bulk discount
+  if(tot.bulkDiscount > 0){ $('#coDiscRow').style.display='flex'; $('#coDisc').textContent='− '+fmt(tot.bulkDiscount); }
+  else { $('#coDiscRow').style.display='none'; }
+  // Coupon discount
+  if(tot.couponDiscount > 0){ $('#coCouponDiscRow').style.display='flex'; $('#coCouponDisc').textContent='− '+fmt(tot.couponDiscount); }
+  else { $('#coCouponDiscRow').style.display='none'; }
+  const cm = $('#checkoutModal');
+  cm.classList.remove('modal-enter','hidden');
+  cm.classList.add('flex');
+  void cm.offsetWidth; // force reflow so animation restarts
+  cm.classList.add('modal-enter');
+  $('#checkoutOverlay').classList.remove('hidden');
+}
+function closeCheckout(){ $('#checkoutOverlay').classList.add('hidden'); $('#checkoutModal').classList.add('hidden'); $('#checkoutModal').classList.remove('flex'); }
+
+/* =================== I18N APPLY =================== */
+function applyLang(lang){
+  state.lang = lang;
+  const t = I18N[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+  $$('[data-i18n]').forEach(el=>{
+    const k = el.dataset.i18n; if(t[k]!==undefined && typeof t[k]==='string') el.textContent = t[k];
+  });
+  $$('[data-i18n-placeholder]').forEach(el=>{
+    const k = el.dataset.i18nPlaceholder; if(t[k]) el.placeholder = t[k];
+  });
+  $$('.lang-btn').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+  renderFilters();
+  renderProducts();
+  updateCart();
+}
+
+/* =================== EVENTS =================== */
+$('#cartBtn').onclick = openCart;
+$('#cartClose').onclick = closeCart;
+$('#cartOverlay').onclick = closeCart;
+$('#checkoutBtn').onclick = ()=>{ closeCart(); openCheckout(); };
+$('#couponApplyBtn').onclick = applyCoupon;
+$('#couponRemoveBtn').onclick = ()=>removeCoupon(false);
+$('#couponInput').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); applyCoupon(); } });
+$('#couponInput').addEventListener('input', ()=>$('#couponError').classList.add('hidden'));
+
+// Payment method — COD is always active; online is disabled until further notice
+$('#payCOD').onclick = ()=>{
+  $('#payCOD').classList.add('active');
+};
+$('#payOnline').onclick = e=>{ e.preventDefault(); /* disabled */ };
+$('#coClose').onclick = closeCheckout;
+$('#checkoutOverlay').onclick = closeCheckout;
+
+/* =================== FORM VALIDATION =================== */
+function validateForm(fd){
+  const t = I18N[state.lang];
+  let valid = true;
+
+  // ── helpers ──
+  const fields = [
+    { id:'coNameInp',  errId:'errName',  key:'valName',     rule: v => v.trim().length >= 2 },
+    { id:'coProvInp',  errId:'errProv',  key:'valProv',     rule: v => v.trim() !== '' },
+    { id:'coAreaInp',  errId:'errArea',  key:'valArea',     rule: v => v.trim().length >= 2 },
+    { id:'coAddrInp',  errId:'errAddr',  key:'valAddr',     rule: v => v.trim().length >= 3 },
+    { id:'coPhoneInp', errId:'errPhone', key:'valPhone',    rule: v => v.trim().length >= 5 },
+  ];
+
+  // Clear previous errors
+  document.querySelectorAll('#coForm .field-error-msg').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('#coForm .field-error-input').forEach(el => el.classList.remove('field-error-input'));
+
+  fields.forEach(({id, errId, key, rule}) => {
+    const el  = document.getElementById(id);
+    const val = el ? el.value : '';
+    if(!rule(val)){
+      // Show error message
+      const errEl = document.getElementById(errId);
+      if(errEl){
+        const span = errEl.querySelector('[data-i18n]');
+        if(span && t[key]) span.textContent = t[key];
+        errEl.classList.add('show');
+      }
+      if(el) el.classList.add('field-error-input');
+      valid = false;
+    }
+  });
+
+  // Extra phone format check (07XXXXXXXXX = 11 digits starting with 07)
+  const phoneVal = (document.getElementById('coPhoneInp')?.value || '').trim().replace(/\s/g,'');
+  if(phoneVal.length > 0 && !/^07\d{9}$/.test(phoneVal)){
+    const errEl = document.getElementById('errPhone');
+    const span  = errEl?.querySelector('[data-i18n]');
+    if(span) span.textContent = t.valPhoneFmt || t.valPhone;
+    errEl?.classList.add('show');
+    document.getElementById('coPhoneInp')?.classList.add('field-error-input');
+    valid = false;
+  }
+
+  // Scroll to first error
+  if(!valid){
+    const firstErr = document.querySelector('#coForm .field-error-input');
+    firstErr?.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  return valid;
+}
+
+// Clear error on input/change
+['coNameInp','coProvInp','coAreaInp','coAddrInp','coPhoneInp'].forEach(id => {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const event = el.tagName === 'SELECT' ? 'change' : 'input';
+  el.addEventListener(event, ()=>{
+    el.classList.remove('field-error-input');
+    // Find and hide associated error
+    const wrap = el.closest('.field-wrap');
+    wrap?.querySelector('.field-error-msg')?.classList.remove('show');
+  });
+});
+
+$('#coForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const fd   = new FormData(e.target);
+
+  // ── Custom validation — stop if any required field is empty/invalid ──
+  if(!validateForm(fd)) return;
+
+  const name = fd.get('name');
+  const t    = I18N[state.lang];
+  const tot  = computeTotals();
+
+  /* ---- Build WhatsApp message ---- */
+  const nl   = '%0A';   // URL-encoded newline
+  const bold = s => `*${s}*`;
+
+  const itemLines = state.cart
+    .map(i => `  • ${i.brand} [${i.sku||''}] — ${i.color||''} / ${i.size} × ${i.qty} = ${fmt(UNIT_PRICE*i.qty)}`)
+    .join(nl);
+
+  const discLine = tot.bulkDiscount > 0
+    ? `${nl}🎁 Bulk discount (30K/piece): -${fmt(tot.bulkDiscount)}`
+    : '';
+
+  const couponLine = (state.coupon && tot.couponDiscount > 0)
+    ? `${nl}🏷️ Coupon (${state.coupon.code}): -${fmt(tot.couponDiscount)}`
+    : '';
+
+  const shippingLine = tot.shipping === 0
+    ? `🚚 Delivery: Free`
+    : `🚚 Delivery: ${fmt(tot.shipping)}`;
+
+  const payLabel = I18N[state.lang].payWhatsApp || 'Cash on Delivery';
+
+  const msg =
+    `🛍️ ${bold('New SizeMe Order')}${nl}${nl}`+
+    `👤 ${bold('Name')}: ${fd.get('name')}${nl}`+
+    `📞 ${bold('Phone')}: ${fd.get('phone')}${nl}`+
+    `📍 ${bold('Province')}: ${fd.get('province')}${nl}`+
+    `🏘️ ${bold('Area')}: ${fd.get('area')}${nl}`+
+    `🏠 ${bold('Address')}: ${fd.get('address')}${nl}`+
+    (fd.get('notes') ? `📝 ${bold('Notes')}: ${fd.get('notes')}${nl}` : '')+
+    `💳 ${bold('Payment')}: ${payLabel}${nl}`+
+    `${nl}${bold('Items')}:${nl}${itemLines}${nl}`+
+    `${nl}💵 Subtotal: ${fmt(tot.sub)}`+
+    `${discLine}${couponLine}${nl}`+
+    `${shippingLine}${nl}`+
+    `${bold('💰 Total: ')}${fmt(tot.total)}`;
+
+  /* ---- Show confirmation first, then open WhatsApp ---- */
+  $('#cfMsg').textContent = t.cfBody(name);
+  closeCheckout();
+  $('#confirmOverlay').classList.remove('hidden');
+  $('#confirmModal').classList.remove('hidden');
+  $('#confirmModal').classList.add('flex');
+
+  /* Open WhatsApp after a short delay so modal renders first */
+  setTimeout(()=>{
+    window.open(`https://wa.me/9647739334545?text=${msg}`, '_blank');
+  }, 600);
+
+  /* Reset cart + coupon */
+  state.cart = []; removeCoupon(true); updateCart();
+  e.target.reset();
+});
+$('#cfClose').onclick = ()=>{ $('#confirmOverlay').classList.add('hidden'); $('#confirmModal').classList.add('hidden'); $('#confirmModal').classList.remove('flex'); };
+$('#confirmOverlay').onclick = ()=>$('#cfClose').click();
+
+$$('.lang-btn').forEach(b=>b.addEventListener('click',()=>applyLang(b.dataset.lang)));
+
+/* =================== SUGGESTION POPUP =================== */
+function openSugg(){ $('#suggOverlay').classList.remove('hidden'); $('#suggModal').classList.remove('hidden'); $('#suggModal').classList.add('flex'); }
+function closeSugg(){ $('#suggOverlay').classList.add('hidden'); $('#suggModal').classList.add('hidden'); $('#suggModal').classList.remove('flex'); }
+$('#suggBtn').onclick   = openSugg;
+$('#suggClose').onclick = closeSugg;
+$('#suggOverlay').onclick = closeSugg;
+$('#suggSend').onclick = ()=>{
+  const txt = $('#suggText').value.trim();
+  if(!txt) return;
+  window.open(`https://wa.me/9647739334545?text=${encodeURIComponent('اقتراح جديد: ' + txt)}`, '_blank');
+  $('#suggText').value = '';
+  closeSugg();
+};
+
+/* =================== REVIEWS POPUP =================== */
+const MAX_REVIEWS = 30;
+let rvIdx = 0, rvTotal = 0;
+
+function openReviews(){
+  $('#reviewsOverlay').classList.remove('hidden');
+  $('#reviewsModal').classList.remove('hidden');
+  $('#reviewsModal').classList.add('flex');
+
+  const track = $('#reviewsTrack');
+  const dots  = $('#reviewsDots');
+  const empty = $('#reviewsEmpty');
+  track.innerHTML = '';
+  dots.innerHTML  = '';
+  rvIdx = 0; rvTotal = 0;
+
+  /* probe reviews/1.jpg|jpeg … reviews/MAX_REVIEWS.jpg|jpeg */
+  const EXTS = ['jpg','jpeg','JPG','JPEG','png','PNG','webp'];
+  let done = 0, totalProbes = MAX_REVIEWS * EXTS.length;
+  const found = [];
+  const seen  = new Set();
+  for(let i=1; i<=MAX_REVIEWS; i++){
+    EXTS.forEach(ext=>{
+      (function(n, e){
+        const img = new Image();
+        img.onload = ()=>{
+          if(!seen.has(n)){ seen.add(n); found.push({n, src:img.src}); }
+          finish();
+        };
+        img.onerror = ()=>{ finish(); };
+        img.src = `reviews/${n}.${e}`;
+      })(i, ext);
+    });
+  }
+  function finish(){
+    if(++done < totalProbes) return;
+    found.sort((a,b)=>a.n-b.n);
+    rvTotal = found.length;
+    if(rvTotal===0){ empty.classList.remove('hidden'); track.parentElement.querySelector('.slider-arrow').style.display='none'; return; }
+    empty.classList.add('hidden');
+    found.forEach((f,i)=>{
+      const slide = document.createElement('div');
+      slide.className='slide flex items-center justify-center bg-black';
+      slide.style.minWidth='100%';
+      const img = document.createElement('img');
+      img.src=f.src; img.style.cssText='max-height:70vh;max-width:100%;object-fit:contain;';
+      slide.appendChild(img);
+      track.appendChild(slide);
+      const dot=document.createElement('span'); dot.className='sdot'+(i===0?' active':'');
+      dots.appendChild(dot);
+    });
+    rvGoTo(0);
+  }
+}
+function rvGoTo(idx){
+  const slides = $('#reviewsTrack').querySelectorAll('.slide');
+  idx = Math.max(0, Math.min(idx, slides.length-1));
+  rvIdx = idx;
+  const isRTL = document.documentElement.dir==='rtl';
+  $('#reviewsTrack').style.transform = `translateX(${isRTL?'':'-'}${idx*100}%)`;
+  $('#reviewsDots').querySelectorAll('.sdot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+}
+function closeReviews(){ $('#reviewsOverlay').classList.add('hidden'); $('#reviewsModal').classList.add('hidden'); $('#reviewsModal').classList.remove('flex'); }
+$('#reviewsBtn').onclick     = openReviews;
+$('#reviewsClose').onclick   = closeReviews;
+$('#reviewsOverlay').onclick = closeReviews;
+$('#rvPrev').onclick = ()=>rvGoTo(rvIdx-1);
+$('#rvNext').onclick = ()=>rvGoTo(rvIdx+1);
+$('#reviewsDots').addEventListener('click', e=>{
+  const d=e.target.closest('.sdot'); if(!d) return;
+  rvGoTo([...$('#reviewsDots').querySelectorAll('.sdot')].indexOf(d));
+});
+
+/* =================== INIT =================== */
+applyLang('ar');
+updateCart();
+
+/* hide video fallback when video has real source loaded */
+const vid = $('#heroVideo');
+vid.addEventListener('loadeddata', ()=>{ $('#videoFallback').style.display='none'; });
+vid.addEventListener('error', ()=>{ /* keep fallback */ });
+
+/* =====================================================
+   PREMIUM ANIMATIONS — JavaScript Engine
+   Framer Motion equivalent for vanilla HTML/JS
+   ===================================================== */
+
+/* ── 1. Scroll-reveal IntersectionObserver (whileInView) ── */
+(function initRevealObserver(){
+  if(!('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        io.unobserve(e.target);
+      }
+    });
+  },{ threshold:0.08, rootMargin:'0px 0px -36px 0px' });
+
+  window._revealObserver = io;
+  window.observeRevealElements = function(){
+    document.querySelectorAll('.reveal:not(.in-view)').forEach(el=>io.observe(el));
+  };
+  // observe immediately for elements already in DOM
+  window.observeRevealElements();
+})();
+
+/* ── 2. Ripple wave on every .btn-ink and .btn-outline click (whileTap) ── */
+function addRipple(btn, e){
+  const wave = document.createElement('span');
+  wave.className = 'ripple-wave';
+  const r = btn.getBoundingClientRect();
+  wave.style.cssText = `left:${(e.clientX - r.left - 5)}px;top:${(e.clientY - r.top - 5)}px;`;
+  btn.appendChild(wave);
+  wave.addEventListener('animationend', ()=>wave.remove(), {once:true});
+}
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('.btn-ink, .btn-outline');
+  if(btn) addRipple(btn, e);
+}, true);
+
+/* ── 3. Cart badge bounce ── */
+function bounceCartCount(){
+  const el = $('#cartCount');
+  if(!el) return;
+  el.classList.remove('badge-pop');
+  void el.offsetWidth; // force reflow → restart animation
+  el.classList.add('badge-pop');
+  el.addEventListener('animationend', ()=>el.classList.remove('badge-pop'), {once:true});
+}
+
+/* ── 4. Toast notification (add-to-bag confirmation) ── */
+let _toastTimer = null;
+function showToast(msg){
+  const toast = document.getElementById('sm-toast');
+  if(!toast) return;
+  toast.textContent = msg;
+  clearTimeout(_toastTimer);
+  toast.classList.add('show');
+  _toastTimer = setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+/* ── 5. Add-to-bag flash animation on the button ── */
+function flashAddBtn(btn){
+  if(!btn) return;
+  btn.classList.remove('add-flash');
+  void btn.offsetWidth;
+  btn.classList.add('add-flash');
+  btn.addEventListener('animationend', ()=>btn.classList.remove('add-flash'), {once:true});
+}
+
+/* ── 6. Mobile floating cart bar ── */
+function updateMobileBar(){
+  const bar    = document.getElementById('mobileBar');
+  const qtyEl  = document.getElementById('mbarQty');
+  const totEl  = document.getElementById('mbarTotal');
+  if(!bar) return;
+  const tot = computeTotals();
+  if(tot.qty > 0){
+    bar.classList.add('show');
+    if(qtyEl) qtyEl.textContent = tot.qty;
+    if(totEl) totEl.textContent = fmt(tot.total);
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+/* expose all as globals so guarded calls (window.fn) resolve */
+window.bounceCartCount  = bounceCartCount;
+window.showToast        = showToast;
+window.flashAddBtn      = flashAddBtn;
+window.updateMobileBar  = updateMobileBar;
+
+/* ── Skeleton Loader (21st.dev shimmer — 4 cards) ── */
+function showProductSkeleton(n){
+  n = n || 4;
+  $('#productGrid').innerHTML = Array.from({length:n}, ()=>`
+    <div class="skeleton-card">
+      <div class="skeleton-block" style="aspect-ratio:3/4;border-radius:0;"></div>
+      <div style="padding:1rem;">
+        <div class="skeleton-block" style="height:1.1rem;width:58%;margin-bottom:.5rem;"></div>
+        <div class="skeleton-block" style="height:.7rem;width:36%;margin-bottom:.9rem;"></div>
+        <div class="skeleton-block" style="height:2.5rem;width:100%;border-radius:0;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── Filter Sliding Indicator (21st.dev tab underline) ── */
+function moveFilterIndicator(containerId, activeEl){
+  const container = document.getElementById(containerId);
+  if(!container || !activeEl) return;
+  let ind = container.querySelector('.filter-indicator');
+  if(!ind){
+    ind = document.createElement('span');
+    ind.className = 'filter-indicator';
+    container.style.position = 'relative';
+    container.appendChild(ind);
+  }
+  /* use offsetLeft for RTL-safe positioning */
+  ind.style.left  = activeEl.offsetLeft + 'px';
+  ind.style.width = activeEl.offsetWidth + 'px';
+  ind.style.opacity = '1';
+}
+window.moveFilterIndicator = moveFilterIndicator;
+</script>
+</body>
+</html>
