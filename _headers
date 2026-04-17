@@ -1,0 +1,12 @@
+/*
+  # ملف _headers خاص بـ Netlify
+  # يُطبَّق على جميع الصفحات — يمنع Safari iOS من تقديم نسخة مؤقتة قديمة
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/*.html
+  Cache-Control: no-cache, no-store, must-revalidate

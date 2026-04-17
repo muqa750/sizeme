@@ -2,8 +2,34 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!-- Cache Control: Safari iOS يحترم هذه الـ meta tags لمنع تقديم نسخة قديمة -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma"        content="no-cache" />
+<meta http-equiv="Expires"       content="0" />
 <title>SIZEME</title>
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  CRITICAL: تطبيق اللغة المحفوظة قبل رسم أي CSS                 │
+  │  يجب أن يكون هذا السكريبت أول شيء بعد <meta> مباشرةً            │
+  │  لمنع وميض الاتجاه (RTL/LTR flash) على Safari iOS              │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<script>
+(function(){
+  try {
+    var lang = localStorage.getItem('sizeme_lang');
+    var valid = { ar:'rtl', en:'ltr', ku:'rtl' };
+    if(!lang || !valid[lang]) lang = 'ar';
+    document.documentElement.lang = lang;
+    document.documentElement.dir  = valid[lang];
+  } catch(e) {
+    /* localStorage غير متاح (وضع خاص) — نبقى على الافتراضي ar/rtl */
+    document.documentElement.lang = 'ar';
+    document.documentElement.dir  = 'rtl';
+  }
+})();
+</script>
 <meta name="description" content="SizeMe — Specialists in premium brand clothing, unique patterns, and specialized sizes (2XL–7XL)." />
 <link rel="icon" type="image/png" href="favicon.png" />
 <link rel="shortcut icon" type="image/png" href="favicon.png" />
@@ -107,23 +133,29 @@
       text-rendering          : optimizeLegibility;
     }
 
-    /* 2 ── Kill ALL letter-spacing on serif & display elements */
+    /* 2 ── Kill ALL letter-spacing — Arabic text cannot have inter-letter gaps */
     .serif,.brand-watermark,h1,h2,h3,h4{
       letter-spacing : 0 !important;
       word-spacing   : normal !important;
       width:100%;text-align:center;
     }
-    .kicker{ letter-spacing:.12em !important; }
+    /* Zero out every Tailwind tracking-* utility on mobile (tracking-[.3em], tracking-widest, etc.) */
+    [class*="tracking-"]{ letter-spacing:0 !important; }
+    /* Kicker: 0 spacing — Arabic connected script must not be spaced */
+    .kicker{ letter-spacing:0 !important; font-size:.75rem !important; }
     .product-card h3{ text-align:start; letter-spacing:0 !important; }
-    .size-card .lbl{ letter-spacing:0 !important; font-size:.82rem; }
-    .size-card .wt { letter-spacing:0 !important; font-size:.55rem; }
-    .product-card .text-sm.font-medium{ letter-spacing:0 !important; word-spacing:normal !important; }
+    /* Size card labels — slightly larger for readability */
+    .size-card .lbl{ letter-spacing:0 !important; font-size:.88rem; }
+    .size-card .wt { letter-spacing:0 !important; font-size:.62rem; }
+    .product-card .text-sm.font-medium{ letter-spacing:0 !important; word-spacing:normal !important; font-size:.82rem; }
     #bulkBarLabel{ font-size:.78rem; letter-spacing:0 !important; word-spacing:normal !important; }
     .serif.text-2xl{ letter-spacing:0 !important; word-spacing:normal !important; }
-    .marquee-track span{ font-size:.68rem; letter-spacing:0 !important; }
+    .marquee-track span{ font-size:.72rem; letter-spacing:0 !important; }
     #about h2{ letter-spacing:0 !important; font-size:clamp(1.6rem,6vw,3rem) !important; }
+    /* About points row — was tracking-[.3em], must be 0 for Arabic */
+    #about .text-xs{ letter-spacing:0 !important; font-size:.78rem !important; }
     #brandFilters .chip,#colorFilters .chip{
-      padding:.25rem .5rem;font-size:.68rem;letter-spacing:0 !important;
+      padding:.25rem .5rem;font-size:.72rem;letter-spacing:0 !important;
     }
 
     /* 3 ── Grid: tighter gaps */
@@ -140,6 +172,17 @@
 
     /* 6 ── Slider arrows always visible on touch */
     .slider-arrow{ opacity:.8 !important; width:24px; height:24px; }
+
+    /* 6b ── Product images: show full garment instead of cropping/zooming
+             object-fit:contain keeps the whole shirt visible with warm bg fill
+             aspect-ratio loosened slightly so 2-column cards aren't too tall   */
+    .product-img{ aspect-ratio:4/5 !important; }
+    .product-img img,
+    .slide img{
+      object-fit    : contain !important;
+      object-position: center top !important;
+      background    : #f2ece2;
+    }
 
     /* 7 ── New-badge mobile */
     .new-badge{ letter-spacing:0 !important; font-size:.48rem !important; padding:2px 5px !important; }
@@ -171,13 +214,57 @@
     /* 14 ── Add-to-bag button: remove wide tracking & correct font size */
     .product-card [data-role="add"]{ letter-spacing:0 !important; font-size:.8rem !important; }
 
-    /* 15 ── Equal card heights: make all add-buttons sit at the same Y
-              .product-card   → flex column so image + info stack cleanly
-              .p-4 info div  → grows to fill remaining card height
-              [data-role=add] → pushed to the very bottom with margin-top:auto  */
+    /* 15 ── Equal card heights: make all add-buttons sit at the same Y */
     .product-card{ display:flex !important; flex-direction:column !important; }
     .product-card .p-4{ flex:1 !important; display:flex !important; flex-direction:column !important; }
     .product-card [data-role="add"]{ margin-top:auto !important; }
+
+    /* 16 ── تقليل المسافات بين الأقسام إلى النصف */
+    #about      { padding-top:2.5rem !important; padding-bottom:2.5rem !important; }
+    #shop       { padding-top:2rem   !important; padding-bottom:2rem   !important; }
+    #contact    { padding-top:2rem   !important; padding-bottom:2rem   !important; }
+    #guarantee > div{ padding-top:2rem !important; padding-bottom:2rem !important; }
+    #shop > .flex.items-end.justify-between{ margin-bottom:1rem !important; }
+    #shop > .mb-8.space-y-4{ margin-bottom:1rem !important; }
+
+    /* 17 ── فلاتر الماركة واللون — تمرير أفقي سلس بدلاً من الالتفاف */
+    #brandFilters, #colorFilters{
+      flex-wrap              : nowrap !important;
+      overflow-x             : auto   !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width        : none;
+      padding-bottom         : 4px;
+      max-width              : calc(100vw - 6rem);
+    }
+    #brandFilters::-webkit-scrollbar,
+    #colorFilters::-webkit-scrollbar{ display:none; }
+    /* تسمية الفلتر تبقى ثابتة لا تتمرر */
+    #brandFilters + span,
+    #colorFilters + span{ flex-shrink:0; }
+
+    /* 18 ── ضبط الخطوط الصغيرة — أوضح للقراءة */
+    /* اسم المنتج الفرعي داخل البطاقة — كان 11 بكسل وهو صغير جداً */
+    .product-card .text-\[11px\]{ font-size:.78rem !important; }
+    /* نص شريط الثقة */
+    .trust-strip .serif,
+    section.border-y .serif{ font-size:1.2rem !important; }
+    /* تسمية القسم العلوية */
+    .shop-count{ font-size:.78rem !important; }
+
+    /* 19 ── إصلاح زر "إتمام الطلب" في Safari iOS
+             env(safe-area-inset-bottom) = المسافة بين المحتوى وحافة الشاشة
+             يضمن ظهور الزر فوق شريط المتصفح دائماً */
+    #cartDrawer > div:last-child{
+      padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 20px)) !important;
+    }
+    /* شريط السلة المتحرك — نفس المعالجة */
+    #mobileBar{
+      padding-bottom: calc(.9rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    /* نافذة الطلب — تأخذ الارتفاع الكامل مع الحساب الصحيح */
+    #checkoutModal .bg-white{
+      max-height: calc(100dvh - env(safe-area-inset-top, 0px)) !important;
+    }
   }
   /* ── end mobile fixes ── */
 
@@ -318,6 +405,27 @@
     opacity:1; transform:translate(-50%, 0) scale(1);
   }
   @media(max-width:768px){ #sm-toast{ bottom:5.5rem; } }
+
+  /* =====================================================
+     زر واتساب الثابت
+     ===================================================== */
+  #waFloat{
+    display     : none; /* مخفي على الحاسوب */
+    position    : fixed;
+    bottom      : 90px; /* فوق شريط السلة المتحرك */
+    inset-inline-end: 14px; /* RTL-aware — يظهر على اليمين عربي واليسار إنجليزي */
+    width:54px; height:54px;
+    border-radius: 50%;
+    background  : #25D366;
+    align-items : center;
+    justify-content: center;
+    box-shadow  : 0 4px 18px rgba(37,211,102,.5);
+    z-index     : 43;
+    transition  : transform .2s var(--spring), box-shadow .2s;
+    text-decoration: none;
+  }
+  #waFloat:active{ transform:scale(0.91); box-shadow:0 2px 8px rgba(37,211,102,.3); }
+  @media(max-width:768px){ #waFloat{ display:flex; } }
 
   /* ── Mobile floating checkout bar ── */
   #mobileBar{
@@ -636,7 +744,7 @@
 </section>
 
 <!-- ================= GUARANTEE ================= -->
-<section class="bg-[color:var(--ink)] text-white">
+<section id="guarantee" class="bg-[color:var(--ink)] text-white">
   <div class="max-w-4xl mx-auto px-5 py-16 text-center">
     <p class="kicker text-white/50" data-i18n="gKicker">Promise</p>
     <h3 class="serif text-3xl md:text-4xl mt-3" data-i18n="gTitle">Replacement guarantee if the size doesn't fit.</h3>
@@ -926,6 +1034,14 @@
 
 <!-- ================= TOAST NOTIFICATION ================= -->
 <div id="sm-toast" role="status" aria-live="polite"></div>
+
+<!-- ================= زر واتساب ثابت — جوال فقط ================= -->
+<a id="waFloat" href="https://wa.me/9647739334545" target="_blank" rel="noopener noreferrer" aria-label="تواصل عبر واتساب">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.553 4.103 1.522 5.828L.043 23.757a.5.5 0 00.607.65l6.077-1.592A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.876 9.876 0 01-5.031-1.374l-.36-.214-3.733.979.995-3.638-.234-.374A9.856 9.856 0 012.118 12C2.118 6.535 6.535 2.118 12 2.118c5.464 0 9.882 4.417 9.882 9.882 0 5.464-4.418 9.882-9.882 9.882z"/>
+  </svg>
+</a>
 
 <!-- ================= MOBILE FLOATING CART BAR ================= -->
 <div id="mobileBar" role="complementary">
@@ -1768,10 +1884,15 @@ function closeCheckout(){ $('#checkoutOverlay').classList.add('hidden'); $('#che
 
 /* =================== I18N APPLY =================== */
 function applyLang(lang){
+  /* ── 1. حفظ اختيار اللغة في localStorage مع معالجة وضع Safari الخاص ── */
+  try { localStorage.setItem('sizeme_lang', lang); } catch(e) { /* وضع خاص — نكمل بدون حفظ */ }
+
   state.lang = lang;
   const t = I18N[lang];
+
+  /* ── 2. تحديث وسمَي lang و dir على <html> فوراً ── */
   document.documentElement.lang = lang;
-  document.documentElement.dir = t.dir;
+  document.documentElement.dir  = t.dir;
   $$('[data-i18n]').forEach(el=>{
     const k = el.dataset.i18n; if(t[k]!==undefined && typeof t[k]==='string') el.textContent = t[k];
   });
@@ -2025,8 +2146,37 @@ $('#reviewsDots').addEventListener('click', e=>{
 });
 
 /* =================== INIT =================== */
-applyLang('ar');
+
+/*
+ * استعادة اللغة المحفوظة عند تحميل الصفحة
+ * الأولوية: localStorage → الافتراضي 'ar'
+ */
+(function initLang(){
+  var saved = 'ar';
+  try {
+    var v = localStorage.getItem('sizeme_lang');
+    if(v && I18N[v]) saved = v;
+  } catch(e) {}
+  applyLang(saved);
+})();
+
 updateCart();
+
+/*
+ * ── معالجة BFCache (Back-Forward Cache) في Safari iOS ──────────────────
+ * Safari يحفظ الصفحة في الذاكرة عند الضغط على "رجوع"
+ * الصفحة تعود دون إعادة تشغيل JS — لذلك نعيد تطبيق اللغة يدوياً
+ * عبر حدث pageshow مع التحقق من الخاصية e.persisted
+ */
+window.addEventListener('pageshow', function(e){
+  if(!e.persisted) return; /* تحميل عادي — لا شيء مطلوب */
+  var saved = 'ar';
+  try {
+    var v = localStorage.getItem('sizeme_lang');
+    if(v && I18N[v]) saved = v;
+  } catch(err) {}
+  applyLang(saved);
+});
 
 /* hide video fallback when video has real source loaded */
 const vid = $('#heroVideo');
