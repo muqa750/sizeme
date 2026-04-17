@@ -907,12 +907,9 @@
 <!-- ================= PRODUCT GRID ================= -->
 <section id="shop" class="max-w-7xl mx-auto px-5 py-16 md:py-24">
 
-  <!-- Header row -->
+  <!-- Header row — بدون عنوان "كل المنتجات" — كل فئة لها عنوانها المستقل أدناه -->
   <div class="flex items-end justify-between mb-8 flex-wrap gap-4">
-    <div>
-      <p class="kicker" data-i18n="shopKicker">The Collection</p>
-      <h2 class="serif text-3xl md:text-4xl mt-2" data-i18n="shopTitle">Men's T-Shirts</h2>
-    </div>
+    <p class="kicker" data-i18n="shopKicker">The Collection</p>
     <p class="text-sm text-[color:var(--mute)]" id="shopCount"></p>
   </div>
 
@@ -1593,37 +1590,38 @@ const PRODUCTS_META = {
   25: { sku:'MA-26',  imgKey:'massimo-dutti', brand:'MASSIMO DUTTI',  sub:'since 1985',    colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
   26: { sku:'ZA-27',  imgKey:'zara-Turkey',    brand:'ZARA',           sub:'turkey',        colors:[C.BRN,C.WHT,C.BLK], added:'2026-04-17' },
 
-  // ── فئة البولو (Polo) ──────────────────────────────────────────────
-  // imgDir: 'polo' → الصور في مجلد images/polo/
-  // لإضافة منتج بولو جديد: انسخ هذا السطر وغيّر الرقم والبيانات
-  27: { sku:'RL-28',  imgKey:'polo-rl',       brand:'RALPH LAUREN',   sub:'Polo Classic',  colors:[C.BLK,C.WHT,C.RBL], category:'polo',  imgDir:'polo',   added:'2026-04-17' },
+  // ── فئة البولو (Polo) — imagespolo/ ──────────────────────────────
+  // catSeq = رقم تسلسل خاص بهذا الملف (يبدأ من 01 مستقلاً عن التسلسل العام)
+  // صيغة الصورة: imagespolo/01-1-polo-rl.jpg
+  27: { sku:'RL-28',  imgKey:'polo-rl',    brand:'RALPH LAUREN', sub:'Polo Classic', colors:[C.BLK,C.WHT,C.RBL], category:'polo',  catSeq:'01', added:'2026-04-17' },
 
-  // ── فئة القميص (Shirt) ────────────────────────────────────────────
-  // imgDir: 'shirts' → الصور في مجلد images/shirts/
-  28: { sku:'HB-29',  imgKey:'shirt-boss',    brand:'HUGO BOSS',      sub:'Slim Fit',      colors:[C.BLK,C.WHT,C.RBL], category:'shirt', imgDir:'shirts' },
+  // ── فئة القميص (Shirt) — imagesshirts/ ────────────────────────────
+  // صيغة الصورة: imagesshirts/01-1-shirt-boss.jpg
+  28: { sku:'HB-29',  imgKey:'shirt-boss', brand:'HUGO BOSS',    sub:'Slim Fit',     colors:[C.BLK,C.WHT,C.RBL], category:'shirt', catSeq:'01' },
 
-  // ── فئة البنطرون (Jeans) ──────────────────────────────────────────
-  // imgDir: 'jeans' → الصور في مجلد images/jeans/
-  29: { sku:'LV-30',  imgKey:'jeans-lv',      brand:'LEVI\'S',        sub:'512 Slim',      colors:[C.BLK,C.DNV],        category:'jeans', imgDir:'jeans'  },
+  // ── فئة البنطرون (Jeans) — imagesjeans/ ──────────────────────────
+  // صيغة الصورة: imagesjeans/01-1-jeans-lv.jpg
+  29: { sku:'LV-30',  imgKey:'jeans-lv',   brand:'LEVI\'S',      sub:'512 Slim',     colors:[C.BLK,C.DNV],        category:'jeans', catSeq:'01' },
 
-  // ── مثال لإضافة منتج جديد ─────────────────────────────────────────
-  // 30: { sku:'XX-31', imgKey:'brand-key', brand:'BRAND', sub:'subtitle', colors:[C.BLK,C.WHT], category:'polo', imgDir:'polo' },
+  // ── مثال لإضافة منتج بولو جديد ──────────────────────────────────
+  // 30: { sku:'RL-31', imgKey:'polo-rl2', brand:'RALPH LAUREN', sub:'Polo Slim', colors:[C.BLK,C.WHT], category:'polo', catSeq:'02' },
 };
 
 // ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
 const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
-  const n      = TOTAL_PRODUCTS - i;                   // تنازلي: 29، 28، 27 ...
-  const prefix = String(n).padStart(2, '0');           // 29 → "29", 5 → "05"
+  const n      = TOTAL_PRODUCTS - i;                    // تنازلي: 29، 28، 27 ...
+  const prefix = String(n).padStart(2, '0');            // 29 → "29", 5 → "05"
   const m      = PRODUCTS_META[n] || { sku:`P-${prefix}`, imgKey:'product', brand:'SIZEME', sub:'New', colors:[C.BLK] };
   return {
-    id:`p${n}`, prefix,
-    sku     : m.sku    || `P-${prefix}`,
+    id      : `p${n}`,
+    prefix,
+    catSeq  : m.catSeq  || null,        // رقم تسلسل خاص بالمجلد (بولو/قميص/بنطرون)
+    sku     : m.sku     || `P-${prefix}`,
     imgKey  : m.imgKey,
-    imgDir  : m.imgDir || '',           // مجلد الصور (فارغ = images/ الرئيسي)
     brand   : m.brand,
     sub     : m.sub,
     colors  : m.colors,
-    category: m.category || 'tshirt',  // الفئة الافتراضية = تي شيرت
+    category: m.category || 'tshirt',   // الفئة الافتراضية = تي شيرت
   };
 });
 
@@ -1643,11 +1641,30 @@ const COUPONS = [
 ];
 // ─────────────────────────────────────────────────────────────────────
 
-/* generate image path for a product + sequence number */
+/*
+ * imgPath() — مسار صورة المنتج
+ * ─────────────────────────────────────────────────────────────────
+ * هيكل المجلدات الجديد (كل فئة في مجلدها المستقل):
+ *   imagestshirts/  ← التي شيرت   (التسلسل العام: 01-26)
+ *   imagespolo/     ← البولو       (تسلسل خاص يبدأ من 01)
+ *   imagesshirts/   ← القمصان     (تسلسل خاص يبدأ من 01)
+ *   imagesjeans/    ← البنطرون    (تسلسل خاص يبدأ من 01)
+ *
+ * صيغة اسم الملف: {prefix}-{seq}-{imgKey}.jpg
+ *   مثال تي شيرت:   imagestshirts/01-1-lacoste-e33.jpg
+ *   مثال بولو:       imagespolo/01-1-polo-rl.jpg
+ * ─────────────────────────────────────────────────────────────────
+ */
+const IMG_FOLDERS = {
+  tshirt : 'imagestshirts',
+  polo   : 'imagespolo',
+  shirt  : 'imagesshirts',
+  jeans  : 'imagesjeans',
+};
 function imgPath(p, seq){
-  return p.imgDir
-    ? `images/${p.imgDir}/${p.prefix}-${seq}-${p.imgKey}.jpg`
-    : `images/${p.prefix}-${seq}-${p.imgKey}.jpg`;
+  const folder = IMG_FOLDERS[p.category] || 'imagestshirts';
+  const pfx    = p.catSeq || p.prefix;   // catSeq للمجلدات الجديدة، prefix للتي شيرت
+  return `${folder}/${pfx}-${seq}-${p.imgKey}.jpg`;
 }
 const SIZES = ['2XL','3XL','4XL','5XL','6XL','7XL'];
 const UNIT_PRICE      = 35000;
@@ -1667,11 +1684,11 @@ const CATEGORIES = [
 ];
 
 let state = {
-  lang   : 'ar',
-  cart   : [],        // {pid, brand, sub, img, color, size, qty}
-  filter : { brand:'all', color:'all' },
-  page   : 0,
-  coupon : null       // { code, type, value } — set by applyCoupon()
+  lang    : 'ar',
+  cart    : [],          // {pid, brand, sub, img, color, size, qty}
+  filter  : { brand:'all', color:'all' },
+  catPage : {},          // صفحة كل فئة مستقلة: { tshirt:0, polo:0, ... }
+  coupon  : null         // { code, type, value } — set by applyCoupon()
 };
 
 /* =================== HELPERS =================== */
@@ -1714,7 +1731,7 @@ function renderFilters(){
   bf.querySelectorAll('[data-brand]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       state.filter.brand = btn.dataset.brand;
-      state.page = 0;
+      state.catPage = {};   // إعادة ضبط صفحات كل الفئات عند تغيير الفلتر
       renderFilters();
       renderProducts();
     });
@@ -1737,7 +1754,7 @@ function renderFilters(){
   cf.querySelectorAll('[data-color]').forEach(el=>{
     el.addEventListener('click',()=>{
       state.filter.color = el.dataset.color;
-      state.page = 0;
+      state.catPage = {};   // إعادة ضبط صفحات كل الفئات عند تغيير الفلتر
       renderFilters();
       renderProducts();
     });
@@ -1820,8 +1837,34 @@ function renderCard(p, i){
     </article>`;
 }
 
+/* =================== PAGINATION PER CATEGORY =================== */
+const CAT_PAGE_SIZE = 12;   // عدد المنتجات في كل صفحة لكل فئة
+
+function renderCatPagination(catKey, page, pages, t){
+  if(pages <= 1) return '';
+  const cls = (active, disabled) =>
+    `cat-pg-btn w-10 h-10 text-sm rounded-none transition-all
+     ${active  ? 'bg-[color:var(--ink)] text-white border-[color:var(--ink)]'
+               : 'border hairline bg-white text-[color:var(--ink)] hover:border-[color:var(--ink)]'}
+     ${disabled ? 'opacity-30 pointer-events-none' : 'cursor-pointer'}`;
+  let html = `<div class="flex items-center justify-center gap-2 mt-8 flex-wrap">`;
+  html += `<button class="${cls(false, page===0)}" data-cat="${catKey}" data-pg="${page-1}">${t.pagePrev}</button>`;
+  const shown = new Set([0, pages-1, page, page-1, page+1].filter(n=>n>=0 && n<pages));
+  let prev = -1;
+  [...shown].sort((a,b)=>a-b).forEach(i=>{
+    if(prev >= 0 && i - prev > 1)
+      html += `<span class="w-10 h-10 flex items-center justify-center text-[color:var(--mute)]">…</span>`;
+    html += `<button class="${cls(i===page, false)}" data-cat="${catKey}" data-pg="${i}">${i+1}</button>`;
+    prev = i;
+  });
+  html += `<button class="${cls(false, page>=pages-1)}" data-cat="${catKey}" data-pg="${page+1}">${t.pageNext}</button>`;
+  html += `</div>`;
+  return html;
+}
+
+/* =================== RENDER PRODUCTS =================== */
 function renderProducts(){
-  /* ── Skeleton فوري ── */
+  /* ── Skeleton فوري حتى يُرسم DOM الحقيقي ── */
   showProductSkeleton(4);
 
   setTimeout(function(){
@@ -1829,10 +1872,10 @@ function renderProducts(){
     const all     = filteredProducts();
     const total   = all.length;
 
-    /* ── عداد المنتجات الكلي ── */
+    /* ── عداد المنتجات ── */
     $('#shopCount').textContent = t.shopCountFn(total, PRODUCTS.length);
 
-    /* ── إخفاء Pagination — المشروع الآن يعمل بالأقسام لا الصفحات ── */
+    /* ── pagination القديمة لا تُستخدم — أخلِ الحاوية ── */
     $('#pagination').innerHTML = '';
 
     const sections = $('#productSections');
@@ -1842,31 +1885,52 @@ function renderProducts(){
       return;
     }
 
-    /* ── رسم قسم لكل فئة بالترتيب المحدد في CATEGORIES ── */
+    /* ── بناء قسم لكل فئة بالترتيب (تي شيرت → بولو → بنطرون → قميص) ── */
     sections.innerHTML = CATEGORIES.map(cat => {
-      const catProds = all.filter(p => p.category === cat.key);
-      if(catProds.length === 0) return '';          /* أخفِ الفئة إن لم تُطابق الفلتر */
-      const label = cat.label[state.lang] || cat.label.ar;
+      const catAll = all.filter(p => p.category === cat.key);
+      if(catAll.length === 0) return '';
+
+      const label    = cat.label[state.lang] || cat.label.ar;
+      const pages    = Math.ceil(catAll.length / CAT_PAGE_SIZE);
+      const pg       = Math.min(state.catPage[cat.key] || 0, Math.max(0, pages - 1));
+      state.catPage[cat.key] = pg;
+      const slice    = catAll.slice(pg * CAT_PAGE_SIZE, pg * CAT_PAGE_SIZE + CAT_PAGE_SIZE);
+
+      /* عداد المنتجات بجانب عنوان القسم */
       const countLabel = state.lang === 'en'
-        ? `${catProds.length} ${catProds.length===1?'item':'items'}`
+        ? `${catAll.length} ${catAll.length===1?'item':'items'}`
         : state.lang === 'ku'
-          ? `${catProds.length} بەرهەم`
-          : `${catProds.length} منتج`;
+          ? `${catAll.length} بەرهەم`
+          : `${catAll.length} منتج`;
+
       return `
         <div class="category-section mb-14" id="cat-${cat.key}">
-          <!-- رأس القسم -->
           <div class="flex items-baseline gap-3 mb-5 pb-3 border-b hairline">
             <h3 class="serif text-2xl md:text-3xl">${label}</h3>
             <span class="text-sm text-[color:var(--mute)]">${countLabel}</span>
           </div>
-          <!-- شبكة المنتجات -->
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            ${catProds.map((p,i) => renderCard(p,i)).join('')}
+            ${slice.map((p,i) => renderCard(p,i)).join('')}
           </div>
+          ${renderCatPagination(cat.key, pg, pages, t)}
         </div>`;
     }).join('');
 
-    /* ── ربط تفاعلات البطاقات ── */
+    /* ── ربط أزرار Pagination لكل فئة ── */
+    $$('#productSections .cat-pg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cat = btn.dataset.cat;
+        state.catPage[cat] = +btn.dataset.pg;
+        renderProducts();
+        /* تمرير ناعم للقسم المُحدَّث بعد رسم DOM */
+        requestAnimationFrame(()=>{
+          const el = document.getElementById(`cat-${cat}`);
+          if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+        });
+      });
+    });
+
+    /* ── ربط تفاعلات بطاقات المنتجات ── */
     $$('#productSections .product-card').forEach(card=>{
       card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot=>{
         dot.addEventListener('click',()=>{
@@ -1882,7 +1946,7 @@ function renderProducts(){
       });
       const addBtn = card.querySelector('[data-role="add"]');
       addBtn?.addEventListener('click',()=>{
-        const p     = PRODUCTS.find(x=>x.id===card.dataset.pid);
+        const p   = PRODUCTS.find(x=>x.id===card.dataset.pid);
         const color = card.querySelector('[data-role="colors"] .active')?.dataset.color;
         const size  = card.querySelector('[data-role="sizes"] .active')?.dataset.size;
         const t2    = I18N[state.lang];
@@ -1893,17 +1957,17 @@ function renderProducts(){
       });
     });
 
-    /* ── تهيئة الـ Sliders + كشف التمرير بعد رسم DOM ── */
+    /* ── تهيئة السلايدر + كشف التمرير ── */
     requestAnimationFrame(()=>{ initSliders(); if(window.observeRevealElements) observeRevealElements(); });
 
-  }, 0); /* end setTimeout */
+  }, 0);
 }
 
 /* =================== SLIDER ENGINE =================== */
 const MAX_EXTRA_IMAGES = 6; // probe for up to 6 extra images per product
 
 function initSliders(){
-  $$('#productGrid .product-card').forEach(card=>{
+  $$('#productSections .product-card').forEach(card=>{
     const p       = PRODUCTS.find(x=>x.id===card.dataset.pid);
     if(!p) return;
     const wrap    = card.querySelector('.slider-wrap');
