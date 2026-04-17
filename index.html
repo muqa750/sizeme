@@ -2,7 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<!--
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  VIEWPORT — Mobile-First                                             │
+  │  maximum-scale=1  → يمنع الزوم التلقائي عند التركيز على الحقول     │
+  │  user-scalable=no → يمنع ازدواجية النقر (double-tap zoom) أندرويد  │
+  │  viewport-fit=cover → يستغل الشاشة الكاملة في آيفون (notch)        │
+  │  ملاحظة: font-size:16px على الـ inputs هو الحل الجذري على iOS       │
+  └──────────────────────────────────────────────────────────────────────┘
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <!-- Cache Control: Safari iOS يحترم هذه الـ meta tags لمنع تقديم نسخة قديمة -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma"        content="no-cache" />
@@ -40,11 +49,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
+    /* ── الألوان ── */
     --ink:#1a1a1a;
     --paper:#faf8f5;
-    --accent:#b8312e; /* Hermès-esque red */
+    --accent:#b8312e;
     --line:#e6e1d8;
     --mute:#7a736a;
+
+    /* ── نظام الخطوط الديناميكي (CSS Clamp)
+         الصيغة: clamp(أصغر_قيمة, قيمة_مرنة, أكبر_قيمة)
+         القيمة المرنة = نسبة من عرض الشاشة (vw)
+         النتيجة: حجم يتغير بسلاسة بين الجوال والحاسوب ── */
+    --fs-2xs : clamp(.55rem, 1.4vw, .65rem);   /* تسميات صغيرة جداً */
+    --fs-xs  : clamp(.65rem, 1.8vw, .75rem);   /* kicker / badge */
+    --fs-sm  : clamp(.75rem, 2.2vw, .875rem);  /* نصوص ثانوية */
+    --fs-base: clamp(.875rem, 2.5vw, 1rem);    /* النص الأساسي */
+    --fs-lg  : clamp(1rem, 3vw, 1.2rem);       /* عناوين صغيرة */
+    --fs-xl  : clamp(1.1rem, 3.5vw, 1.4rem);   /* عناوين متوسطة */
+    --fs-2xl : clamp(1.4rem, 4.5vw, 2rem);     /* عناوين الأقسام */
+    --fs-3xl : clamp(1.8rem, 6vw, 3rem);       /* عنوان Hero */
+    --fs-hero: clamp(2rem, 8vw, 4rem);         /* العنوان الرئيسي */
   }
   html,body{background:var(--paper);color:var(--ink);}
   body{font-family:'Inter','Tajawal',system-ui,-apple-system,sans-serif;}
@@ -126,108 +150,85 @@
      ===================================================== */
   @media (max-width: 768px) {
 
-    /* 1 ── Global font rendering */
+    /* ── M1: رسم الخطوط بدقة عالية ── */
     *,*::before,*::after{
       -webkit-font-smoothing  : antialiased;
       -moz-osx-font-smoothing : grayscale;
       text-rendering          : optimizeLegibility;
     }
 
-    /* 2 ── Kill ALL letter-spacing — Arabic text cannot have inter-letter gaps */
+    /* ── M2: إزالة المسافات بين الحروف — النص العربي لا يتحمل spacing ── */
     .serif,.brand-watermark,h1,h2,h3,h4{
       letter-spacing : 0 !important;
       word-spacing   : normal !important;
-      width:100%;text-align:center;
     }
-    /* Zero out every Tailwind tracking-* utility on mobile (tracking-[.3em], tracking-widest, etc.) */
-    [class*="tracking-"]{ letter-spacing:0 !important; }
-    /* Kicker: 0 spacing — Arabic connected script must not be spaced */
-    .kicker{ letter-spacing:0 !important; font-size:.75rem !important; }
-    .product-card h3{ text-align:start; letter-spacing:0 !important; }
-    /* Size card labels — slightly larger for readability */
-    .size-card .lbl{ letter-spacing:0 !important; font-size:.88rem; }
-    .size-card .wt { letter-spacing:0 !important; font-size:.62rem; }
-    .product-card .text-sm.font-medium{ letter-spacing:0 !important; word-spacing:normal !important; font-size:.82rem; }
-    #bulkBarLabel{ font-size:.78rem; letter-spacing:0 !important; word-spacing:normal !important; }
-    .serif.text-2xl{ letter-spacing:0 !important; word-spacing:normal !important; }
-    .marquee-track span{ font-size:.72rem; letter-spacing:0 !important; }
-    #about h2{ letter-spacing:0 !important; font-size:clamp(1.6rem,6vw,3rem) !important; }
-    /* About points row — was tracking-[.3em], must be 0 for Arabic */
-    #about .text-xs{ letter-spacing:0 !important; font-size:.78rem !important; }
-    #brandFilters .chip,#colorFilters .chip{
-      padding:.25rem .5rem;font-size:.72rem;letter-spacing:0 !important;
+    [class*="tracking-"]  { letter-spacing:0 !important; }
+    .kicker               { letter-spacing:0 !important; font-size:var(--fs-xs) !important; }
+    .product-card h3      { text-align:start; letter-spacing:0 !important; }
+    .size-card .lbl       { letter-spacing:0 !important; font-size:var(--fs-sm) !important; }
+    .size-card .wt        { letter-spacing:0 !important; font-size:var(--fs-2xs) !important; }
+    .product-card .text-sm.font-medium { letter-spacing:0 !important; font-size:var(--fs-sm) !important; }
+    #bulkBarLabel         { font-size:var(--fs-sm) !important; letter-spacing:0 !important; }
+    .marquee-track span   { font-size:var(--fs-xs) !important; letter-spacing:0 !important; }
+    #about h2             { letter-spacing:0 !important; font-size:var(--fs-3xl) !important; }
+    #about .text-xs       { letter-spacing:0 !important; font-size:var(--fs-xs) !important; }
+    #brandFilters .chip,
+    #colorFilters .chip   { padding:.25rem .5rem; font-size:var(--fs-xs) !important; letter-spacing:0 !important; }
+    .new-badge            { letter-spacing:0 !important; font-size:var(--fs-2xs) !important; padding:2px 5px !important; }
+    .product-card [data-role="add"] { letter-spacing:0 !important; font-size:var(--fs-sm) !important; }
+    .trust-strip .serif,
+    section.border-y .serif { font-size:var(--fs-xl) !important; }
+
+    /* ── M3: صور المنتجات — نسبة أبعاد أوسع للجوال لتُظهر القميص كاملاً ── */
+    .product-img{
+      aspect-ratio   : 4/5 !important;
+      /* contain موروث من الـ core — يضمن عدم الـ CLS */
+    }
+    .product-img img,
+    .slide img{
+      object-fit     : contain !important;
+      object-position: center top !important;
+      background     : #f2ece2;
     }
 
-    /* 3 ── Grid: tighter gaps */
-    #productGrid{ gap:10px !important; }
-
-    /* 4 ── Pagination */
-    #pagination button,#pagination span{ width:2rem !important;height:2rem !important;font-size:.75rem; }
-
-    /* 5 ── Forms & drawers */
-    #checkoutModal .bg-white{ max-height:100dvh;border-radius:0; }
-    #coForm input,#coForm select,#coForm textarea{ font-size:16px;letter-spacing:0 !important; }
+    /* ── M4: Drawers وForms ── */
+    #checkoutModal .bg-white{
+      max-height: calc(100dvh - env(safe-area-inset-top, 0px)) !important;
+      border-radius: 0;
+    }
+    /* جميع الـ inputs الموبايل — 16px يمنع iOS zoom */
+    input, select, textarea { font-size:16px !important; letter-spacing:0 !important; }
     #cartDrawer{ width:100% !important; }
     header img[alt="SizeMe"]{ height:2.2rem; }
 
-    /* 6 ── Slider arrows always visible on touch */
+    /* ── M5: Slider arrows دائماً ظاهرة على اللمس ── */
     .slider-arrow{ opacity:.8 !important; width:24px; height:24px; }
 
-    /* 6b ── Product images: show full garment instead of cropping/zooming
-             object-fit:contain keeps the whole shirt visible with warm bg fill
-             aspect-ratio loosened slightly so 2-column cards aren't too tall   */
-    .product-img{ aspect-ratio:4/5 !important; }
-    .product-img img,
-    .slide img{
-      object-fit    : contain !important;
-      object-position: center top !important;
-      background    : #f2ece2;
-    }
-
-    /* 7 ── New-badge mobile */
-    .new-badge{ letter-spacing:0 !important; font-size:.48rem !important; padding:2px 5px !important; }
-
-    /* 8 ── Product card color row with badge — prevent overflow */
-    .product-card .flex.items-center.justify-between{
-      gap:.35rem; flex-wrap:nowrap; align-items:center;
-    }
-    .product-card .kicker{ text-align:start !important; width:auto !important; }
-
-    /* 9 ── Skeleton cards on mobile */
-    .skeleton-card .skeleton-block{ animation-duration:1.6s; }
-
-    /* 10 ── Hide filter indicator on mobile (positional glitch on touch) */
-    .filter-indicator{ display:none !important; }
-
-    /* 11 ── Size card active: no scale to avoid overflow */
-    .size-card.active{ transform:none !important; }
-    .size-card:hover{ transform:none !important; }
-
-    /* 12 ── Glow focus: tighter shadow on small screens */
-    input:focus, textarea:focus, select:focus{
-      box-shadow:0 0 0 2px rgba(26,26,26,.07) !important;
-    }
-
-    /* 13 ── Price text: prevent flex-squish — "35,000 IQD" never wraps or cuts */
-    .product-card .whitespace-nowrap{ flex-shrink:0; }
-
-    /* 14 ── Add-to-bag button: remove wide tracking & correct font size */
-    .product-card [data-role="add"]{ letter-spacing:0 !important; font-size:.8rem !important; }
-
-    /* 15 ── Equal card heights: make all add-buttons sit at the same Y */
+    /* ── M6: بطاقات المنتجات — ارتفاع موحّد + زر في الأسفل دائماً ── */
     .product-card{ display:flex !important; flex-direction:column !important; }
     .product-card .p-4{ flex:1 !important; display:flex !important; flex-direction:column !important; }
     .product-card [data-role="add"]{ margin-top:auto !important; }
+    .product-card .whitespace-nowrap{ flex-shrink:0; }
+    .product-card .flex.items-center.justify-between{ gap:.35rem; flex-wrap:nowrap; }
+    .product-card .kicker{ text-align:start !important; width:auto !important; }
+    .product-card .text-\[11px\]{ font-size:var(--fs-sm) !important; }
 
-    /* 16 ── تقليل المسافات بين الأقسام إلى النصف */
-    #about      { padding-top:2.5rem !important; padding-bottom:2.5rem !important; }
-    #shop       { padding-top:2rem   !important; padding-bottom:2rem   !important; }
-    #contact    { padding-top:2rem   !important; padding-bottom:2rem   !important; }
+    /* ── M7: Size card — no scale on touch ── */
+    .size-card.active{ transform:none !important; }
+    .size-card:hover { transform:none !important; }
+
+    /* ── M8: Filter indicator مخفي (لا يعمل بشكل صحيح على اللمس) ── */
+    .filter-indicator{ display:none !important; }
+
+    /* ── M9: تقليل المسافات بين الأقسام ── */
+    #about   { padding-top:2.5rem !important; padding-bottom:2.5rem !important; }
+    #shop    { padding-top:2rem   !important; padding-bottom:2rem   !important; }
+    #contact { padding-top:2rem   !important; padding-bottom:2rem   !important; }
     #guarantee > div{ padding-top:2rem !important; padding-bottom:2rem !important; }
     #shop > .flex.items-end.justify-between{ margin-bottom:1rem !important; }
     #shop > .mb-8.space-y-4{ margin-bottom:1rem !important; }
 
-    /* 17 ── فلاتر الماركة واللون — تمرير أفقي سلس بدلاً من الالتفاف */
+    /* ── M10: فلاتر أفقية قابلة للتمرير ── */
     #brandFilters, #colorFilters{
       flex-wrap              : nowrap !important;
       overflow-x             : auto   !important;
@@ -238,37 +239,129 @@
     }
     #brandFilters::-webkit-scrollbar,
     #colorFilters::-webkit-scrollbar{ display:none; }
-    /* تسمية الفلتر تبقى ثابتة لا تتمرر */
-    #brandFilters + span,
-    #colorFilters + span{ flex-shrink:0; }
 
-    /* 18 ── ضبط الخطوط الصغيرة — أوضح للقراءة */
-    /* اسم المنتج الفرعي داخل البطاقة — كان 11 بكسل وهو صغير جداً */
-    .product-card .text-\[11px\]{ font-size:.78rem !important; }
-    /* نص شريط الثقة */
-    .trust-strip .serif,
-    section.border-y .serif{ font-size:1.2rem !important; }
-    /* تسمية القسم العلوية */
-    .shop-count{ font-size:.78rem !important; }
+    /* ── M11: Glow Focus — ظل خفيف على الشاشات الصغيرة ── */
+    input:focus, textarea:focus, select:focus{
+      box-shadow: 0 0 0 2px rgba(26,26,26,.07) !important;
+    }
 
-    /* 19 ── إصلاح زر "إتمام الطلب" في Safari iOS
-             env(safe-area-inset-bottom) = المسافة بين المحتوى وحافة الشاشة
-             يضمن ظهور الزر فوق شريط المتصفح دائماً */
+    /* ── M12: Skeleton ── */
+    .skeleton-card .skeleton-block{ animation-duration:1.6s; }
+
+    /* ── M13: Safe Area — Safari iOS browser bar ── */
     #cartDrawer > div:last-child{
       padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 20px)) !important;
     }
-    /* شريط السلة المتحرك — نفس المعالجة */
     #mobileBar{
       padding-bottom: calc(.9rem + env(safe-area-inset-bottom, 0px)) !important;
-    }
-    /* نافذة الطلب — تأخذ الارتفاع الكامل مع الحساب الصحيح */
-    #checkoutModal .bg-white{
-      max-height: calc(100dvh - env(safe-area-inset-top, 0px)) !important;
     }
   }
   /* ── end mobile fixes ── */
 
-  /* ── Hover effects: ONLY on real pointer devices (mouse/trackpad) — NOT mobile touch ──
+  /* =====================================================
+     MOBILE-FIRST CORE — يُطبَّق على جميع الأجهزة
+     ===================================================== */
+
+  /* ── 1. منع الزوم بازدواجية النقر على كل العناصر التفاعلية
+           touch-action:manipulation → يحذف تأخير 300ms ويمنع double-tap zoom
+           -webkit-tap-highlight-color → يزيل الهالة الزرقاء عند النقر (Safari/Chrome Mobile) ── */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  .chip,
+  .size-card,
+  .color-dot,
+  .product-img,
+  .slider-arrow,
+  .lang-btn,
+  [data-role],
+  label {
+    touch-action              : manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ── 2. منع تكبير النص التلقائي في Safari iOS
+           -webkit-text-size-adjust:100% يمنع Safari من رفع حجم الخط
+           تلقائياً عند تدوير الشاشة أو توسيعها ── */
+  html {
+    -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+  }
+
+  /* ── 3. الصور — منع CLS (Cumulative Layout Shift) تماماً
+           contain:layout paint → يخبر المتصفح بأبعاد العنصر قبل تحميل الصورة
+           بدونه يحدث "قفز" مفاجئ للمحتوى أسفل الصورة عند تحميلها ── */
+  .product-img {
+    aspect-ratio : 3/4;
+    overflow     : hidden;
+    contain      : layout paint;
+    position     : relative;
+    background   : #f2ece2;
+  }
+  .product-img img {
+    width          : 100%;
+    height         : 100%;
+    object-fit     : cover;
+    object-position: center top;
+    display        : block;
+    /* منع الزوم عند الضغط طويلاً على الصورة في Safari */
+    -webkit-user-drag  : none;
+    -webkit-user-select: none;
+            user-select: none;
+  }
+  /* فيديو Hero — نفس المعالجة لمنع الـ jump */
+  .hero-video-wrap {
+    aspect-ratio: 16/9;
+    contain     : layout;
+    overflow    : hidden;
+  }
+
+  /* ── 4. Safari iOS — إصلاحات خاصة بالمتصفح ── */
+
+  /* 4a. الـ sticky header: transform:translateZ(0) يُجبر Safari على رسمه
+          في طبقة compositing منفصلة — يحل مشكلة الوميض عند التمرير */
+  header {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+  }
+
+  /* 4b. الـ drawers: overscroll-behavior:contain يمنع
+          "bounce scroll" من الانتقال للصفحة الخلفية في Safari */
+  #cartDrawer,
+  #mobileNavDrawer,
+  #checkoutModal .bg-white {
+    overscroll-behavior   : contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 4c. منع تحديد النص عند السحب على الـ sliders (يُشوّش اللمس في Safari) */
+  .slider-wrap,
+  .slider-track {
+    -webkit-user-select: none;
+            user-select: none;
+  }
+
+  /* 4d. تطبيق الخطوط الديناميكية على العناصر الرئيسية */
+  .kicker           { font-size: var(--fs-xs);  }
+  .brand-watermark  { font-size: clamp(1.5rem, 4vw, 2.6rem); }
+  .size-card .lbl   { font-size: var(--fs-sm);  }
+  .size-card .wt    { font-size: var(--fs-2xs); }
+
+  /* 4e. جميع الـ inputs بحجم 16px كحد أدنى — يمنع iOS من الزوم تلقائياً
+          iOS يزوم تلقائياً على أي input بخط أصغر من 16px — هذا هو السبب الجذري */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem) !important;
+  }
+
+  /* =====================================================
+     ── Hover effects: ONLY on real pointer devices ──
      @media (hover:hover) = device supports true hover (excludes touchscreens)
      @media (pointer:fine) = precise pointer (mouse), not finger
      This prevents hover states from getting "stuck" on mobile after tap              ── */
@@ -2136,23 +2229,60 @@ function openCheckout(){
 function closeCheckout(){ $('#checkoutOverlay').classList.add('hidden'); $('#checkoutModal').classList.add('hidden'); $('#checkoutModal').classList.remove('flex'); }
 
 /* =================== I18N APPLY =================== */
+/*
+ * applyLang() — نظام استرداد اللغة المُحسَّن
+ * ─────────────────────────────────────────────────────────────────────
+ * المشكلة: تغيير الاتجاه (RTL ↔ LTR) أثناء تشغيل الصفحة
+ *          لا يُطبَّق بشكل كامل لأن CSS المُحمَّل مسبقاً لا يُعاد ترتيبه.
+ *
+ * الحل: عند تغيير الاتجاه فقط (ar/ku ↔ en) نحفظ اللغة الجديدة
+ *       ثم نعيد تحميل الصفحة مرة واحدة — الـ inline script في الـ <head>
+ *       سيطبّق اللغة الصحيحة قبل رسم أي CSS.
+ *
+ * تغيير بين لغتين بنفس الاتجاه (ar ↔ ku) → لا reload — يُطبَّق فوراً.
+ * ─────────────────────────────────────────────────────────────────────
+ */
 function applyLang(lang){
-  /* ── 1. حفظ اختيار اللغة في localStorage مع معالجة وضع Safari الخاص ── */
-  try { localStorage.setItem('sizeme_lang', lang); } catch(e) { /* وضع خاص — نكمل بدون حفظ */ }
+  const DIR = { ar:'rtl', en:'ltr', ku:'rtl' };
+  const currentDir = document.documentElement.dir || 'rtl';
+  const newDir     = DIR[lang] || 'rtl';
 
+  /* ── 1. حفظ اللغة في localStorage ── */
+  try { localStorage.setItem('sizeme_lang', lang); } catch(e) { /* وضع خاص */ }
+
+  /* ── 2. تغيير الاتجاه؟ → Reload مرة واحدة لضمان CSS نظيف ──
+          نتحقق من عدم وجود علامة reload نشطة لمنع حلقة لا نهائية */
+  if(newDir !== currentDir){
+    /* نضع علامة مؤقتة في sessionStorage تنتهي بعد Reload واحد */
+    try {
+      var reloadFlag = sessionStorage.getItem('sizeme_dir_reload');
+      if(!reloadFlag){
+        sessionStorage.setItem('sizeme_dir_reload', '1');
+        window.location.reload();
+        return; /* نوقف التنفيذ — الصفحة ستُعاد تحميلها */
+      } else {
+        /* تم الـ reload بالفعل — نزيل العلامة ونكمل بشكل طبيعي */
+        sessionStorage.removeItem('sizeme_dir_reload');
+      }
+    } catch(e) { /* sessionStorage غير متاح */ }
+  }
+
+  /* ── 3. تطبيق فوري بدون reload (نفس الاتجاه أو بعد الـ reload) ── */
   state.lang = lang;
   const t = I18N[lang];
 
-  /* ── 2. تحديث وسمَي lang و dir على <html> فوراً ── */
   document.documentElement.lang = lang;
-  document.documentElement.dir  = t.dir;
+  document.documentElement.dir  = newDir;
+
   $$('[data-i18n]').forEach(el=>{
-    const k = el.dataset.i18n; if(t[k]!==undefined && typeof t[k]==='string') el.textContent = t[k];
+    const k = el.dataset.i18n;
+    if(t[k] !== undefined && typeof t[k] === 'string') el.textContent = t[k];
   });
   $$('[data-i18n-placeholder]').forEach(el=>{
-    const k = el.dataset.i18nPlaceholder; if(t[k]) el.placeholder = t[k];
+    const k = el.dataset.i18nPlaceholder;
+    if(t[k]) el.placeholder = t[k];
   });
-  $$('.lang-btn').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+  $$('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
   renderFilters();
   renderProducts();
   updateCart();
