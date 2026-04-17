@@ -427,6 +427,46 @@
   #waFloat:active{ transform:scale(0.91); box-shadow:0 2px 8px rgba(37,211,102,.3); }
   @media(max-width:768px){ #waFloat{ display:flex; } }
 
+  /* =====================================================
+     MOBILE NAV DRAWER
+     ===================================================== */
+  #mobileNavDrawer{
+    position:fixed; inset:0 0 0 auto;
+    width:78vw; max-width:300px;
+    background:var(--paper);
+    z-index:200;
+    transform:translateX(110%);
+    transition:transform .38s var(--spring);
+    display:flex; flex-direction:column;
+    box-shadow:-8px 0 40px rgba(0,0,0,.18);
+    overflow-y:auto;
+  }
+  [dir="rtl"] #mobileNavDrawer{ inset:0 auto 0 0; transform:translateX(-110%); }
+  #mobileNavDrawer.open{ transform:translateX(0) !important; }
+  #mobileNavOverlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.45);
+    backdrop-filter:blur(2px); z-index:199;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s;
+  }
+  #mobileNavOverlay.open{ opacity:1; pointer-events:auto; }
+  .mnav-cat{
+    display:flex; align-items:center; gap:.75rem;
+    padding:.95rem 1.5rem;
+    border-bottom:1px solid var(--line);
+    text-decoration:none; color:var(--ink);
+    font-size:.95rem; font-weight:500;
+    transition:background .15s;
+  }
+  .mnav-cat:active{ background:var(--line); }
+  .mnav-cat-icon{
+    width:36px; height:36px; border-radius:4px;
+    background:var(--ink); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.7rem; font-weight:700; letter-spacing:.05em;
+    flex-shrink:0;
+  }
+
   /* ── Mobile floating checkout bar ── */
   #mobileBar{
     display:none;
@@ -561,6 +601,30 @@
   .skeleton-card:nth-child(4) .skeleton-block{ animation-delay:.54s; }
 
   /* =====================================================
+     STAR RATING SECTION
+     ===================================================== */
+  .star-fill{
+    color:#c9a84c;
+    font-size:1.5rem;
+    line-height:1;
+    transition:transform .3s var(--spring);
+  }
+  .star-fill.animate{ animation:star-pop .4s var(--spring) both; }
+  @keyframes star-pop{
+    0%  { transform:scale(0) rotate(-20deg); opacity:0; }
+    70% { transform:scale(1.25) rotate(5deg); }
+    100%{ transform:scale(1) rotate(0deg); opacity:1; }
+  }
+  .rating-bar-track{
+    height:6px; background:rgba(255,255,255,.15); border-radius:999px; overflow:hidden; flex:1;
+  }
+  .rating-bar-fill{
+    height:100%; background:#c9a84c; border-radius:999px;
+    width:0; transition:width 1.2s var(--decel);
+  }
+  .rating-bar-fill.animate{ width:var(--pct); }
+
+  /* =====================================================
      FILTER SLIDING INDICATOR — 21st.dev tab underline
      ===================================================== */
   #brandFilters, #colorFilters{ position:relative; }
@@ -647,6 +711,44 @@
     <button class="lang-btn" data-lang="ku">KU</button>
   </div>
 </header>
+
+<!-- ================= MOBILE NAV DRAWER ================= -->
+<div id="mobileNavOverlay"></div>
+<nav id="mobileNavDrawer" aria-label="Navigation">
+  <!-- رأس القائمة -->
+  <div class="flex items-center justify-between px-5 py-4 border-b hairline">
+    <span class="serif text-xl">SIZEME</span>
+    <button id="mobileNavClose" class="p-1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+    </button>
+  </div>
+  <!-- روابط التنقل العامة -->
+  <div class="px-5 py-4 border-b hairline space-y-3 text-sm">
+    <a href="#shop"    class="block text-[color:var(--mute)]" data-i18n="navShop"    onclick="closeMobileNav()">Shop</a>
+    <a href="#about"   class="block text-[color:var(--mute)]" data-i18n="navAbout"   onclick="closeMobileNav()">About</a>
+    <a href="#contact" class="block text-[color:var(--mute)]" data-i18n="navContact" onclick="closeMobileNav()">Contact</a>
+  </div>
+  <!-- المجموعات -->
+  <div class="px-5 pt-4 pb-2">
+    <p class="kicker mb-3" data-i18n="filterCat">Category</p>
+  </div>
+  <a href="#cat-tshirt" class="mnav-cat" onclick="closeMobileNav()">
+    <span class="mnav-cat-icon">T</span>
+    <span data-i18n="catTshirt">تي شيرت</span>
+  </a>
+  <a href="#cat-polo" class="mnav-cat" onclick="closeMobileNav()">
+    <span class="mnav-cat-icon">P</span>
+    <span data-i18n="catPolo">بولو</span>
+  </a>
+  <a href="#cat-jeans" class="mnav-cat" onclick="closeMobileNav()">
+    <span class="mnav-cat-icon">J</span>
+    <span data-i18n="catJeans">بنطرون</span>
+  </a>
+  <a href="#cat-shirt" class="mnav-cat" onclick="closeMobileNav()">
+    <span class="mnav-cat-icon">S</span>
+    <span data-i18n="catShirt">قميص</span>
+  </a>
+</nav>
 
 <main id="top">
 
@@ -735,8 +837,8 @@
 
   </div>
 
-  <!-- Grid -->
-  <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 min-h-[300px]"></div>
+  <!-- أقسام المنتجات — كل فئة قسم مستقل -->
+  <div id="productSections"></div>
 
   <!-- Pagination -->
   <div id="pagination" class="flex items-center justify-center gap-3 mt-12"></div>
@@ -773,6 +875,75 @@
 </section>
 
 </main>
+
+<!-- ================= STAR RATING SECTION ================= -->
+<section id="ratingSection" class="bg-[color:var(--ink)] text-white reveal">
+  <div class="max-w-4xl mx-auto px-5 py-12 text-center">
+
+    <!-- العنوان -->
+    <p class="kicker text-white/50 mb-6" data-i18n="ratingKicker">تقييمات زبائننا</p>
+
+    <!-- الرقم الكبير + النجوم -->
+    <div class="flex items-center justify-center gap-5 mb-8">
+      <span class="serif text-white" style="font-size:5rem;line-height:1" data-i18n="ratingScore">4.9</span>
+      <div class="text-start">
+        <div id="mainStars" class="flex gap-1 mb-2">
+          <span class="star-fill" data-delay="0">★</span>
+          <span class="star-fill" data-delay="1">★</span>
+          <span class="star-fill" data-delay="2">★</span>
+          <span class="star-fill" data-delay="3">★</span>
+          <span class="star-fill" data-delay="4">★</span>
+        </div>
+        <p class="text-white/60 text-sm" data-i18n="ratingCount">من +500 زبون راضٍ</p>
+      </div>
+    </div>
+
+    <!-- التقييمات الفرعية -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+
+      <div class="text-start">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs text-white/70" data-i18n="ratFabric">جودة القماش</span>
+          <span class="text-xs text-white/50">5.0</span>
+        </div>
+        <div class="rating-bar-track">
+          <div class="rating-bar-fill" style="--pct:100%"></div>
+        </div>
+      </div>
+
+      <div class="text-start">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs text-white/70" data-i18n="ratSizes">صحة المقاسات</span>
+          <span class="text-xs text-white/50">4.9</span>
+        </div>
+        <div class="rating-bar-track">
+          <div class="rating-bar-fill" style="--pct:98%"></div>
+        </div>
+      </div>
+
+      <div class="text-start">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs text-white/70" data-i18n="ratDelivery">سرعة التوصيل</span>
+          <span class="text-xs text-white/50">4.8</span>
+        </div>
+        <div class="rating-bar-track">
+          <div class="rating-bar-fill" style="--pct:96%"></div>
+        </div>
+      </div>
+
+      <div class="text-start">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs text-white/70" data-i18n="ratService">خدمة العملاء</span>
+          <span class="text-xs text-white/50">5.0</span>
+        </div>
+        <div class="rating-bar-track">
+          <div class="rating-bar-fill" style="--pct:100%"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ================= FOOTER ================= -->
 <footer class="border-t hairline bg-white">
@@ -1104,6 +1275,9 @@ const I18N = {
     wg:{ '2XL':'95–105 كغ', '3XL':'105–115 كغ', '4XL':'115–125 كغ', '5XL':'125–140 كغ', '6XL':'140–155 كغ', '7XL':'155–175 كغ' },
     free:'مجاني',
     filterBrand:'الماركة', filterColor:'اللون', filterAll:'الكل',
+    filterCat:'الفئة', catAll:'الكل', catTshirt:'تي شيرت', catPolo:'بولو', catShirt:'قميص', catJeans:'بنطرون',
+    ratingKicker:'تقييمات زبائننا', ratingScore:'4.9', ratingCount:'من +500 زبون راضٍ',
+    ratFabric:'جودة القماش', ratSizes:'صحة المقاسات', ratDelivery:'سرعة التوصيل', ratService:'خدمة العملاء',
     pageNext:'التالي', pagePrev:'السابق',
     noResults:'لا توجد منتجات تطابق الفلتر المختار.',
     shopCountFn:(s,t)=>`${s} من ${t} منتج`,
@@ -1165,6 +1339,9 @@ const I18N = {
     wg:{ '2XL':'95–105 kg', '3XL':'105–115 kg', '4XL':'115–125 kg', '5XL':'125–140 kg', '6XL':'140–155 kg', '7XL':'155–175 kg' },
     free:'Free',
     filterBrand:'Brand', filterColor:'Color', filterAll:'All',
+    filterCat:'Category', catAll:'All', catTshirt:'T-Shirt', catPolo:'Polo', catShirt:'Shirt', catJeans:'Jeans',
+    ratingKicker:'Customer Ratings', ratingScore:'4.9', ratingCount:'From 500+ happy customers',
+    ratFabric:'Fabric Quality', ratSizes:'True to Size', ratDelivery:'Fast Delivery', ratService:'Customer Service',
     pageNext:'Next', pagePrev:'Prev',
     noResults:'No products match the selected filters.',
     shopCountFn:(s,t)=>`${s} of ${t} products`,
@@ -1226,6 +1403,9 @@ const I18N = {
     wg:{ '2XL':'٩٥–١٠٥ کیلۆ', '3XL':'١٠٥–١١٥ کیلۆ', '4XL':'١١٥–١٢٥ کیلۆ', '5XL':'١٢٥–١٤٠ کیلۆ', '6XL':'١٤٠–١٥٥ کیلۆ', '7XL':'١٥٥–١٧٥ کیلۆ' },
     free:'بێبەرامبەر',
     filterBrand:'مارکە', filterColor:'ڕەنگ', filterAll:'هەموو',
+    filterCat:'جۆر', catAll:'هەموو', catTshirt:'تی شێرت', catPolo:'پۆلۆ', catShirt:'کراس', catJeans:'جینز',
+    ratingKicker:'هەڵسەنگاندنی کڕیاران', ratingScore:'4.9', ratingCount:'لە +٥٠٠ کڕیارى دلخۆش',
+    ratFabric:'کوالیتی پەڕەکە', ratSizes:'ڕاستی سایز', ratDelivery:'خێرایی گەیاندن', ratService:'خزمەتگوزارى',
     pageNext:'دواتر', pagePrev:'پێشتر',
     noResults:'هیچ بەرهەمێک نەدۆزرایەوە.',
     shopCountFn:(s,t)=>`${s} لە ${t} بەرهەم`,
@@ -1271,7 +1451,7 @@ const C = {
 // ║  ← غيّر هذا الرقم فقط عند إضافة منتج جديد                      ║
 // ║  مثال: أضف صورة 27-1-brand.jpg ثم غيّر الرقم إلى 27           ║
 // ╚═══════════════════════════════════════════════════════════════════╝
-const TOTAL_PRODUCTS = 26;
+const TOTAL_PRODUCTS = 29;
 
 // بيانات كل منتج — مرقّمة من 1 إلى TOTAL_PRODUCTS
 // لإضافة منتج جديد: أضف سطراً جديداً برقم prefix التالي هنا
@@ -1305,15 +1485,39 @@ const PRODUCTS_META = {
   24: { sku:'HE-25',  imgKey:'hermes-h',      brand:'HERMÈS',         sub:'Lines Logo',    colors:[C.BLK,C.WHT] },
   25: { sku:'MA-26',  imgKey:'massimo-dutti', brand:'MASSIMO DUTTI',  sub:'since 1985',    colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
   26: { sku:'ZA-27',  imgKey:'zara-Turkey',    brand:'ZARA',           sub:'turkey',        colors:[C.BRN,C.WHT,C.BLK], added:'2026-04-17' },
-  // 27: { sku:'XX-000', imgKey:'brand-key', brand:'BRAND NAME', sub:'subtitle', colors:[C.BLK,C.WHT] },
+
+  // ── فئة البولو (Polo) ──────────────────────────────────────────────
+  // imgDir: 'polo' → الصور في مجلد images/polo/
+  // لإضافة منتج بولو جديد: انسخ هذا السطر وغيّر الرقم والبيانات
+  27: { sku:'RL-28',  imgKey:'polo-rl',       brand:'RALPH LAUREN',   sub:'Polo Classic',  colors:[C.BLK,C.WHT,C.RBL], category:'polo',  imgDir:'polo',   added:'2026-04-17' },
+
+  // ── فئة القميص (Shirt) ────────────────────────────────────────────
+  // imgDir: 'shirts' → الصور في مجلد images/shirts/
+  28: { sku:'HB-29',  imgKey:'shirt-boss',    brand:'HUGO BOSS',      sub:'Slim Fit',      colors:[C.BLK,C.WHT,C.RBL], category:'shirt', imgDir:'shirts' },
+
+  // ── فئة البنطرون (Jeans) ──────────────────────────────────────────
+  // imgDir: 'jeans' → الصور في مجلد images/jeans/
+  29: { sku:'LV-30',  imgKey:'jeans-lv',      brand:'LEVI\'S',        sub:'512 Slim',      colors:[C.BLK,C.DNV],        category:'jeans', imgDir:'jeans'  },
+
+  // ── مثال لإضافة منتج جديد ─────────────────────────────────────────
+  // 30: { sku:'XX-31', imgKey:'brand-key', brand:'BRAND', sub:'subtitle', colors:[C.BLK,C.WHT], category:'polo', imgDir:'polo' },
 };
 
 // ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
 const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
-  const n      = TOTAL_PRODUCTS - i;                   // تنازلي: 26، 25، 24 ...
-  const prefix = String(n).padStart(2, '0');           // 26 → "26", 5 → "05"
+  const n      = TOTAL_PRODUCTS - i;                   // تنازلي: 29، 28، 27 ...
+  const prefix = String(n).padStart(2, '0');           // 29 → "29", 5 → "05"
   const m      = PRODUCTS_META[n] || { sku:`P-${prefix}`, imgKey:'product', brand:'SIZEME', sub:'New', colors:[C.BLK] };
-  return { id:`p${n}`, prefix, sku:m.sku||`P-${prefix}`, imgKey:m.imgKey, brand:m.brand, sub:m.sub, colors:m.colors };
+  return {
+    id:`p${n}`, prefix,
+    sku     : m.sku    || `P-${prefix}`,
+    imgKey  : m.imgKey,
+    imgDir  : m.imgDir || '',           // مجلد الصور (فارغ = images/ الرئيسي)
+    brand   : m.brand,
+    sub     : m.sub,
+    colors  : m.colors,
+    category: m.category || 'tshirt',  // الفئة الافتراضية = تي شيرت
+  };
 });
 
 /* =================== COUPONS =================== */
@@ -1333,7 +1537,11 @@ const COUPONS = [
 // ─────────────────────────────────────────────────────────────────────
 
 /* generate image path for a product + sequence number */
-function imgPath(p, seq){ return `images/${p.prefix}-${seq}-${p.imgKey}.jpg`; }
+function imgPath(p, seq){
+  return p.imgDir
+    ? `images/${p.imgDir}/${p.prefix}-${seq}-${p.imgKey}.jpg`
+    : `images/${p.prefix}-${seq}-${p.imgKey}.jpg`;
+}
 const SIZES = ['2XL','3XL','4XL','5XL','6XL','7XL'];
 const UNIT_PRICE      = 35000;
 const BULK_UNIT_PRICE = 30000;  // ← سعر القطعة عند 10+ قطع (300,000 لكل 10 قطع)
@@ -1343,6 +1551,14 @@ const BULK_DISCOUNT   = (UNIT_PRICE - BULK_UNIT_PRICE) / UNIT_PRICE; // ≈ 14.3
 
 /* =================== STATE =================== */
 const PAGE_SIZE = 8;
+// ترتيب وعناوين المجموعات على الصفحة
+const CATEGORIES = [
+  { key:'tshirt', icon:'T', label:{ar:'تي شيرت', en:'T-Shirt', ku:'تی شێرت'} },
+  { key:'polo',   icon:'P', label:{ar:'بولو',     en:'Polo',    ku:'پۆلۆ'} },
+  { key:'jeans',  icon:'J', label:{ar:'بنطرون',   en:'Jeans',   ku:'جینز'} },
+  { key:'shirt',  icon:'S', label:{ar:'قميص',     en:'Shirt',   ku:'کراس'} },
+];
+
 let state = {
   lang   : 'ar',
   cart   : [],        // {pid, brand, sub, img, color, size, qty}
@@ -1443,114 +1659,137 @@ function isNewProduct(p){
 }
 
 /* =================== RENDER PRODUCTS =================== */
+/* بناء HTML بطاقة منتج واحدة */
+function renderCard(p, i){
+  const t = I18N[state.lang];
+  return `
+    <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
+      <!-- ── IMAGE SLIDER ── -->
+      <div class="product-img slider-wrap" data-idx="0">
+        <div class="slider-track">
+          <div class="slide">
+            <img src="${imgPath(p,1)}" alt="${p.brand}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="absolute inset-0 flex-col items-center justify-center bg-[#f2ece2]" style="display:none">
+              <div class="brand-watermark">${p.brand}</div>
+              <div class="brand-sub">${p.sub}</div>
+            </div>
+          </div>
+        </div>
+        <button class="slider-arrow prev hidden" aria-label="prev">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="slider-arrow next hidden" aria-label="next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="slider-dots hidden"><span class="sdot active"></span></div>
+      </div>
+      <!-- ── INFO ── -->
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h3 class="serif text-lg leading-tight">${p.brand}</h3>
+            <p class="text-[11px] tracking-[.15em] text-[color:var(--mute)] mt-0.5 uppercase">${p.sub}</p>
+          </div>
+          <div class="text-sm font-medium whitespace-nowrap">${fmt(UNIT_PRICE)}</div>
+        </div>
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-2">
+            <p class="kicker">${t.selectColor}</p>
+            ${isNewProduct(p) ? `<span class="new-badge">${t.newBadge||'جديد'}</span>` : ''}
+          </div>
+          <div class="flex gap-2 flex-wrap" data-role="colors">
+            ${p.colors.map((c,ci)=>`<span class="color-dot ${ci===0?'active':''}" data-color="${c.n}" style="background:${c.h}" title="${c.n}"></span>`).join('')}
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="kicker mb-2">${t.selectSize}</p>
+          <div class="grid grid-cols-3 gap-1.5" data-role="sizes">
+            ${SIZES.map(s=>`<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${t.wg[s]}</div></div>`).join('')}
+          </div>
+        </div>
+        <button class="btn-outline w-full py-2.5 mt-4 text-[11px] tracking-[.2em]" data-role="add">${t.addBag}</button>
+      </div>
+    </article>`;
+}
+
 function renderProducts(){
-  /* ── Show skeleton immediately so browser paints it before heavy DOM update ── */
+  /* ── Skeleton فوري ── */
   showProductSkeleton(4);
 
   setTimeout(function(){
-  const t    = I18N[state.lang];
-  const all  = filteredProducts();
-  const total= all.length;
-  const pages= Math.ceil(total / PAGE_SIZE);
-  const page = Math.min(state.page, Math.max(0, pages-1));
-  state.page = page;
-  const slice= all.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+    const t       = I18N[state.lang];
+    const all     = filteredProducts();
+    const total   = all.length;
 
-  $('#shopCount').textContent = t.shopCountFn(total, PRODUCTS.length);
+    /* ── عداد المنتجات الكلي ── */
+    $('#shopCount').textContent = t.shopCountFn(total, PRODUCTS.length);
 
-  const grid = $('#productGrid');
-  if(slice.length===0){
-    grid.innerHTML = `<p class="col-span-full text-center text-[color:var(--mute)] py-16">${t.noResults}</p>`;
-  } else {
-    grid.innerHTML = slice.map((p,i) => `
-      <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
+    /* ── إخفاء Pagination — المشروع الآن يعمل بالأقسام لا الصفحات ── */
+    $('#pagination').innerHTML = '';
 
-        <!-- ── IMAGE SLIDER ── -->
-        <div class="product-img slider-wrap" data-idx="0">
-          <div class="slider-track">
-            <div class="slide">
-              <img src="${imgPath(p,1)}" alt="${p.brand}"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-              <div class="absolute inset-0 flex-col items-center justify-center bg-[#f2ece2]" style="display:none">
-                <div class="brand-watermark">${p.brand}</div>
-                <div class="brand-sub">${p.sub}</div>
-              </div>
-            </div>
+    const sections = $('#productSections');
+
+    if(total === 0){
+      sections.innerHTML = `<p class="text-center text-[color:var(--mute)] py-16">${t.noResults}</p>`;
+      return;
+    }
+
+    /* ── رسم قسم لكل فئة بالترتيب المحدد في CATEGORIES ── */
+    sections.innerHTML = CATEGORIES.map(cat => {
+      const catProds = all.filter(p => p.category === cat.key);
+      if(catProds.length === 0) return '';          /* أخفِ الفئة إن لم تُطابق الفلتر */
+      const label = cat.label[state.lang] || cat.label.ar;
+      const countLabel = state.lang === 'en'
+        ? `${catProds.length} ${catProds.length===1?'item':'items'}`
+        : state.lang === 'ku'
+          ? `${catProds.length} بەرهەم`
+          : `${catProds.length} منتج`;
+      return `
+        <div class="category-section mb-14" id="cat-${cat.key}">
+          <!-- رأس القسم -->
+          <div class="flex items-baseline gap-3 mb-5 pb-3 border-b hairline">
+            <h3 class="serif text-2xl md:text-3xl">${label}</h3>
+            <span class="text-sm text-[color:var(--mute)]">${countLabel}</span>
           </div>
-          <!-- arrows (hidden until extra slides loaded) -->
-          <button class="slider-arrow prev hidden" aria-label="prev">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <button class="slider-arrow next hidden" aria-label="next">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-          <!-- dots -->
-          <div class="slider-dots hidden"><span class="sdot active"></span></div>
-        </div>
+          <!-- شبكة المنتجات -->
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            ${catProds.map((p,i) => renderCard(p,i)).join('')}
+          </div>
+        </div>`;
+    }).join('');
 
-        <!-- ── INFO ── -->
-        <div class="p-4">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="serif text-lg leading-tight">${p.brand}</h3>
-              <p class="text-[11px] tracking-[.15em] text-[color:var(--mute)] mt-0.5 uppercase">${p.sub}</p>
-            </div>
-            <div class="text-sm font-medium whitespace-nowrap">${fmt(UNIT_PRICE)}</div>
-          </div>
-          <div class="mt-3">
-            <div class="flex items-center justify-between mb-2">
-              <p class="kicker">${t.selectColor}</p>
-              ${isNewProduct(p) ? `<span class="new-badge">${t.newBadge||'جديد'}</span>` : ''}
-            </div>
-            <div class="flex gap-2 flex-wrap" data-role="colors">
-              ${p.colors.map((c,i)=>`<span class="color-dot ${i===0?'active':''}" data-color="${c.n}" style="background:${c.h}" title="${c.n}"></span>`).join('')}
-            </div>
-          </div>
-          <div class="mt-3">
-            <p class="kicker mb-2">${t.selectSize}</p>
-            <div class="grid grid-cols-3 gap-1.5" data-role="sizes">
-              ${SIZES.map(s=>`<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${t.wg[s]}</div></div>`).join('')}
-            </div>
-          </div>
-          <button class="btn-outline w-full py-2.5 mt-4 text-[11px] tracking-[.2em]" data-role="add">${t.addBag}</button>
-        </div>
-      </article>
-    `).join('');
-  }
-
-  /* ── Wire card interactions ── */
-  $$('#productGrid .product-card').forEach(card=>{
-    card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot=>{
-      dot.addEventListener('click',()=>{
-        card.querySelectorAll('[data-role="colors"] .color-dot').forEach(d=>d.classList.remove('active'));
-        dot.classList.add('active');
+    /* ── ربط تفاعلات البطاقات ── */
+    $$('#productSections .product-card').forEach(card=>{
+      card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot=>{
+        dot.addEventListener('click',()=>{
+          card.querySelectorAll('[data-role="colors"] .color-dot').forEach(d=>d.classList.remove('active'));
+          dot.classList.add('active');
+        });
+      });
+      card.querySelectorAll('[data-role="sizes"] .size-card').forEach(sc=>{
+        sc.addEventListener('click',()=>{
+          card.querySelectorAll('[data-role="sizes"] .size-card').forEach(x=>x.classList.remove('active'));
+          sc.classList.add('active');
+        });
+      });
+      const addBtn = card.querySelector('[data-role="add"]');
+      addBtn?.addEventListener('click',()=>{
+        const p     = PRODUCTS.find(x=>x.id===card.dataset.pid);
+        const color = card.querySelector('[data-role="colors"] .active')?.dataset.color;
+        const size  = card.querySelector('[data-role="sizes"] .active')?.dataset.size;
+        const t2    = I18N[state.lang];
+        if(!size){ alert(t2.selectSize); return; }
+        if(window.flashAddBtn) flashAddBtn(addBtn);
+        addToCart({pid:p.id, brand:p.brand, sub:p.sub, sku:p.sku, img:imgPath(p,1), color, size, qty:1});
+        openCart();
       });
     });
-    card.querySelectorAll('[data-role="sizes"] .size-card').forEach(sc=>{
-      sc.addEventListener('click',()=>{
-        card.querySelectorAll('[data-role="sizes"] .size-card').forEach(x=>x.classList.remove('active'));
-        sc.classList.add('active');
-      });
-    });
-    const addBtn = card.querySelector('[data-role="add"]');
-    addBtn?.addEventListener('click',()=>{
-      const p     = PRODUCTS.find(x=>x.id===card.dataset.pid);
-      const color = card.querySelector('[data-role="colors"] .active')?.dataset.color;
-      const size  = card.querySelector('[data-role="sizes"] .active')?.dataset.size;
-      const t2    = I18N[state.lang];
-      if(!size){ alert(t2.selectSize); return; }
-      if(window.flashAddBtn) flashAddBtn(addBtn);
-      addToCart({pid:p.id, brand:p.brand, sub:p.sub, sku:p.sku, img:imgPath(p,1), color, size, qty:1});
-      openCart();
-    });
-  });
 
-  renderPagination(page, pages);
+    /* ── تهيئة الـ Sliders + كشف التمرير بعد رسم DOM ── */
+    requestAnimationFrame(()=>{ initSliders(); if(window.observeRevealElements) observeRevealElements(); });
 
-  /* ── Init sliders + scroll reveal after DOM is ready ── */
-  requestAnimationFrame(()=>{ initSliders(); if(window.observeRevealElements) observeRevealElements(); });
-
-  }, 0); /* end setTimeout — real products replace skeleton */
+  }, 0); /* end setTimeout */
 }
 
 /* =================== SLIDER ENGINE =================== */
@@ -2208,6 +2447,29 @@ vid.addEventListener('error', ()=>{ /* keep fallback */ });
   window.observeRevealElements();
 })();
 
+/* ── تحريك النجوم وأشرطة التقييم عند ظهور القسم ── */
+(function initRatingAnimation(){
+  const section = document.getElementById('ratingSection');
+  if(!section) return;
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      io.unobserve(section);
+      // تحريك كل نجمة بتأخير متتالي
+      section.querySelectorAll('.star-fill').forEach((star, i)=>{
+        setTimeout(()=>star.classList.add('animate'), i * 120);
+      });
+      // تحريك أشرطة التقييم بعد النجوم
+      setTimeout(()=>{
+        section.querySelectorAll('.rating-bar-fill').forEach(bar=>{
+          bar.classList.add('animate');
+        });
+      }, 700);
+    });
+  },{ threshold: 0.3 });
+  io.observe(section);
+})();
+
 /* ── 2. Ripple wave on every .btn-ink and .btn-outline click (whileTap) ── */
 function addRipple(btn, e){
   const wave = document.createElement('span');
@@ -2277,7 +2539,8 @@ window.updateMobileBar  = updateMobileBar;
 /* ── Skeleton Loader (21st.dev shimmer — 4 cards) ── */
 function showProductSkeleton(n){
   n = n || 4;
-  $('#productGrid').innerHTML = Array.from({length:n}, ()=>`
+  const skeletonGrid = `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">` +
+    Array.from({length:n}, ()=>`
     <div class="skeleton-card">
       <div class="skeleton-block" style="aspect-ratio:3/4;border-radius:0;"></div>
       <div style="padding:1rem;">
@@ -2286,7 +2549,8 @@ function showProductSkeleton(n){
         <div class="skeleton-block" style="height:2.5rem;width:100%;border-radius:0;"></div>
       </div>
     </div>
-  `).join('');
+  `).join('') + `</div>`;
+  $('#productSections').innerHTML = skeletonGrid;
 }
 
 /* ── Filter Sliding Indicator (21st.dev tab underline) ── */
