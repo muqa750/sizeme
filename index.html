@@ -141,7 +141,48 @@
     /* 6 ── Slider arrows always visible on touch */
     .slider-arrow{ opacity:.8 !important; width:24px; height:24px; }
   }
+    /* 7 ── New-badge mobile */
+    .new-badge{ letter-spacing:0 !important; font-size:.48rem !important; padding:2px 5px !important; }
+
+    /* 8 ── Product card color row with badge — prevent overflow */
+    .product-card .flex.items-center.justify-between{
+      gap:.35rem; flex-wrap:nowrap; align-items:center;
+    }
+    .product-card .kicker{ text-align:start !important; width:auto !important; }
+
+    /* 9 ── Skeleton cards on mobile */
+    .skeleton-card .skeleton-block{ animation-duration:1.6s; }
+
+    /* 10 ── Hide filter indicator on mobile (positional glitch on touch) */
+    .filter-indicator{ display:none !important; }
+
+    /* 11 ── Size card active: no scale to avoid overflow */
+    .size-card.active{ transform:none !important; }
+    .size-card:hover{ transform:none !important; }
+
+    /* 12 ── Glow focus: tighter shadow on small screens */
+    input:focus, textarea:focus, select:focus{
+      box-shadow:0 0 0 2px rgba(26,26,26,.07) !important;
+    }
+  }
   /* ── end mobile fixes ── */
+
+  /* ── Hover effects: ONLY on real pointer devices (mouse/trackpad) — NOT mobile touch ──
+     @media (hover:hover) = device supports true hover (excludes touchscreens)
+     @media (pointer:fine) = precise pointer (mouse), not finger
+     This prevents hover states from getting "stuck" on mobile after tap              ── */
+  @media (hover: hover) and (pointer: fine) {
+    .product-card:hover{
+      transform:translateY(-5px) scale(1.01);
+      box-shadow:0 28px 56px -18px rgba(0,0,0,.18), 0 6px 14px -6px rgba(0,0,0,.07);
+    }
+    .product-card:hover .product-img img{ transform:scale(1.07); will-change:transform; }
+    .size-card:hover { transform:translateY(-1px); }
+    .size-card.active{ transform:scale(1.04); }
+    .color-dot:hover { transform:scale(1.08); }
+    .play-circle:hover{ transform:scale(1.06); }
+    .chip:hover{ border-color:var(--ink); }
+  }
 
   /* =====================================================
      PREMIUM ANIMATIONS — Spring Physics + Micro-interactions
@@ -173,21 +214,16 @@
   .reveal[data-d="7"]{ transition-delay:420ms; }
   .reveal[data-d="8"]{ transition-delay:480ms; }
 
-  /* ── Product card — spring hover (Framer Motion whileHover) ── */
+  /* ── Product card — spring transition (hover only on real pointer, see @media hover below) ── */
   .product-card{
     transition:transform .3s var(--spring), box-shadow .3s var(--smooth), border-color .15s;
   }
-  .product-card:hover{
-    transform:translateY(-5px) scale(1.01);
-    box-shadow:0 28px 56px -18px rgba(0,0,0,.18), 0 6px 14px -6px rgba(0,0,0,.07);
-  }
-  /* Image zoom on hover */
+  /* Image zoom — transition always present, scale applied only on hover via @media hover */
   .product-img{ overflow:hidden; }
   .product-img img{
     transition:transform .65s var(--smooth);
-    will-change:transform;
+    will-change:auto; /* set to transform only on desktop via @media hover */
   }
-  .product-card:hover .product-img img{ transform:scale(1.07); }
 
   /* ── Buttons — whileTap scale + ripple ── */
   .btn-ink, .btn-outline{
@@ -207,8 +243,7 @@
 
   /* ── Size card spring select ── */
   .size-card{ transition:all .2s var(--spring) !important; }
-  .size-card:hover{ transform:translateY(-1px); }
-  .size-card.active{ transform:scale(1.04); }
+  /* size-card hover/active transforms applied only on desktop via @media hover */
 
   /* ── Filter chip spring ── */
   .chip{ transition:all .2s var(--spring) !important; }
