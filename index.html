@@ -1597,26 +1597,35 @@ const PRODUCTS_META = {
   25: { sku:'MA-26',  imgKey:'massimo-dutti', brand:'MASSIMO DUTTI',  sub:'since 1985',    colors:[C.BLK,C.WHT,C.BRN,C.CHR] },
   26: { sku:'ZA-27',  imgKey:'zara-Turkey',    brand:'ZARA',           sub:'turkey',        colors:[C.BRN,C.WHT,C.BLK], added:'2026-04-17' },
 
-  // ── فئة التراكسوت (Tracksuit) — imagestracksuit/ ─────────────────
-  // صيغة الصورة: imagestracksuit/01-1-brand-name.jpg
-  // ملاحظة: مقاساته XL مثل التي شيرت (2XL → 7XL)
-  // 30: { sku:'XX-31', imgKey:'tracksuit-brand', brand:'BRAND', sub:'Slim Fit', colors:[C.BLK,C.WHT], category:'tracksuit', catSeq:'01' },
+  // ═══════════════════════════════════════════════════════════════════
+  //  المنتجات الجديدة — رقم 27 → 29
+  //  القاعدة: كل فئة تبدأ تسلسلها من 01 مستقلاً
+  //  imgPath() يقرأ: {IMG_FOLDERS[category]}/{catSeq}-{seq}-{imgKey}.jpg
+  // ═══════════════════════════════════════════════════════════════════
 
-  // ── فئة البولو (Polo) — imagespolo/ ──────────────────────────────
-  // catSeq = رقم تسلسل خاص بهذا الملف (يبدأ من 01 مستقلاً عن التسلسل العام)
-  // صيغة الصورة: imagespolo/01-1-polo-rl.jpg
-  27: { sku:'RL-28',  imgKey:'polo-rl',    brand:'RALPH LAUREN', sub:'Polo Classic', colors:[C.BLK,C.WHT,C.RBL], category:'polo',  catSeq:'01', added:'2026-04-17' },
+  // ── 27: بولو — imagespolo/01-1-polo-plus.jpg ──────────────────────
+  27: { sku:'PP-27', imgKey:'polo-plus',       brand:'POLO PLUS', sub:'Classic Fit',
+        colors:[C.BLK,C.WHT,C.RBL], category:'polo',      catSeq:'01', added:'2026-04-17' },
 
-  // ── فئة القميص (Shirt) — imagesshirts/ ────────────────────────────
-  // صيغة الصورة: imagesshirts/01-1-shirt-boss.jpg
-  28: { sku:'HB-29',  imgKey:'shirt-boss', brand:'HUGO BOSS',    sub:'Slim Fit',     colors:[C.BLK,C.WHT,C.RBL], category:'shirt', catSeq:'01' },
+  // ── 28: بنطرون — imagesjeans/01-1-tranzet-slimfit.jpg ─────────────
+  28: { sku:'TZ-28', imgKey:'tranzet-slimfit', brand:'TRANZET',   sub:'Slim Fit',
+        colors:[C.BLK,C.DNV],        category:'jeans',     catSeq:'01', added:'2026-04-17' },
 
-  // ── فئة البنطرون (Jeans) — imagesjeans/ ──────────────────────────
-  // صيغة الصورة: imagesjeans/01-1-jeans-lv.jpg
-  29: { sku:'LV-30',  imgKey:'jeans-lv',   brand:'LEVI\'S',      sub:'512 Slim',     colors:[C.BLK,C.DNV],        category:'jeans', catSeq:'01' },
+  // ── 29: تراكسوت — imagestracksuit/01-1-hermes-ss.jpg ──────────────
+  29: { sku:'HE-29', imgKey:'hermes-ss',       brand:'HERMÈS',    sub:'Sport',
+        colors:[C.BLK,C.WHT,C.BRN], category:'tracksuit', catSeq:'01', added:'2026-04-17' },
 
-  // ── مثال لإضافة منتج بولو جديد ──────────────────────────────────
-  // 30: { sku:'RL-31', imgKey:'polo-rl2', brand:'RALPH LAUREN', sub:'Polo Slim', colors:[C.BLK,C.WHT], category:'polo', catSeq:'02' },
+  // ═══════════════════════════════════════════════════════════════════
+  //  عند إضافة منتج جديد:
+  //  1. غيّر TOTAL_PRODUCTS إلى 30
+  //  2. أضف سطراً برقم 30 هنا مع البيانات الصحيحة
+  //  3. ارفع الصورة: {مجلد-الفئة}/02-1-brand-name.jpg  (catSeq:'02')
+  // ═══════════════════════════════════════════════════════════════════
+
+  // ── قميص (جاهز عند رفع الصور) ─────────────────────────────────────
+  // TOTAL_PRODUCTS = 30  ثم:
+  // 30: { sku:'SH-30', imgKey:'shirt-name', brand:'BRAND', sub:'Slim Fit',
+  //       colors:[C.BLK,C.WHT], category:'shirt', catSeq:'01', added:'2026-04-17' },
 };
 
 // ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
