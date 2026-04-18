@@ -46,10 +46,18 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
 <style>
+  /* هذا الأمر يطبق خط IBM على النصوص العربية فقط */
+[lang="ar"] body, [lang="ar"] * {
+    font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+}
+
+/* استثناء اللوجو وأي نص إنجليزي ليبقى كما هو */
+.serif, .brand-name, [lang="en"] * {
+    font-family: inherit !important;
+}
   :root{
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
     /* ── الألوان ── */
     --ink:#1a1a1a;
     --paper:#faf8f5;
@@ -71,15 +79,6 @@
     --fs-3xl : clamp(1.8rem, 6vw, 3rem);       /* عنوان Hero */
     --fs-hero: clamp(2rem, 8vw, 4rem);         /* العنوان الرئيسي */
   }
-  /* هذا الأمر يضمن أن الخط سيطبق على كل حرف في الموقع */
-* {
-    font-family: 'IBM Plex Sans Arabic', sans-serif !important;
-}
-
-/* لجعل العناوين تظهر بالوزن العريض 700 الذي حملناه */
-h1, h2, h3, .brand-name {
-    font-weight: 700;
-}
   html,body{background:var(--paper);color:var(--ink);}
   body{font-family:'Inter','Tajawal',system-ui,-apple-system,sans-serif;}
   [dir="rtl"] body{font-family:'Tajawal','Inter',system-ui,sans-serif;}
@@ -906,7 +905,8 @@ h1, h2, h3, .brand-name {
     font-size:max(16px,1rem) !important;
     outline:none; transition:border-color .15s;
     -moz-appearance:textfield;
-    appearance: textfield;
+        appearance: textfield;
+
   }
   #sizeCalcModal input[type=number]::-webkit-inner-spin-button,
   #sizeCalcModal input[type=number]::-webkit-outer-spin-button{ -webkit-appearance:none; }
@@ -921,6 +921,29 @@ h1, h2, h3, .brand-name {
     font-size:clamp(2rem,8vw,3rem);
     letter-spacing:.05em; line-height:1;
   }
+  /* حل مشكلة ظهور نصف الصورة وسحب الصور في الموبايل */
+@media (max-width: 640px) {
+    .pm-img-wrap {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        gap: 0;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    .pm-img-wrap img {
+        width: 100vw !important;
+        height: auto !important;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        object-fit: contain;
+    }
+
+    .pm-img-wrap::-webkit-scrollbar {
+        display: none;
+    }
+}
 
   /* =====================================================
      NEW ARRIVALS SECTION
