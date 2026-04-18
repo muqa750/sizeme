@@ -544,7 +544,7 @@
   }
   #mobileNavOverlay.open{ opacity:1; pointer-events:auto; }
   .mnav-cat{
-    display:flex; align-items:center; gap:.75rem;
+    display:flex; align-items:center;
     padding:.95rem 1.5rem;
     border-bottom:1px solid var(--line);
     text-decoration:none; color:var(--ink);
@@ -552,13 +552,6 @@
     transition:background .15s;
   }
   .mnav-cat:active{ background:var(--line); }
-  .mnav-cat-icon{
-    width:36px; height:36px; border-radius:4px;
-    background:var(--ink); color:#fff;
-    display:flex; align-items:center; justify-content:center;
-    font-size:.7rem; font-weight:700; letter-spacing:.05em;
-    flex-shrink:0;
-  }
 
   /* =====================================================
      CATEGORY SECTIONS — عناوين الفئات داخل المتجر
@@ -839,23 +832,18 @@
     <p class="kicker mb-3" data-i18n="filterCat">Category</p>
   </div>
   <a href="#cat-tshirt" class="mnav-cat" onclick="closeMobileNav()">
-    <span class="mnav-cat-icon">T</span>
     <span data-i18n="catTshirt">تي شيرت</span>
   </a>
   <a href="#cat-polo" class="mnav-cat" onclick="closeMobileNav()">
-    <span class="mnav-cat-icon">P</span>
     <span data-i18n="catPolo">بولو</span>
   </a>
   <a href="#cat-tracksuit" class="mnav-cat" onclick="closeMobileNav()">
-    <span class="mnav-cat-icon">TR</span>
     <span data-i18n="catTracksuit">تراكسوت</span>
   </a>
   <a href="#cat-jeans" class="mnav-cat" onclick="closeMobileNav()">
-    <span class="mnav-cat-icon">J</span>
     <span data-i18n="catJeans">بنطرون</span>
   </a>
   <a href="#cat-shirt" class="mnav-cat" onclick="closeMobileNav()">
-    <span class="mnav-cat-icon">S</span>
     <span data-i18n="catShirt">قميص</span>
   </a>
 </nav>
@@ -1847,8 +1835,10 @@ function renderCard(p, i){
         <div class="slider-track">
           <div class="slide">
             <img src="${imgPath(p,1)}" alt="${p.brand}"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-            <div class="absolute inset-0 flex-col items-center justify-center bg-[#f2ece2]" style="display:none">
+                 style="opacity:0;transition:opacity .25s"
+                 onload="this.style.opacity='1';this.nextElementSibling.style.display='none';"
+                 onerror="this.style.display='none';" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]">
               <div class="brand-watermark">${p.brand}</div>
               <div class="brand-sub">${p.sub}</div>
             </div>
