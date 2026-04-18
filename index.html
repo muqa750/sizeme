@@ -71,6 +71,15 @@
     --fs-3xl : clamp(1.8rem, 6vw, 3rem);       /* عنوان Hero */
     --fs-hero: clamp(2rem, 8vw, 4rem);         /* العنوان الرئيسي */
   }
+  /* هذا الأمر يضمن أن الخط سيطبق على كل حرف في الموقع */
+* {
+    font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+}
+
+/* لجعل العناوين تظهر بالوزن العريض 700 الذي حملناه */
+h1, h2, h3, .brand-name {
+    font-weight: 700;
+}
   html,body{background:var(--paper);color:var(--ink);}
   body{font-family:'Inter','Tajawal',system-ui,-apple-system,sans-serif;}
   [dir="rtl"] body{font-family:'Tajawal','Inter',system-ui,sans-serif;}
@@ -897,6 +906,7 @@
     font-size:max(16px,1rem) !important;
     outline:none; transition:border-color .15s;
     -moz-appearance:textfield;
+    appearance: textfield;
   }
   #sizeCalcModal input[type=number]::-webkit-inner-spin-button,
   #sizeCalcModal input[type=number]::-webkit-outer-spin-button{ -webkit-appearance:none; }
