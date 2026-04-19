@@ -46,7 +46,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
     /* ── الألوان ── */
@@ -60,19 +60,23 @@
          الصيغة: clamp(أصغر_قيمة, قيمة_مرنة, أكبر_قيمة)
          القيمة المرنة = نسبة من عرض الشاشة (vw)
          النتيجة: حجم يتغير بسلاسة بين الجوال والحاسوب ── */
-    --fs-2xs : clamp(.55rem, 1.4vw, .65rem);   /* تسميات صغيرة جداً */
-    --fs-xs  : clamp(.65rem, 1.8vw, .75rem);   /* kicker / badge */
-    --fs-sm  : clamp(.75rem, 2.2vw, .875rem);  /* نصوص ثانوية */
-    --fs-base: clamp(.875rem, 2.5vw, 1rem);    /* النص الأساسي */
-    --fs-lg  : clamp(1rem, 3vw, 1.2rem);       /* عناوين صغيرة */
-    --fs-xl  : clamp(1.1rem, 3.5vw, 1.4rem);   /* عناوين متوسطة */
-    --fs-2xl : clamp(1.4rem, 4.5vw, 2rem);     /* عناوين الأقسام */
-    --fs-3xl : clamp(1.8rem, 6vw, 3rem);       /* عنوان Hero */
-    --fs-hero: clamp(2rem, 8vw, 4rem);         /* العنوان الرئيسي */
+    --fs-2xs : clamp(.6rem, 1.5vw, .7rem);     /* تسميات صغيرة جداً */
+    --fs-xs  : clamp(.7rem, 1.9vw, .8rem);     /* kicker / badge */
+    --fs-sm  : clamp(.8rem, 2.3vw, .925rem);   /* نصوص ثانوية */
+    --fs-base: clamp(.925rem, 2.6vw, 1.06rem); /* النص الأساسي */
+    --fs-lg  : clamp(1.05rem, 3.1vw, 1.25rem); /* عناوين صغيرة */
+    --fs-xl  : clamp(1.15rem, 3.6vw, 1.45rem); /* عناوين متوسطة */
+    --fs-2xl : clamp(1.45rem, 4.6vw, 2.05rem); /* عناوين الأقسام */
+    --fs-3xl : clamp(1.85rem, 6.2vw, 3.1rem);  /* عنوان Hero */
+    --fs-hero: clamp(2.1rem, 8.2vw, 4.1rem);   /* العنوان الرئيسي */
   }
   html,body{background:var(--paper);color:var(--ink);}
-  body{font-family:'Inter','Tajawal',system-ui,-apple-system,sans-serif;}
-  [dir="rtl"] body{font-family:'Tajawal','Inter',system-ui,sans-serif;}
+  body{font-family:'Inter','Readex Pro',system-ui,-apple-system,sans-serif;}
+  [dir="rtl"] body{font-family:'Readex Pro','Inter',system-ui,sans-serif;font-weight:300;}
+  [dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3,[dir="rtl"] h4,
+  [dir="rtl"] .font-bold,[dir="rtl"] .font-semibold,
+  [dir="rtl"] .serif{font-weight:700;}
+  [dir="rtl"] .kicker{font-weight:400;}
   .serif{font-family:'Cormorant Garamond',serif;font-weight:500;letter-spacing:.02em;}
   .kicker{letter-spacing:.35em;text-transform:uppercase;font-size:.7rem;color:var(--mute);}
   .hairline{border-color:var(--line);}
@@ -182,13 +186,34 @@
     /* ── M3: صور المنتجات — نسبة أبعاد أوسع للجوال لتُظهر القميص كاملاً ── */
     .product-img{
       aspect-ratio   : 4/5 !important;
-      /* contain موروث من الـ core — يضمن عدم الـ CLS */
     }
     .product-img img,
     .slide img{
       object-fit     : contain !important;
       object-position: center top !important;
       background     : #f2ece2;
+    }
+
+    /* ── M3b: Product Modal slider — 100vw على الموبايل ── */
+    #productModal .pm-img-wrap{
+      width:100vw !important;
+      max-width:100vw !important;
+      margin-inline-start:0 !important;
+    }
+    #productModal .pm-img-wrap .pm-slide{
+      flex:0 0 100vw !important;
+      min-width:100vw !important;
+      width:100vw !important;
+    }
+    #productModal .pm-img-wrap .pm-slide img{
+      object-fit:contain !important;
+      object-position:center top !important;
+      background:#f2ece2;
+    }
+    #productModal .pm-sheet{
+      width:100vw !important;
+      max-width:100vw !important;
+      border-radius:0 !important;
     }
 
     /* ── M4: Drawers وForms ── */
@@ -503,21 +528,23 @@
      زر واتساب الثابت
      ===================================================== */
   #waFloat{
-    display     : none; /* مخفي على الحاسوب */
+    display     : none;
     position    : fixed;
-    bottom      : 90px; /* فوق شريط السلة المتحرك */
-    inset-inline-end: 14px; /* RTL-aware — يظهر على اليمين عربي واليسار إنجليزي */
-    width:54px; height:54px;
+    bottom      : 90px;
+    inset-inline-end: 14px;
+    width:56px; height:56px;
     border-radius: 50%;
-    background  : #25D366;
+    background  : #ffffff;
     align-items : center;
     justify-content: center;
-    box-shadow  : 0 4px 18px rgba(37,211,102,.5);
+    border      : 2px solid #c9a84c;
+    box-shadow  : 0 4px 20px rgba(0,0,0,.10), 0 0 0 1px rgba(201,168,76,.15);
     z-index     : 43;
     transition  : transform .2s var(--spring), box-shadow .2s;
     text-decoration: none;
   }
-  #waFloat:active{ transform:scale(0.91); box-shadow:0 2px 8px rgba(37,211,102,.3); }
+  #waFloat svg{ fill:#c9a84c !important; }
+  #waFloat:active{ transform:scale(0.91); box-shadow:0 2px 10px rgba(201,168,76,.25); }
   @media(max-width:768px){ #waFloat{ display:flex; } }
 
   /* =====================================================
@@ -844,17 +871,45 @@
     to  { opacity:1; transform:scale(1)   translateY(0); }
   }
   #productModal .pm-img-wrap{
-    aspect-ratio:3/4; background:#f2ece2;
-    position:relative; overflow:hidden;
+    display:flex;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    background:#f2ece2;
+    position:relative;
+  }
+  #productModal .pm-img-wrap::-webkit-scrollbar{ display:none; }
+  #productModal .pm-img-wrap .pm-slide{
+    flex:0 0 100%;
+    min-width:100%;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    aspect-ratio:3/4;
+    position:relative;
+    background:#f2ece2;
   }
   @media(min-width:640px){
-    #productModal .pm-img-wrap{ aspect-ratio:1/1; }
+    #productModal .pm-img-wrap .pm-slide{ aspect-ratio:1/1; }
   }
-  #productModal .pm-img-wrap img{
+  #productModal .pm-img-wrap .pm-slide img{
     width:100%; height:100%; object-fit:cover;
+    display:block;
     opacity:0; transition:opacity .25s;
   }
-  #productModal .pm-img-wrap img.loaded{ opacity:1; }
+  #productModal .pm-img-wrap .pm-slide img.loaded{ opacity:1; }
+  /* dots للصور */
+  .pm-dots{
+    display:flex; justify-content:center; gap:5px;
+    padding:8px 0 4px;
+  }
+  .pm-dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--line); cursor:pointer;
+    transition:all .2s;
+  }
+  .pm-dot.active{ background:var(--ink); width:16px; border-radius:3px; }
   #productModal .pm-close{
     position:absolute; top:.85rem; inset-inline-end:.85rem;
     width:34px; height:34px; border-radius:50%;
@@ -1533,7 +1588,7 @@
 
 <!-- ================= زر واتساب ثابت — جوال فقط ================= -->
 <a id="waFloat" href="https://wa.me/9647739334545" target="_blank" rel="noopener noreferrer" aria-label="تواصل عبر واتساب">
-  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff">
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#c9a84c">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
     <path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.553 4.103 1.522 5.828L.043 23.757a.5.5 0 00.607.65l6.077-1.592A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.876 9.876 0 01-5.031-1.374l-.36-.214-3.733.979.995-3.638-.234-.374A9.856 9.856 0 012.118 12C2.118 6.535 6.535 2.118 12 2.118c5.464 0 9.882 4.417 9.882 9.882 0 5.464-4.418 9.882-9.882 9.882z"/>
   </svg>
@@ -3132,24 +3187,67 @@ function openProductModal(pid){
   const modal = document.getElementById('productModal');
   if(!modal) return;
 
-  /* ── صور: نبدأ بالصورة الأولى ثم نكتشف إضافيات ── */
+  /* ── صور: slider أفقي مع scroll-snap ── */
   const imgWrap = modal.querySelector('.pm-img-wrap');
+  const dotsWrap = modal.querySelector('.pm-dots');
   imgWrap.innerHTML = '';
+  dotsWrap.innerHTML = '';
 
-  /* placeholder watermark */
-  const wm = document.createElement('div');
-  wm.className = 'absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]';
-  wm.innerHTML = `<div class="brand-watermark">${p.brand}</div><div class="brand-sub">${p.sub}</div>`;
-  imgWrap.appendChild(wm);
+  /* اكتشاف عدد الصور المتاحة (نجرب حتى 6) */
+  const maxProbe = 6;
+  let loadedSlides = 0;
 
-  /* صورة رئيسية */
-  const mainImg = document.createElement('img');
-  mainImg.alt = p.brand;
-  mainImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s';
-  mainImg.onload  = ()=>{ mainImg.style.opacity='1'; wm.style.display='none'; };
-  mainImg.onerror = ()=>{ mainImg.style.display='none'; };
-  mainImg.src = imgPath(p, 1);
-  imgWrap.appendChild(mainImg);
+  function updateDots(){
+    dotsWrap.querySelectorAll('.pm-dot').forEach((d,i)=>{
+      d.classList.toggle('active', i === getCurrentSlide());
+    });
+  }
+  function getCurrentSlide(){
+    if(!imgWrap.children.length) return 0;
+    const sw = imgWrap.children[0].offsetWidth;
+    return sw ? Math.round(imgWrap.scrollLeft / sw) : 0;
+  }
+  imgWrap.addEventListener('scroll', updateDots);
+
+  for(let seq = 1; seq <= maxProbe; seq++){
+    const slide = document.createElement('div');
+    slide.className = 'pm-slide';
+
+    /* watermark */
+    const wm = document.createElement('div');
+    wm.className = 'absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]';
+    wm.innerHTML = `<div class="brand-watermark">${p.brand}</div><div class="brand-sub">${p.sub}</div>`;
+    slide.appendChild(wm);
+
+    const img = document.createElement('img');
+    img.alt = p.brand + ' ' + seq;
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+    img.onload = ()=>{
+      img.classList.add('loaded');
+      img.style.opacity='1';
+      wm.style.display='none';
+      loadedSlides++;
+      /* build dots */
+      dotsWrap.innerHTML = '';
+      for(let d=0; d<loadedSlides; d++){
+        const dot = document.createElement('span');
+        dot.className = 'pm-dot' + (d===0?' active':'');
+        dot.addEventListener('click',()=>{
+          imgWrap.children[d].scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
+        });
+        dotsWrap.appendChild(dot);
+      }
+      if(loadedSlides <= 1) dotsWrap.style.display='none';
+      else dotsWrap.style.display='';
+    };
+    img.onerror = ()=>{
+      if(seq === 1){ /* الصورة الأولى فشلت — نبقي الـ watermark */ img.style.display='none'; }
+      else { slide.remove(); } /* نحذف slides الفارغة */
+    };
+    img.src = imgPath(p, seq);
+    slide.appendChild(img);
+    imgWrap.appendChild(slide);
+  }
 
   /* ── الجانب الأيسر/الأيمن: التفاصيل ── */
   const info = modal.querySelector('.pm-info');
@@ -3344,7 +3442,10 @@ window.moveFilterIndicator = moveFilterIndicator;
     <button class="pm-close" onclick="closeProductModal()" aria-label="close">✕</button>
     <div class="flex flex-col sm:flex-row" style="min-height:0">
       <!-- صورة -->
-      <div class="pm-img-wrap sm:w-2/5 flex-shrink-0"></div>
+      <div class="sm:w-2/5 flex-shrink-0">
+        <div class="pm-img-wrap"></div>
+        <div class="pm-dots"></div>
+      </div>
       <!-- تفاصيل -->
       <div class="pm-info p-5 flex-1 overflow-y-auto"></div>
     </div>
