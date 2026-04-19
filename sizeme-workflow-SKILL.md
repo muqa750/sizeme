@@ -11,7 +11,7 @@ description: >
 
 # SizeMe Development Workflow
 
-أنت تعمل على موقع SizeMe — متجر إلكتروني بملف واحد (`D:\sizeme\index.html`).
+أنت تعمل على موقع SizeMe — متجر إلكتروني بملف واحد (`E:\sizeme\index.html`).
 المستخدمون 95% على الجوال. كل تعديل مهما كان صغيراً يتبع الخطوات التالية بالترتيب.
 
 ---
@@ -52,7 +52,7 @@ description: >
 
 ## الخطوة 3 — نفّذ التعديل
 
-استخدم أداة Edit أو Write لتعديل `D:\sizeme\index.html`.
+استخدم أداة Edit أو Write لتعديل `E:\sizeme\index.html`.
 
 - عدّل فقط ما وعدت به في الخطوة 1
 - لا تغيير جانبي بدون إخبار المستخدم
@@ -66,7 +66,7 @@ description: >
 
 **بنية المجلدات:**
 ```
-D:\sizeme\
+E:\sizeme\
 ├── imagestshirts\    ← تي شيرت  — اسم: {globalNum}-{seq}-{imgKey}.jpg
 ├── imagespolo\       ← بولو      — اسم: {catSeq}-{seq}-{imgKey}.jpg
 ├── imagesjeans\      ← بنطرون    — اسم: {catSeq}-{seq}-{imgKey}.jpg
@@ -87,17 +87,17 @@ D:\sizeme\
 بعد الانتهاء، أعطِ المستخدم هذا الأمر جاهزاً للنسخ في VS Code Terminal:
 
 ```bash
-cd /d D:\sizeme && git add -A && git commit -m "تعديل: [وصف قصير]" && git push
+cd /d E:\sizeme && git add -A && git commit -m "تعديل: [وصف قصير]" && git push
 ```
 
 استبدل `[وصف قصير]` بوصف دقيق لما تم تعديله بالعربية.
 
 **مثال:**
 ```bash
-cd /d D:\sizeme && git add -A && git commit -m "تعديل: إضافة منتج Nike Tracksuit رقم 30" && git push
+cd /d E:\sizeme && git add -A && git commit -m "تعديل: إضافة منتج Nike Tracksuit رقم 30" && git push
 ```
 
-> 💡 الأمر `cd /d D:\sizeme` يضمن تشغيل git من المجلد الصحيح دائماً.
+> 💡 الأمر `cd /d E:\sizeme` يضمن تشغيل git من المجلد الصحيح دائماً.
 
 ---
 
