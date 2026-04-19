@@ -46,7 +46,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Readex+Pro:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
     /* ── الألوان ── */
@@ -71,8 +71,8 @@
     --fs-hero: clamp(2.1rem, 8.2vw, 4.1rem);   /* العنوان الرئيسي */
   }
   html,body{background:var(--paper);color:var(--ink);}
-  body{font-family:'Inter','Readex Pro',system-ui,-apple-system,sans-serif;}
-  [dir="rtl"] body{font-family:'Readex Pro','Inter',system-ui,sans-serif;font-weight:300;}
+  body{font-family:'Inter','IBM Plex Sans Arabic',system-ui,-apple-system,sans-serif;}
+  [dir="rtl"] body{font-family:'IBM Plex Sans Arabic','Inter',system-ui,sans-serif;font-weight:300;}
   [dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3,[dir="rtl"] h4,
   [dir="rtl"] .font-bold,[dir="rtl"] .font-semibold,
   [dir="rtl"] .serif{font-weight:700;}
@@ -128,12 +128,24 @@
   .play-circle:hover{transform:scale(1.06);}
 
   /* =====================================================
-     SLIDER
+     SLIDER — scroll-snap based (mobile-first)
      ===================================================== */
-  .slider-wrap{position:relative;overflow:hidden;cursor:grab;}
+  .slider-wrap{
+    position:relative; overflow:hidden; cursor:grab;
+  }
   .slider-wrap:active{cursor:grabbing;}
-  .slider-track{display:flex;height:100%;transition:transform .32s cubic-bezier(.4,0,.2,1);will-change:transform;}
-  .slide{min-width:100%;flex-shrink:0;position:relative;height:100%;}
+  .slider-track{
+    display:flex; height:100%;
+    overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .slider-track::-webkit-scrollbar{display:none;}
+  .slide{
+    flex:0 0 100%; min-width:100%; scroll-snap-align:start;
+    scroll-snap-stop:always; position:relative; height:100%;
+  }
   .slide img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
   .slider-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
     width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.88);
@@ -531,7 +543,8 @@
     display     : none;
     position    : fixed;
     bottom      : 90px;
-    inset-inline-end: 14px;
+    right       : 14px;
+    left        : auto;
     width:56px; height:56px;
     border-radius: 50%;
     background  : #ffffff;
@@ -540,11 +553,14 @@
     border      : 2px solid #c9a84c;
     box-shadow  : 0 4px 20px rgba(0,0,0,.10), 0 0 0 1px rgba(201,168,76,.15);
     z-index     : 43;
-    transition  : transform .2s var(--spring), box-shadow .2s;
     text-decoration: none;
+    touch-action: none;
+    user-select : none;
+    -webkit-user-select: none;
+    cursor      : grab;
   }
-  #waFloat svg{ fill:#c9a84c !important; }
-  #waFloat:active{ transform:scale(0.91); box-shadow:0 2px 10px rgba(201,168,76,.25); }
+  #waFloat.wa-dragging{ cursor:grabbing; box-shadow:0 8px 30px rgba(0,0,0,.18); transform:scale(1.08); }
+  #waFloat svg{ fill:#c9a84c !important; pointer-events:none; }
   @media(max-width:768px){ #waFloat{ display:flex; } }
 
   /* =====================================================
@@ -2308,8 +2324,8 @@ function renderProducts(){
   }, 0);
 }
 
-/* =================== SLIDER ENGINE =================== */
-const MAX_EXTRA_IMAGES = 6; // probe for up to 6 extra images per product
+/* =================== SLIDER ENGINE (scroll-snap) =================== */
+const MAX_EXTRA_IMAGES = 6;
 
 function initSliders(){
   $$('#productSections .product-card').forEach(card=>{
@@ -2323,63 +2339,53 @@ function initSliders(){
 
     let currentIdx = 0;
 
-    /* ── Go to slide index ── */
+    /* ── الحصول على الـ slide الحالي من موضع التمرير ── */
+    function getCurrentIdx(){
+      const slides = track.querySelectorAll('.slide');
+      if(!slides.length) return 0;
+      const sw = slides[0].offsetWidth;
+      return sw ? Math.round(track.scrollLeft / sw) : 0;
+    }
+
+    /* ── تحديث النقاط ── */
+    function updateDots(){
+      currentIdx = getCurrentIdx();
+      dotsWrap.querySelectorAll('.sdot').forEach((d,i)=>d.classList.toggle('active', i===currentIdx));
+    }
+
+    /* ── الانتقال لـ slide معين ── */
     function goTo(idx){
       const slides = track.querySelectorAll('.slide');
       idx = Math.max(0, Math.min(idx, slides.length-1));
       currentIdx = idx;
-      track.style.transform = `translateX(${wrap.dir==='rtl'?'':'-'}${idx * 100}%)`;
-      dotsWrap.querySelectorAll('.sdot').forEach((d,i)=>d.classList.toggle('active', i===idx));
+      slides[idx].scrollIntoView({behavior:'smooth', block:'nearest', inline:'start'});
+      setTimeout(updateDots, 350);
     }
 
-    /* ── RTL-aware direction ── */
-    Object.defineProperty(wrap,'dir',{get:()=>document.documentElement.dir});
+    /* ── مراقبة التمرير لتحديث النقاط ── */
+    let scrollTimer;
+    track.addEventListener('scroll', ()=>{
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(updateDots, 80);
+    }, {passive:true});
 
     /* ── Arrow clicks ── */
     btnPrev?.addEventListener('click', e=>{ e.stopPropagation(); goTo(currentIdx-1); });
     btnNext?.addEventListener('click', e=>{ e.stopPropagation(); goTo(currentIdx+1); });
 
-    /* ── Dot clicks (delegated) ── */
+    /* ── Dot clicks ── */
     dotsWrap?.addEventListener('click', e=>{
       const dot = e.target.closest('.sdot');
       if(!dot) return;
+      e.stopPropagation();
       goTo([...dotsWrap.querySelectorAll('.sdot')].indexOf(dot));
     });
-
-    /* ── Touch / Swipe ── */
-    let tx0=0, ty0=0, swiping=false;
-    wrap.addEventListener('touchstart', e=>{ tx0=e.touches[0].clientX; ty0=e.touches[0].clientY; swiping=true; }, {passive:true});
-    wrap.addEventListener('touchmove',  e=>{
-      if(!swiping) return;
-      if(Math.abs(e.touches[0].clientY-ty0) > Math.abs(e.touches[0].clientX-tx0)){ swiping=false; return; }
-      e.preventDefault();
-    },{passive:false});
-    wrap.addEventListener('touchend', e=>{
-      if(!swiping) return; swiping=false;
-      const dx = e.changedTouches[0].clientX - tx0;
-      if(Math.abs(dx)<30) return;
-      const isRTL = document.documentElement.dir==='rtl';
-      (dx < 0) !== isRTL ? goTo(currentIdx+1) : goTo(currentIdx-1);
-    });
-
-    /* ── Mouse drag ── */
-    let mx0=0, dragging=false;
-    wrap.addEventListener('mousedown', e=>{ mx0=e.clientX; dragging=true; e.preventDefault(); });
-    wrap.addEventListener('mouseup',   e=>{
-      if(!dragging) return; dragging=false;
-      const dx = e.clientX - mx0;
-      if(Math.abs(dx)<20) return;
-      const isRTL = document.documentElement.dir==='rtl';
-      (dx < 0) !== isRTL ? goTo(currentIdx+1) : goTo(currentIdx-1);
-    });
-    wrap.addEventListener('mouseleave',()=>{ dragging=false; });
 
     /* ── Probe extra images (2 → MAX_EXTRA_IMAGES+1) ── */
     for(let seq=2; seq<=MAX_EXTRA_IMAGES+1; seq++){
       (function(s){
         const probe = new Image();
         probe.onload = ()=>{
-          /* add slide */
           const slide = document.createElement('div');
           slide.className = 'slide';
           const img = document.createElement('img');
@@ -2387,16 +2393,12 @@ function initSliders(){
           img.alt = p.brand;
           slide.appendChild(img);
           track.appendChild(slide);
-          /* add dot */
           const dot = document.createElement('span');
           dot.className = 'sdot';
           dotsWrap.appendChild(dot);
-          /* show controls */
           dotsWrap.classList.remove('hidden');
           btnPrev.classList.remove('hidden');
           btnNext.classList.remove('hidden');
-          /* reset to current */
-          goTo(currentIdx);
         };
         probe.src = imgPath(p, s);
       })(seq);
@@ -3476,6 +3478,86 @@ window.moveFilterIndicator = moveFilterIndicator;
     <div id="scResult"></div>
   </div>
 </div>
+
+<!-- ================= DRAGGABLE WHATSAPP BUTTON ================= -->
+<script>
+(function(){
+  const fab = document.getElementById('waFloat');
+  if(!fab) return;
+  let isDragging = false, wasMoved = false;
+  let startX, startY, fabX, fabY;
+
+  /* استرجاع الموقع المحفوظ */
+  try {
+    const saved = JSON.parse(localStorage.getItem('waFloat_pos'));
+    if(saved){
+      fab.style.right  = 'auto';
+      fab.style.bottom = 'auto';
+      fab.style.left   = Math.min(saved.x, window.innerWidth - 60) + 'px';
+      fab.style.top    = Math.min(saved.y, window.innerHeight - 60) + 'px';
+    }
+  } catch(e){}
+
+  function onStart(e){
+    const ev = e.touches ? e.touches[0] : e;
+    const rect = fab.getBoundingClientRect();
+    startX = ev.clientX; startY = ev.clientY;
+    fabX = rect.left; fabY = rect.top;
+    isDragging = true; wasMoved = false;
+    fab.classList.add('wa-dragging');
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!isDragging) return;
+    const ev = e.touches ? e.touches[0] : e;
+    const dx = ev.clientX - startX, dy = ev.clientY - startY;
+    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) wasMoved = true;
+    if(!wasMoved) return;
+    let nx = fabX + dx, ny = fabY + dy;
+    /* حدود الشاشة */
+    nx = Math.max(0, Math.min(nx, window.innerWidth  - 58));
+    ny = Math.max(0, Math.min(ny, window.innerHeight - 58));
+    fab.style.right  = 'auto';
+    fab.style.bottom = 'auto';
+    fab.style.left   = nx + 'px';
+    fab.style.top    = ny + 'px';
+    e.preventDefault();
+  }
+  function onEnd(){
+    if(!isDragging) return;
+    isDragging = false;
+    fab.classList.remove('wa-dragging');
+    /* snap to nearest edge */
+    const rect = fab.getBoundingClientRect();
+    const midX = rect.left + rect.width/2;
+    let finalX;
+    if(midX < window.innerWidth / 2){
+      finalX = 8;
+    } else {
+      finalX = window.innerWidth - 58 - 8;
+    }
+    fab.style.transition = 'left .3s cubic-bezier(.34,1.56,.64,1), top .3s ease';
+    fab.style.left = finalX + 'px';
+    setTimeout(()=>{ fab.style.transition = ''; }, 350);
+    /* حفظ الموقع */
+    try { localStorage.setItem('waFloat_pos', JSON.stringify({x:finalX, y:rect.top})); } catch(e){}
+    /* إذا لم يتحرك → فتح الرابط */
+    if(!wasMoved){
+      window.open(fab.href, '_blank');
+    }
+  }
+
+  fab.addEventListener('touchstart', onStart, {passive:false});
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('touchend', onEnd);
+  /* دعم الماوس للاختبار */
+  fab.addEventListener('mousedown', onStart);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  /* منع فتح الرابط عند السحب */
+  fab.addEventListener('click', function(e){ if(wasMoved){ e.preventDefault(); wasMoved=false; } });
+})();
+</script>
 
 </body>
 </html>
