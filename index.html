@@ -305,14 +305,14 @@
     }
     .product-card [data-role="add"]{ margin-top:auto !important; }
 
-    /* الاسم — سطر واحد مع قص */
+    /* الاسم — أصغر قليلاً ليتسع للأسماء الطويلة */
     .card-brand{
-      font-size:var(--fs-sm) !important;
+      font-size:var(--fs-xs) !important;
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
       letter-spacing:0 !important;
     }
     .card-sub{
-      font-size:.55rem !important; letter-spacing:.05em !important;
+      font-size:.5rem !important; letter-spacing:.03em !important;
     }
 
     /* السعر — دائماً ظاهر بالكامل */
@@ -329,14 +329,15 @@
       width:20px !important; height:20px !important;
     }
 
-    /* المقاسات — مضغوطة بدون أوزان */
+    /* المقاسات — مضغوطة مع أوزان صغيرة جداً */
     .card-sizes-wrap{ margin-top:8px !important; }
-    .card-sizes-wrap .size-card{ padding:4px 2px !important; }
+    .card-sizes-wrap .size-card{ padding:3px 2px !important; }
     .card-sizes-wrap .size-card .lbl{
-      font-size:.7rem !important; letter-spacing:0 !important;
+      font-size:.65rem !important; letter-spacing:0 !important;
     }
     .card-sizes-wrap .size-card .wt{
-      display:none !important; /* الأوزان تظهر فقط في المودال الكامل */
+      font-size:.4rem !important; letter-spacing:0 !important;
+      opacity:.6; margin-top:0 !important; line-height:1.1;
     }
 
     /* زر الإضافة — مضغوط */
