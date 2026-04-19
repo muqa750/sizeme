@@ -32,8 +32,10 @@
     if(!lang || !valid[lang]) lang = 'ar';
     document.documentElement.lang = lang;
     document.documentElement.dir  = valid[lang];
+    /* تطبيق الثيم المحفوظ فوراً لمنع وميض */
+    var theme = localStorage.getItem('sizeme_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
   } catch(e) {
-    /* localStorage غير متاح (وضع خاص) — نبقى على الافتراضي ar/rtl */
     document.documentElement.lang = 'ar';
     document.documentElement.dir  = 'rtl';
   }
@@ -49,12 +51,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
-    /* ── الألوان ── */
+    /* ── الألوان — Luxury Gold Theme ── */
     --ink:#1a1a1a;
-    --paper:#faf8f5;
-    --accent:#b8312e;
-    --line:#e6e1d8;
-    --mute:#7a736a;
+    --paper:#faf9f6;
+    --accent:#c9a84c;
+    --accent-light:#d4b968;
+    --accent-glow:rgba(201,168,76,0.25);
+    --error:#b8312e;
+    --card-bg:#ffffff;
+    --line:#e8e3da;
+    --mute:#8a8578;
+    --gold-gradient:linear-gradient(135deg,#c9a84c 0%,#e8d48b 50%,#c9a84c 100%);
 
     /* ── نظام الخطوط الديناميكي (CSS Clamp)
          الصيغة: clamp(أصغر_قيمة, قيمة_مرنة, أكبر_قيمة)
@@ -131,7 +138,7 @@
   .overlay{background:rgba(10,10,10,.45);backdrop-filter:blur(2px);}
   .scrollbar-thin::-webkit-scrollbar{width:6px;}
   .scrollbar-thin::-webkit-scrollbar-thumb{background:#d4d0c8;border-radius:3px;}
-  .logo-badge{background:#b8312e;color:#fff;font-family:'Cormorant Garamond',serif;letter-spacing:.25em;}
+  .logo-badge{background:var(--accent);color:#fff;font-family:'Cormorant Garamond',serif;letter-spacing:.25em;}
   .size-card{border:1px solid var(--line);padding:.55rem .25rem;text-align:center;border-radius:2px;cursor:pointer;transition:all .15s;background:#fff;}
   .size-card:hover{border-color:var(--ink);}
   .size-card.active{background:var(--ink);color:#fff;border-color:var(--ink);}
@@ -660,9 +667,9 @@
      FORM VALIDATION
      ===================================================== */
   .field-wrap{ position:relative; }
-  .field-error-input{ border-color:var(--accent) !important; background:#fff8f8 !important; }
+  .field-error-input{ border-color:var(--error) !important; background:#fff8f8 !important; }
   .field-error-msg{
-    display:none; color:var(--accent);
+    display:none; color:var(--error);
     font-size:.68rem; margin-top:.3rem; padding-inline-start:.1rem;
   }
   .field-error-msg.show{ display:flex; align-items:center; gap:.3rem; }
@@ -730,9 +737,9 @@
   }
   /* Pulse ring radiates from the badge edges */
   @keyframes badge-pulse{
-    0%  { box-shadow:0 0 0 0   rgba(184,49,46,.55); }
-    55% { box-shadow:0 0 0 6px rgba(184,49,46,0);   }
-    100%{ box-shadow:0 0 0 0   rgba(184,49,46,0);   }
+    0%  { box-shadow:0 0 0 0   rgba(201,168,76,.55); }
+    55% { box-shadow:0 0 0 6px rgba(201,168,76,0);   }
+    100%{ box-shadow:0 0 0 0   rgba(201,168,76,0);   }
   }
   /* Tiny dot before the text */
   .new-badge::before{
@@ -1067,6 +1074,308 @@
     font-size:.75rem; color:var(--mute);
     margin-top:.2rem;
   }
+
+  /* =====================================================
+     THEME TOGGLE BUTTON
+     ===================================================== */
+  .theme-toggle{
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:1px solid var(--line);
+    background:transparent; color:var(--mute);
+    transition:all .25s var(--smooth);
+    flex-shrink:0;
+  }
+  .theme-toggle:hover{ border-color:var(--accent); color:var(--accent); }
+  .theme-toggle svg{ pointer-events:none; transition:transform .3s var(--spring); }
+  .theme-toggle:active svg{ transform:rotate(30deg) scale(.9); }
+
+  /* =====================================================
+     LUXURY PREMIUM ENHANCEMENTS
+     ===================================================== */
+  /* Gold shimmer on serif headings */
+  .serif{ position:relative; }
+
+  /* Premium product card enhancements */
+  .product-card{
+    background:var(--card-bg);
+    border:1px solid var(--line);
+    transition:all .3s var(--spring);
+    overflow:hidden;
+    box-shadow:0 2px 12px rgba(0,0,0,.04);
+  }
+  .product-card:hover{
+    border-color:var(--accent);
+  }
+
+  /* Gold accent line on card hover */
+  .product-card::after{
+    content:''; position:absolute; bottom:0; left:0; right:0;
+    height:2px; background:var(--gold-gradient);
+    transform:scaleX(0); transition:transform .35s var(--spring);
+    transform-origin:center;
+  }
+  .product-card:hover::after{ transform:scaleX(1); }
+
+  /* Premium button styling */
+  .btn-ink{
+    background:var(--ink); color:#fff;
+    transition:all .28s var(--smooth);
+    position:relative; overflow:hidden;
+    border:none;
+  }
+  .btn-ink:hover{ opacity:.88; }
+  .btn-outline{
+    border:1px solid var(--ink); color:var(--ink);
+    transition:all .25s var(--smooth);
+  }
+  .btn-outline:hover{ background:var(--ink); color:#fff; }
+
+  /* Premium size card active state with gold */
+  .size-card.active{
+    background:var(--ink); color:#fff; border-color:var(--ink);
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+  }
+
+  /* Gold star enhancements */
+  .star-fill{ color:#c9a84c; text-shadow:0 0 8px rgba(201,168,76,.3); }
+
+  /* Trust strip premium styling */
+  .trust-strip .serif,
+  section.border-y .serif{ color:var(--accent); }
+
+  /* Premium announcement bar */
+  .announcement-gold{
+    background:linear-gradient(90deg,#1a1a1a 0%,#2a2520 50%,#1a1a1a 100%);
+  }
+
+  /* Coupon error — use --error */
+  #couponError{ color:var(--error) !important; }
+
+  /* Premium header glow on scroll */
+  header{
+    transition:box-shadow .3s var(--smooth);
+  }
+  header.scrolled{
+    box-shadow:0 1px 20px rgba(0,0,0,.06);
+  }
+
+  /* =====================================================
+     DARK THEME — [data-theme="dark"]
+     ===================================================== */
+  [data-theme="dark"]{
+    --ink:#f0ece2;
+    --paper:#0f0f0f;
+    --card-bg:#161616;
+    --line:rgba(201,168,76,0.12);
+    --mute:#9a9590;
+  }
+  html[data-theme="dark"],
+  html[data-theme="dark"] body{
+    background:#0f0f0f;
+    color:#f0ece2;
+  }
+
+  /* Header dark */
+  [data-theme="dark"] header{
+    background:rgba(15,15,15,0.95) !important;
+    border-color:rgba(201,168,76,0.1) !important;
+  }
+
+  /* Cards & panels */
+  [data-theme="dark"] .product-card,
+  [data-theme="dark"] .size-card,
+  [data-theme="dark"] .chip{
+    background:#161616; border-color:rgba(201,168,76,0.1);
+    color:#f0ece2;
+  }
+  [data-theme="dark"] .chip.active{
+    background:var(--accent); color:#0f0f0f; border-color:var(--accent);
+  }
+  [data-theme="dark"] .size-card.active{
+    background:var(--accent); color:#0f0f0f; border-color:var(--accent);
+  }
+
+  /* Product image bg */
+  [data-theme="dark"] .product-img,
+  [data-theme="dark"] .na-img,
+  [data-theme="dark"] .brand-watermark{ color:#f0ece2; }
+  [data-theme="dark"] .product-img{ background:#111 !important; }
+
+  /* Buttons dark */
+  [data-theme="dark"] .btn-ink{
+    background:var(--accent); color:#0f0f0f;
+  }
+  [data-theme="dark"] .btn-outline{
+    border-color:var(--accent); color:var(--accent);
+  }
+  [data-theme="dark"] .btn-outline:hover{
+    background:var(--accent); color:#0f0f0f;
+  }
+
+  /* Drawers & modals dark */
+  [data-theme="dark"] #cartDrawer,
+  [data-theme="dark"] #productModal .pm-sheet,
+  [data-theme="dark"] #sizeCalcModal .sc-sheet,
+  [data-theme="dark"] #checkoutModal > div > .bg-white,
+  [data-theme="dark"] #suggModal > .bg-white,
+  [data-theme="dark"] #reviewsModal > .bg-white,
+  [data-theme="dark"] #confirmModal > div > .bg-white{
+    background:#161616 !important;
+    color:#f0ece2 !important;
+  }
+
+  /* Inputs dark */
+  [data-theme="dark"] input,
+  [data-theme="dark"] select,
+  [data-theme="dark"] textarea{
+    background:#1a1a1a !important; color:#f0ece2 !important;
+    border-color:rgba(201,168,76,0.12) !important;
+  }
+  [data-theme="dark"] input:focus,
+  [data-theme="dark"] select:focus,
+  [data-theme="dark"] textarea:focus{
+    border-color:var(--accent) !important;
+    box-shadow:0 0 0 3px rgba(201,168,76,0.12) !important;
+  }
+
+  /* Error fields stay red in dark mode */
+  [data-theme="dark"] .field-error-input{
+    border-color:var(--error) !important;
+    background:#1f1515 !important;
+  }
+
+  /* Inverted sections — stay dark */
+  [data-theme="dark"] #guarantee,
+  [data-theme="dark"] #ratingSection{
+    background:#1a1a1a !important;
+    color:#fff !important;
+  }
+  [data-theme="dark"] #guarantee *,
+  [data-theme="dark"] #ratingSection *{
+    color:inherit;
+  }
+  [data-theme="dark"] #guarantee .kicker,
+  [data-theme="dark"] #ratingSection .kicker{
+    color:rgba(255,255,255,.5) !important;
+  }
+
+  /* Footer dark */
+  [data-theme="dark"] footer{
+    background:#161616 !important;
+    border-color:rgba(201,168,76,0.1) !important;
+  }
+
+  /* Trust strip dark */
+  [data-theme="dark"] section.border-y{
+    background:#161616 !important;
+    border-color:rgba(201,168,76,0.1) !important;
+  }
+
+  /* Skeleton dark */
+  [data-theme="dark"] .skeleton-block{
+    background:linear-gradient(90deg,#1a1a1a 25%,#252525 50%,#1a1a1a 75%) !important;
+    background-size:200% 100%;
+  }
+  [data-theme="dark"] .skeleton-card{
+    background:#161616; border-color:rgba(201,168,76,0.1);
+  }
+
+  /* Overlay dark */
+  [data-theme="dark"] .overlay{
+    background:rgba(0,0,0,.65);
+  }
+
+  /* Toast dark */
+  [data-theme="dark"] #sm-toast{
+    background:var(--accent); color:#0f0f0f;
+  }
+
+  /* Mobile bar dark */
+  [data-theme="dark"] #mobileBar{
+    background:#1a1a1a !important;
+    border-color:rgba(201,168,76,0.1) !important;
+  }
+
+  /* Announcement bar — stays dark in both modes */
+  [data-theme="dark"] .marquee{
+    background:#1a1a1a !important;
+  }
+
+  /* Pay cards dark */
+  [data-theme="dark"] .pay-card{
+    background:#1a1a1a; border-color:rgba(201,168,76,0.1);
+    color:#f0ece2;
+  }
+  [data-theme="dark"] .pay-card.active{
+    background:var(--accent); color:#0f0f0f;
+    border-color:var(--accent);
+  }
+
+  /* Mobile nav drawer dark */
+  [data-theme="dark"] #mobileNavDrawer{
+    background:#0f0f0f !important;
+  }
+  [data-theme="dark"] .mnav-cat{
+    border-color:rgba(201,168,76,0.08); color:#f0ece2;
+  }
+
+  /* Scrollbar dark */
+  [data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb{
+    background:#333;
+  }
+
+  /* Loading screen dark */
+  [data-theme="dark"] #sizeLoader{
+    background:#0f0f0f !important;
+  }
+  [data-theme="dark"] #sizeLoader .ld-logo{
+    color:var(--accent);
+  }
+
+  /* Cart badge color → gold in both modes */
+  [data-theme="dark"] #cartCount{
+    background:var(--accent) !important; color:#0f0f0f !important;
+  }
+
+  /* Hero video wrap dark */
+  [data-theme="dark"] .hero-video-wrap{
+    border-color:rgba(201,168,76,0.1);
+  }
+
+  /* WhatsApp float dark */
+  [data-theme="dark"] #waFloat{
+    background:#161616; border-color:var(--accent);
+  }
+
+  /* Coupon applied */
+  [data-theme="dark"] .coupon-success{ color:#5cb85c; }
+
+  /* Bulk bar dark */
+  [data-theme="dark"] #bulkBar{
+    background:linear-gradient(135deg,#161616 0%,#1a1a1a 100%) !important;
+    border-color:rgba(201,168,76,0.12) !important;
+  }
+
+  /* Product modal image bg dark */
+  [data-theme="dark"] #productModal .pm-img-wrap,
+  [data-theme="dark"] #productModal .pm-slide{
+    background:#111 !important;
+  }
+
+  /* Category section borders dark */
+  [data-theme="dark"] .category-section .border-b{
+    border-color:rgba(201,168,76,0.1) !important;
+  }
+
+  /* Contact cards dark */
+  [data-theme="dark"] #contact a.border{
+    background:#161616; border-color:rgba(201,168,76,0.1);
+    color:#f0ece2;
+  }
+  [data-theme="dark"] #contact a.border:hover{
+    background:#1a1a1a;
+  }
 </style>
 </head>
 <body class="antialiased">
@@ -1108,6 +1417,11 @@
     </a>
 
     <div class="flex items-center gap-3">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+      </button>
       <div class="hidden sm:flex items-center gap-1 border-s hairline ps-3">
         <button class="lang-btn active" data-lang="ar">AR</button>
         <button class="lang-btn" data-lang="en">EN</button>
@@ -1478,7 +1792,7 @@
               data-i18n="couponRemove">إزالة</button>
     </div>
     <!-- Error message -->
-    <p id="couponError" class="hidden text-xs mt-1.5" style="color:var(--accent)"
+    <p id="couponError" class="hidden text-xs mt-1.5" style="color:var(--error)"
        data-i18n="couponInvalid">الكود غير صحيح أو منتهي الصلاحية.</p>
   </div>
 
@@ -3464,6 +3778,54 @@ renderProducts = function(){
 };
 
 window.moveFilterIndicator = moveFilterIndicator;
+
+/* =====================================================
+   THEME TOGGLE — فاتح / داكن
+   ===================================================== */
+function initTheme(){
+  var saved = 'light';
+  try { var v = localStorage.getItem('sizeme_theme'); if(v) saved = v; } catch(e){}
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
+}
+function toggleTheme(){
+  var current = document.documentElement.getAttribute('data-theme') || 'light';
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('sizeme_theme', next); } catch(e){}
+  updateThemeIcon(next);
+}
+function updateThemeIcon(theme){
+  var icon = document.getElementById('themeIcon');
+  if(!icon) return;
+  if(theme === 'dark'){
+    /* Sun icon for switching to light */
+    icon.innerHTML = '<circle cx=\"12\" cy=\"12\" r=\"5\"/><line x1=\"12\" y1=\"1\" x2=\"12\" y2=\"3\"/><line x1=\"12\" y1=\"21\" x2=\"12\" y2=\"23\"/><line x1=\"4.22\" y1=\"4.22\" x2=\"5.64\" y2=\"5.64\"/><line x1=\"18.36\" y1=\"18.36\" x2=\"19.78\" y2=\"19.78\"/><line x1=\"1\" y1=\"12\" x2=\"3\" y2=\"12\"/><line x1=\"21\" y1=\"12\" x2=\"23\" y2=\"12\"/><line x1=\"4.22\" y1=\"19.78\" x2=\"5.64\" y2=\"18.36\"/><line x1=\"18.36\" y1=\"5.64\" x2=\"19.78\" y2=\"4.22\"/>';
+  } else {
+    /* Moon icon for switching to dark */
+    icon.innerHTML = '<path d=\"M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z\"/>';
+  }
+}
+var _themeBtn = document.getElementById('themeToggle');
+if(_themeBtn) _themeBtn.addEventListener('click', toggleTheme);
+initTheme();
+
+/* ── Header scroll shadow ── */
+(function(){
+  var header = document.querySelector('header');
+  if(!header) return;
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        if(window.scrollY > 10) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+})();
 </script>
 
 <!-- ================= PRODUCT MODAL ================= -->
