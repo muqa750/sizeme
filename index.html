@@ -3323,7 +3323,7 @@
             <span class="star-fill" data-delay="3">★</span>
             <span class="star-fill" data-delay="4">★</span>
           </div>
-          <p class="text-white/60 text-sm" data-i18n="ratingCount">من +500 زبون راضٍ</p>
+          <p class="text-white/60 text-sm" data-i18n="ratingCount">من +143 زبون راضٍ</p>
         </div>
       </div>
 
@@ -3467,7 +3467,11 @@
             <path d="M6 6l12 12M18 6l-12 12" />
           </svg></button>
       </div>
-      <p class="text-xs text-[color:var(--mute)] mb-4" data-i18n="suggSub">سيتم إرسال اقتراحك مباشرة عبر واتساب.</p>
+      <p class="text-xs text-[color:var(--mute)] mb-4" data-i18n="suggSub">سيتم حفظ اقتراحك لدينا مباشرةً.</p>
+      <div id="suggSuccess" class="hidden text-center py-6">
+        <div style="font-size:2rem;margin-bottom:.5rem;">✅</div>
+        <p class="text-sm font-medium" style="color:#1a7a4a;">شكراً لاقتراحك، تم الإرسال بنجاح!</p>
+      </div>
       <textarea id="suggText" rows="4" class="w-full border hairline p-3 text-sm resize-none"
         data-i18n-placeholder="suggPlaceholder" placeholder="اكتب اقتراحك أو مشكلتك هنا..."></textarea>
       <button id="suggSend" class="btn-ink w-full py-3 mt-4 text-xs tracking-[.2em]" data-i18n="suggSend">إرسال عبر
@@ -3822,7 +3826,7 @@
         free: 'مجاني',
         filterBrand: 'الماركة', filterColor: 'اللون', filterAll: 'الكل',
         filterCat: 'الفئة', catAll: 'الكل', catTshirt: 'تي شيرت', catPolo: 'بولو', catShirt: 'قميص', catJeans: 'بنطرون', catTracksuit: 'تراكسوت',
-        ratingKicker: 'تقييمات زبائننا', ratingScore: '4.9', ratingCount: 'من +500 زبون راضٍ',
+        ratingKicker: 'تقييمات زبائننا', ratingScore: '4.9', ratingCount: 'من +143 زبون راضٍ',
         ratFabric: 'جودة القماش', ratSizes: 'صحة المقاسات', ratDelivery: 'سرعة التوصيل', ratService: 'خدمة العملاء',
         pageNext: 'التالي', pagePrev: 'السابق',
         noResults: 'لا توجد منتجات تطابق الفلتر المختار.',
@@ -3831,8 +3835,8 @@
         bulkActiveBadge: 'مفعّل ✓', bulkPendingBadge: '10 قطع',
         footInteract: 'تفاعل معنا', footSuggBtn: 'شاركنا اقتراحك', footReviewsBtn: 'آراء الزبائن',
         suggTitle: 'شاركنا اقتراحك', suggSub: 'سيتم إرسال اقتراحك مباشرة عبر واتساب.',
-        suggPlaceholder: 'اكتب اقتراحك هنا...', suggSend: 'إرسال عبر واتساب',
-        reviewsTitle: 'آراء الزبائن', reviewsEmpty: 'لا توجد صور مراجعات. ضع صورًا في مجلد reviews/',
+        suggPlaceholder: 'اكتب اقتراحك هنا...', suggSend: 'إرسال',
+        reviewsTitle: 'آراء الزبائن', reviewsEmpty: 'لا توجد صور reviews/',
         couponPlaceholder: 'كود الخصم', couponApply: 'تطبيق', couponRemove: 'إزالة',
         couponInvalid: 'الكود غير صحيح أو منتهي الصلاحية.', couponDisc: 'خصم الكوبون',
         couponApplied: (code, val) => `✓ ${code} — خصم ${val} مفعّل`,
@@ -3898,7 +3902,7 @@
         bulkActiveBadge: 'Active ✓', bulkPendingBadge: '10 pcs',
         footInteract: 'Interact', footSuggBtn: 'Share a Suggestion', footReviewsBtn: 'Customer Reviews',
         suggTitle: 'Share Your Suggestion', suggSub: 'Your message will be sent via WhatsApp.',
-        suggPlaceholder: 'Write your suggestion here...', suggSend: 'Send via WhatsApp',
+        suggPlaceholder: 'Write your suggestion here...', suggSend: 'Send',
         reviewsTitle: 'Customer Reviews', reviewsEmpty: 'No review photos yet. Add images to the reviews/ folder.',
         couponPlaceholder: 'Coupon code', couponApply: 'Apply', couponRemove: 'Remove',
         couponInvalid: 'Invalid or expired coupon code.', couponDisc: 'Coupon Discount',
@@ -3956,7 +3960,7 @@
         free: 'بێبەرامبەر',
         filterBrand: 'مارکە', filterColor: 'ڕەنگ', filterAll: 'هەموو',
         filterCat: 'جۆر', catAll: 'هەموو', catTshirt: 'تی شێرت', catPolo: 'پۆلۆ', catShirt: 'کراس', catJeans: 'جینز', catTracksuit: 'تراکسوت',
-        ratingKicker: 'هەڵسەنگاندنی کڕیاران', ratingScore: '4.9', ratingCount: 'لە +٥٠٠ کڕیارى دلخۆش',
+        ratingKicker: 'هەڵسەنگاندنی کڕیاران', ratingScore: '4.9', ratingCount: 'لە +١٤٣ کڕیارى دلخۆش',
         ratFabric: 'کوالیتی پەڕەکە', ratSizes: 'ڕاستی سایز', ratDelivery: 'خێرایی گەیاندن', ratService: 'خزمەتگوزارى',
         pageNext: 'دواتر', pagePrev: 'پێشتر',
         noResults: 'هیچ بەرهەمێک نەدۆزرایەوە.',
@@ -3965,7 +3969,7 @@
         bulkActiveBadge: 'چالاکە ✓', bulkPendingBadge: '١٠ پارچە',
         footInteract: 'پەیوەندی', footSuggBtn: 'پێشنیازت بنێرە', footReviewsBtn: 'بۆچوونی کڕیار',
         suggTitle: 'پێشنیازت بنێرە', suggSub: 'پێشنیازەکەت ڕاستەوخۆ بە واتساپ دەنێردرێت.',
-        suggPlaceholder: 'پێشنیازەکەت لێرە بنووسە...', suggSend: 'بە واتساپ ',
+        suggPlaceholder: 'پێشنیازەکەت لێرە بنووسە...', suggSend: 'ناردن',
         reviewsTitle: 'بۆچوونی کڕیار', reviewsEmpty: 'هێشتا وێنەی بۆچوون نییە. وێنەکان لە reviews/ دابنێ.',
         couponPlaceholder: 'کۆدی داشکاندن', couponApply: 'جێبەجێکردن', couponRemove: 'سڕینەوە',
         couponInvalid: 'کۆدەکە هەڵەیە یان کاتی تەواو بووە.', couponDisc: 'داشکاندنی کۆپۆن',
@@ -5020,12 +5024,35 @@
     $('#suggBtn').onclick = openSugg;
     $('#suggClose').onclick = closeSugg;
     $('#suggOverlay').onclick = closeSugg;
+    const SUGG_URL = 'https://script.google.com/macros/s/AKfycbzI3HPm5xrvJbFfUNrC3iM9Y_2e-mQQ3H-ipl7qEHlDyuOD7KUIWfdkloWSMEaR45m-/exec';
+
     $('#suggSend').onclick = () => {
       const txt = $('#suggText').value.trim();
       if (!txt) return;
-      window.open(`https://wa.me/9647739334545?text=${encodeURIComponent('اقتراح جديد: ' + txt)}`, '_blank');
-      $('#suggText').value = '';
-      closeSugg();
+
+      // إخفاء حقل الكتابة والزر وإظهار رسالة النجاح
+      $('#suggText').style.display = 'none';
+      $('#suggSend').style.display = 'none';
+      $('#suggSuccess').classList.remove('hidden');
+
+      // إرسال البيانات إلى Google Sheets (no-cors لتجنب مشاكل السياسات)
+      fetch(SUGG_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ suggestion: txt })
+      }).catch(() => {}); // نتجاهل أخطاء الشبكة بصمت
+
+      // إغلاق المودال تلقائياً بعد ثانيتين وإعادة تهيئة الواجهة
+      setTimeout(() => {
+        closeSugg();
+        setTimeout(() => {
+          $('#suggText').value = '';
+          $('#suggText').style.display = '';
+          $('#suggSend').style.display = '';
+          $('#suggSuccess').classList.add('hidden');
+        }, 400); // الانتظار حتى تنتهي حركة الإغلاق
+      }, 2000);
     };
 
     /* =================== REVIEWS POPUP =================== */
