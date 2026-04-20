@@ -5762,31 +5762,31 @@
 
       /* ── تهيئة أداة الفوتر ── */
       initWidget({
-        faceId      : 'frwFace',
-        emojisId    : 'frwEmojis',
-        submitId    : 'frwSubmit',
-        thanksId    : 'frwThanks',
+        faceId: 'frwFace',
+        emojisId: 'frwEmojis',
+        submitId: 'frwSubmit',
+        thanksId: 'frwThanks',
         colsSelector: '#footRatingWidget .erw-col',
-        source      : 'sizeme-footer',
-        submitLabel : 'إرسال'
+        source: 'sizeme-footer',
+        submitLabel: 'إرسال'
       });
 
       /* ── تهيئة أداة مودال التأكيد ── */
       var confirmInst = initWidget({
-        faceId      : 'erwFace',
-        emojisId    : 'erwEmojis',
-        submitId    : 'erwSubmit',
-        thanksId    : 'erwThanks',
+        faceId: 'erwFace',
+        emojisId: 'erwEmojis',
+        submitId: 'erwSubmit',
+        thanksId: 'erwThanks',
         colsSelector: '#emojiRatingWidget .erw-col',
-        source      : 'sizeme-order-confirm',
-        submitLabel : 'إرسال التقييم'
+        source: 'sizeme-order-confirm',
+        submitLabel: 'إرسال التقييم'
       });
 
       /* إعادة ضبط مودال التأكيد عند فتحه مجدداً */
       var confirmModal = document.getElementById('confirmModal');
       if (confirmModal && confirmInst) {
-        new MutationObserver(function(muts) {
-          muts.forEach(function(m) {
+        new MutationObserver(function (muts) {
+          muts.forEach(function (m) {
             if (m.attributeName === 'class' && !confirmModal.classList.contains('hidden')) {
               confirmInst.reset();
             }
