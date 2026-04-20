@@ -3026,6 +3026,90 @@
     [data-theme="dark"] #contact a.border:hover {
       background: #1a1a1a;
     }
+
+    /* ── Brand Filter Pills — ديناميكية تلقائياً لكل ماركة جديدة ── */
+    .pill-filter {
+      display: inline-flex;
+      align-items: center;
+      padding: .3rem .9rem;
+      border-radius: 9999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background .18s ease, border-color .18s ease, color .18s ease, transform .12s ease;
+      user-select: none;
+    }
+    .pill-filter:hover:not(.active) {
+      background: var(--paper);
+      border-color: var(--accent);
+    }
+    .pill-filter:active {
+      transform: scale(.96);
+    }
+    .pill-filter.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    [data-theme="dark"] .pill-filter {
+      background: #1e1e1e;
+      border-color: rgba(201,168,76,.25);
+      color: #e8e0cc;
+    }
+    [data-theme="dark"] .pill-filter:hover:not(.active) {
+      background: #2a2a2a;
+      border-color: var(--accent);
+    }
+    [data-theme="dark"] .pill-filter.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    /* ── Modern Emoji Rating ── */
+    .emoji-btn {
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .emoji-icon {
+      display: inline-block;
+      font-size: 2.2rem;
+      filter: grayscale(100%) opacity(70%);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-origin: bottom center;
+    }
+    .emoji-btn:hover .emoji-icon,
+    .emoji-btn:focus-visible .emoji-icon {
+      filter: grayscale(0%) opacity(100%);
+      transform: scale(1.4);
+    }
+    .emoji-btn:active .emoji-icon {
+      transform: scale(0.9);
+      transition: all 0.1s;
+    }
+    .emoji-bounce {
+      animation: emoji-bounce-anim 0.4s ease;
+    }
+    @keyframes emoji-bounce-anim {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.6); }
+      100% { transform: scale(1.4); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -3333,7 +3417,7 @@
 
         <!-- WhatsApp -->
         <a href="https://wa.me/9647739334545" target="_blank" rel="noopener noreferrer"
-          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white hover:bg-[color:var(--paper)] transition-colors group"
+          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white rounded-xl hover:bg-[color:var(--paper)] transition-colors group"
           aria-label="WhatsApp">
           <!-- شعار WhatsApp الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
@@ -3345,7 +3429,7 @@
 
         <!-- Instagram -->
         <a href="https://instagram.com/sizem.e" target="_blank" rel="noopener noreferrer"
-          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white hover:bg-[color:var(--paper)] transition-colors group"
+          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white rounded-xl hover:bg-[color:var(--paper)] transition-colors group"
           aria-label="Instagram">
           <!-- شعار Instagram الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
@@ -3357,7 +3441,7 @@
 
         <!-- TikTok -->
         <a href="https://tiktok.com/@sizem.e" target="_blank" rel="noopener noreferrer"
-          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white hover:bg-[color:var(--paper)] transition-colors group"
+          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white rounded-xl hover:bg-[color:var(--paper)] transition-colors group"
           aria-label="TikTok">
           <!-- شعار TikTok الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
@@ -3369,7 +3453,7 @@
 
         <!-- Facebook -->
         <a href="https://www.facebook.com/profile.php?id=61585195497025" target="_blank" rel="noopener noreferrer"
-          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white hover:bg-[color:var(--paper)] transition-colors group"
+          class="flex-1 flex flex-col items-center justify-center py-7 gap-3 border hairline bg-white rounded-xl hover:bg-[color:var(--paper)] transition-colors group"
           aria-label="Facebook" id="fbContactLink">
           <!-- شعار Facebook الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
@@ -3482,37 +3566,33 @@
           </button>
 
           <!-- ══════ أداة التقييم — في الفوتر ══════ -->
-          <div id="footRatingWidget" style="margin-top:18px; padding-top:16px; border-top:1px solid var(--line);">
+          <div id="footRatingWidget" class="mt-5 pt-4 border-t hairline">
             <!-- الواجهة الرئيسية -->
-            <div class="erw-face" id="frwFace">
-              <p class="erw-label" style="margin-bottom:14px;">كيف كانت تجربتك؟</p>
-              <div class="erw-emojis" id="frwEmojis" style="gap:20px; margin-bottom:14px;">
-                <div class="erw-col" data-value="سعيد" data-score="3">
-                  <button class="erw-btn" aria-label="سعيد" type="button" style="width:52px;height:52px;">
-                    <span role="img" aria-hidden="true">😊</span>
-                  </button>
-                  <span class="erw-name">سعيد</span>
-                </div>
-                <div class="erw-col" data-value="راضي" data-score="2">
-                  <button class="erw-btn" aria-label="راضي" type="button" style="width:52px;height:52px;">
-                    <span role="img" aria-hidden="true">😐</span>
-                  </button>
-                  <span class="erw-name">راضي</span>
-                </div>
-                <div class="erw-col" data-value="حزين" data-score="1">
-                  <button class="erw-btn" aria-label="حزين" type="button" style="width:52px;height:52px;">
-                    <span role="img" aria-hidden="true">😢</span>
-                  </button>
-                  <span class="erw-name">حزين</span>
-                </div>
+            <div id="frwFace" class="transition-opacity duration-300">
+              <p class="text-sm font-medium mb-4 text-center">كيف كانت تجربتك؟</p>
+              <div id="frwEmojis" class="flex items-center justify-center gap-3 sm:gap-5 mb-4">
+                <button class="emoji-btn" data-value="غاضب" data-score="1" aria-label="غاضب">
+                  <span class="emoji-icon">😡</span>
+                </button>
+                <button class="emoji-btn" data-value="حزين" data-score="2" aria-label="حزين">
+                  <span class="emoji-icon">😞</span>
+                </button>
+                <button class="emoji-btn" data-value="عادي" data-score="3" aria-label="عادي">
+                  <span class="emoji-icon">😐</span>
+                </button>
+                <button class="emoji-btn" data-value="راضي" data-score="4" aria-label="راضي">
+                  <span class="emoji-icon">😊</span>
+                </button>
+                <button class="emoji-btn" data-value="سعيد جداً" data-score="5" aria-label="سعيد جداً">
+                  <span class="emoji-icon">😍</span>
+                </button>
               </div>
-              <button class="erw-submit" id="frwSubmit" type="button" style="max-width:180px;">إرسال</button>
             </div>
             <!-- رسالة الشكر -->
-            <div class="erw-thanks" id="frwThanks">
-              <div class="erw-thanks-icon">🌟</div>
-              <div class="erw-thanks-title">شكراً لك!</div>
-              <div class="erw-thanks-sub">رأيك يصنع الفرق.</div>
+            <div id="frwThanks" class="hidden text-center py-4 animate-fade-in">
+              <div class="text-3xl mb-2">🌟</div>
+              <div class="font-medium text-lg">شكراً لتقييمك!</div>
+              <div class="text-xs text-[color:var(--mute)] mt-1">رأيك يصنع الفرق.</div>
             </div>
           </div>
           <!-- ══════ نهاية أداة التقييم ══════ -->
@@ -4313,7 +4393,7 @@
       /* --- Brand tabs --- */
       const bf = $('#brandFilters');
       bf.innerHTML = uniqueBrands().map(b => `
-    <button class="chip px-3 py-1 text-xs tracking-[.12em] rounded-none ${state.filter.brand === b ? 'active' : ''}"
+    <button class="pill-filter ${state.filter.brand === b ? 'active' : ''}"
             data-brand="${b}">
       ${b === 'all' ? t.filterAll : b}
     </button>`).join('');
@@ -4335,7 +4415,7 @@
       const cf = $('#colorFilters');
       cf.innerHTML = uniqueColors().map(c => `
     ${c.n === 'all'
-          ? `<button class="chip px-3 py-1 text-xs tracking-[.12em] rounded-none ${state.filter.color === 'all' ? 'active' : ''}"
+          ? `<button class="pill-filter ${state.filter.color === 'all' ? 'active' : ''}"
                  data-color="all">${t.filterAll}</button>`
           : `<span class="color-dot ${state.filter.color === c.n ? 'active' : ''}"
                data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`
@@ -4377,27 +4457,25 @@
       const t = I18N[state.lang];
       return `
     <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
-      <!-- ── IMAGE SLIDER — اضغط لعرض تفاصيل المنتج كاملاً ── -->
-      <div class="product-img slider-wrap" data-idx="0" onclick="openProductModal('${p.id}')" style="cursor:pointer">
-        <div class="slider-track">
-          <div class="slide">
-            <img src="${imgPath(p, 1)}" alt="${p.brand}"
-                 style="opacity:0;transition:opacity .25s"
-                 onload="this.style.opacity='1';this.nextElementSibling.style.display='none';"
-                 onerror="this.style.display='none';" />
-            <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]">
-              <div class="brand-watermark">${p.brand}</div>
-              <div class="brand-sub">${p.sub}</div>
-            </div>
-          </div>
+      <!-- ── HOVER IMAGE SWAP — اضغط لعرض تفاصيل المنتج كاملاً ── -->
+      <div class="product-img group relative overflow-hidden bg-[#f2ece2]" onclick="openProductModal('${p.id}')" style="cursor:pointer">
+        <!-- الصورة الأساسية -->
+        <img src="${imgPath(p, 1)}" alt="${p.brand}"
+             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+             style="opacity:0;"
+             onload="this.style.opacity='1'; this.parentElement.querySelector('.placeholder-wrap').style.display='none';"
+             onerror="this.style.display='none';" />
+             
+        <!-- الصورة الثانوية (Hover) -->
+        <img src="${imgPath(p, 2)}" alt="${p.brand} detail" loading="lazy"
+             class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+             onerror="this.remove();" />
+             
+        <!-- Watermark / Placeholder -->
+        <div class="placeholder-wrap absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <div class="brand-watermark">${p.brand}</div>
+          <div class="brand-sub">${p.sub}</div>
         </div>
-        <button class="slider-arrow prev hidden" aria-label="prev">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="slider-arrow next hidden" aria-label="next">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-        <div class="slider-dots hidden"><span class="sdot active"></span></div>
       </div>
       <!-- ── INFO ── -->
       <div class="p-4 card-info">
@@ -4572,6 +4650,7 @@
         if (!p) return;
         const wrap = card.querySelector('.slider-wrap');
         const track = card.querySelector('.slider-track');
+        if (!track) return; // حماية في حال عدم وجود السلايدر
         const dotsWrap = card.querySelector('.slider-dots');
         const btnPrev = card.querySelector('.slider-arrow.prev');
         const btnNext = card.querySelector('.slider-arrow.next');
@@ -5747,15 +5826,13 @@
     })();
 
     /* =====================================================
-       EMOJI RATING WIDGET — Google Sheets (Image GET Trick)
-       تعمل مع كلا الأداتين: الفوتر + مودال التأكيد
+       EMOJI RATING WIDGET — Modern Interactive
        ===================================================== */
     (function () {
       'use strict';
 
       var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxFxw3RuQz2yW5Esb0ld9qv4yHSabBVMNiSb3zfx-aO7m8r7CaSRMxDQCoRq6f5l_AM0Q/exec';
 
-      /* ── دالة الإرسال عبر Image GET — تتجاوز CORS بالكامل ── */
       function sendRating(value, score, source) {
         var ts = encodeURIComponent(new Date().toISOString());
         var url = SHEETS_URL +
@@ -5763,92 +5840,70 @@
           '&score=' + encodeURIComponent(score) +
           '&timestamp=' + ts +
           '&source=' + encodeURIComponent(source || 'sizeme-footer');
-        /* Image trick: لا CORS، لا preflight، يعمل في كل المتصفحات */
-        var img = new Image();
-        img.src = url;
+        
+        // إرسال عبر fetch
+        fetch(url, { method: 'GET', mode: 'no-cors' })
+          .catch(err => console.error(err));
       }
 
-      /* ── دالة بناء widget داخل أي حاوية ── */
       function initWidget(cfg) {
-        /* cfg: { faceId, emojisId, submitId, thanksId, colsSelector, source } */
         var face = document.getElementById(cfg.faceId);
-        var emojis = document.getElementById(cfg.emojisId);
-        var submit = document.getElementById(cfg.submitId);
         var thanks = document.getElementById(cfg.thanksId);
-        var cols = document.querySelectorAll(cfg.colsSelector);
-        if (!face || !emojis || !submit || !thanks || !cols.length) return;
+        var btns = document.querySelectorAll(cfg.colsSelector);
+        if (!face || !thanks || !btns.length) return;
 
-        var picked = null;
+        btns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var icon = btn.querySelector('.emoji-icon');
+            if (icon) {
+              icon.classList.add('emoji-bounce');
+              icon.style.filter = 'grayscale(0%) opacity(100%)';
+            }
 
-        /* اختيار إيموجي */
-        cols.forEach(function (col) {
-          col.addEventListener('click', function () {
-            cols.forEach(function (c) { c.classList.remove('erw-picked'); });
-            col.classList.add('erw-picked');
-            emojis.classList.add('erw-has-pick');
-            picked = { value: col.dataset.value, score: col.dataset.score };
-            submit.classList.add('erw-ready');
-            /* نبضة خفيفة */
-            submit.style.transform = 'scale(1.05)';
-            setTimeout(function () { submit.style.transform = ''; }, 220);
+            // إرسال التقييم
+            sendRating(btn.dataset.value, btn.dataset.score, cfg.source);
+            
+            // إخفاء الوجوه وإظهار الشكر بحركة ناعمة
+            setTimeout(function() {
+              face.style.opacity = '0';
+              setTimeout(function() {
+                face.style.display = 'none';
+                thanks.classList.remove('hidden');
+              }, 300);
+            }, 350);
           });
         });
 
-        /* إرسال */
-        submit.addEventListener('click', function () {
-          if (!picked) return;
-          submit.disabled = true;
-          submit.textContent = '...';
-          /* إرسال عبر Image GET */
-          sendRating(picked.value, picked.score, cfg.source);
-          /* إظهار رسالة الشكر بعد 400ms */
-          setTimeout(showThanks, 400);
-        });
-
-        function showThanks() {
-          face.classList.add('erw-exit');
-          setTimeout(function () {
-            face.style.display = 'none';
-            thanks.classList.add('erw-enter');
-          }, 280);
-        }
-
-        /* إعادة ضبط */
-        function reset() {
-          picked = null;
-          cols.forEach(function (c) { c.classList.remove('erw-picked'); });
-          emojis.classList.remove('erw-has-pick');
-          submit.classList.remove('erw-ready');
-          submit.disabled = false;
-          submit.textContent = cfg.submitLabel || 'إرسال التقييم';
-          face.style.display = '';
-          face.classList.remove('erw-exit');
-          thanks.classList.remove('erw-enter');
-        }
-
-        return { reset: reset };
+        return {
+          reset: function() {
+            face.style.display = '';
+            face.style.opacity = '1';
+            thanks.classList.add('hidden');
+            btns.forEach(function (b) {
+              var ic = b.querySelector('.emoji-icon');
+              if (ic) {
+                ic.classList.remove('emoji-bounce');
+                ic.style.filter = '';
+              }
+            });
+          }
+        };
       }
 
       /* ── تهيئة أداة الفوتر ── */
       initWidget({
         faceId: 'frwFace',
-        emojisId: 'frwEmojis',
-        submitId: 'frwSubmit',
         thanksId: 'frwThanks',
-        colsSelector: '#footRatingWidget .erw-col',
-        source: 'sizeme-footer',
-        submitLabel: 'إرسال'
+        colsSelector: '#footRatingWidget .emoji-btn',
+        source: 'sizeme-footer'
       });
 
       /* ── تهيئة أداة مودال التأكيد ── */
       var confirmInst = initWidget({
         faceId: 'erwFace',
-        emojisId: 'erwEmojis',
-        submitId: 'erwSubmit',
         thanksId: 'erwThanks',
-        colsSelector: '#emojiRatingWidget .erw-col',
-        source: 'sizeme-order-confirm',
-        submitLabel: 'إرسال التقييم'
+        colsSelector: '#confirmModal .emoji-btn',
+        source: 'sizeme-checkout'
       });
 
       /* إعادة ضبط مودال التأكيد عند فتحه مجدداً */
