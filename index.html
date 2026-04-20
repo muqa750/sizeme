@@ -3402,69 +3402,38 @@
             آراء الزبائن
           </button>
 
-          <!-- ══════ أداة التقييم (1-5) — في الفوتر ══════ -->
+          <!-- ══════ أداة التقييم — في الفوتر ══════ -->
           <div id="footRatingWidget" style="margin-top:18px; padding-top:16px; border-top:1px solid var(--line);">
-
-            <!-- واجهة التقييم -->
-            <div id="frwFace">
-              <p class="erw-label" style="margin-bottom:16px; text-align:start;">قيّم تجربتك معنا</p>
-
-              <!-- الفئة 1: جودة القماش -->
-              <div class="nrw-category">
-                <p class="nrw-cat-label" data-i18n="ratFabric">جودة القماش</p>
-                <div class="nrw-numbers" data-cat="fabric">
-                  <button class="nrw-num" data-val="1" type="button">1</button>
-                  <button class="nrw-num" data-val="2" type="button">2</button>
-                  <button class="nrw-num" data-val="3" type="button">3</button>
-                  <button class="nrw-num" data-val="4" type="button">4</button>
-                  <button class="nrw-num" data-val="5" type="button">5</button>
+            <!-- الواجهة الرئيسية -->
+            <div class="erw-face" id="frwFace">
+              <p class="erw-label" style="margin-bottom:14px;">كيف كانت تجربتك؟</p>
+              <div class="erw-emojis" id="frwEmojis" style="gap:20px; margin-bottom:14px;">
+                <div class="erw-col" data-value="سعيد" data-score="3">
+                  <button class="erw-btn" aria-label="سعيد" type="button" style="width:52px;height:52px;">
+                    <span role="img" aria-hidden="true">😊</span>
+                  </button>
+                  <span class="erw-name">سعيد</span>
+                </div>
+                <div class="erw-col" data-value="راضي" data-score="2">
+                  <button class="erw-btn" aria-label="راضي" type="button" style="width:52px;height:52px;">
+                    <span role="img" aria-hidden="true">😐</span>
+                  </button>
+                  <span class="erw-name">راضي</span>
+                </div>
+                <div class="erw-col" data-value="حزين" data-score="1">
+                  <button class="erw-btn" aria-label="حزين" type="button" style="width:52px;height:52px;">
+                    <span role="img" aria-hidden="true">😢</span>
+                  </button>
+                  <span class="erw-name">حزين</span>
                 </div>
               </div>
-
-              <!-- الفئة 2: صحة المقاسات -->
-              <div class="nrw-category">
-                <p class="nrw-cat-label" data-i18n="ratSizes">صحة المقاسات</p>
-                <div class="nrw-numbers" data-cat="sizes">
-                  <button class="nrw-num" data-val="1" type="button">1</button>
-                  <button class="nrw-num" data-val="2" type="button">2</button>
-                  <button class="nrw-num" data-val="3" type="button">3</button>
-                  <button class="nrw-num" data-val="4" type="button">4</button>
-                  <button class="nrw-num" data-val="5" type="button">5</button>
-                </div>
-              </div>
-
-              <!-- الفئة 3: سرعة التوصيل -->
-              <div class="nrw-category">
-                <p class="nrw-cat-label" data-i18n="ratDelivery">سرعة التوصيل</p>
-                <div class="nrw-numbers" data-cat="delivery">
-                  <button class="nrw-num" data-val="1" type="button">1</button>
-                  <button class="nrw-num" data-val="2" type="button">2</button>
-                  <button class="nrw-num" data-val="3" type="button">3</button>
-                  <button class="nrw-num" data-val="4" type="button">4</button>
-                  <button class="nrw-num" data-val="5" type="button">5</button>
-                </div>
-              </div>
-
-              <!-- الفئة 4: خدمة العملاء -->
-              <div class="nrw-category" style="margin-bottom:16px;">
-                <p class="nrw-cat-label" data-i18n="ratService">خدمة العملاء</p>
-                <div class="nrw-numbers" data-cat="service">
-                  <button class="nrw-num" data-val="1" type="button">1</button>
-                  <button class="nrw-num" data-val="2" type="button">2</button>
-                  <button class="nrw-num" data-val="3" type="button">3</button>
-                  <button class="nrw-num" data-val="4" type="button">4</button>
-                  <button class="nrw-num" data-val="5" type="button">5</button>
-                </div>
-              </div>
-
-              <button class="erw-submit" id="frwSubmit" type="button">إرسال التقييم</button>
+              <button class="erw-submit" id="frwSubmit" type="button" style="max-width:180px;">إرسال</button>
             </div>
-
             <!-- رسالة الشكر -->
             <div class="erw-thanks" id="frwThanks">
               <div class="erw-thanks-icon">🌟</div>
               <div class="erw-thanks-title">شكراً لك!</div>
-              <div class="erw-thanks-sub">رأيك يصنع الفرق ويساعدنا على التحسين.</div>
+              <div class="erw-thanks-sub">رأيك يصنع الفرق.</div>
             </div>
           </div>
           <!-- ══════ نهاية أداة التقييم ══════ -->
@@ -3765,91 +3734,46 @@
       <h3 class="serif text-2xl mb-3" data-i18n="cfTitle">Order Received</h3>
       <p id="cfMsg" class="text-[color:var(--mute)] leading-relaxed"></p>
 
-      <!-- ══════ RATING WIDGET (1-5) — مودال التأكيد ══════ -->
-      <div id="emojiRatingWidget"
-        style="margin-top:20px; padding-top:18px; border-top:1px solid var(--line); text-align:start;">
+      <!-- ══════ EMOJI RATING WIDGET ══════ -->
+      <div id="emojiRatingWidget" style="margin-top:28px; padding-top:22px; border-top:1px solid var(--line);">
 
-        <div id="erwFace">
-          <p class="erw-label" style="text-align:center; margin-bottom:16px;">قيّم تجربتك قبل الإرسال</p>
-
-          <!-- جودة القماش -->
-          <div class="nrw-category">
-            <p class="nrw-cat-label" data-i18n="ratFabric">جودة القماش</p>
-            <div class="nrw-numbers" data-cat="fabric">
-              <button class="nrw-num" data-val="1" type="button">1</button>
-              <button class="nrw-num" data-val="2" type="button">2</button>
-              <button class="nrw-num" data-val="3" type="button">3</button>
-              <button class="nrw-num" data-val="4" type="button">4</button>
-              <button class="nrw-num" data-val="5" type="button">5</button>
+        <!-- الوجه: الأداة الرئيسية -->
+        <div class="erw-face" id="erwFace">
+          <p class="erw-label" id="erwLabel">كيف كانت تجربتك؟</p>
+          <div class="erw-emojis" id="erwEmojis">
+            <div class="erw-col" id="erwCol0" data-value="سعيد" data-score="3">
+              <button class="erw-btn" aria-label="سعيد" type="button">
+                <span role="img" aria-hidden="true">😊</span>
+              </button>
+              <span class="erw-name" id="erwName0">سعيد</span>
+            </div>
+            <div class="erw-col" id="erwCol1" data-value="راضي" data-score="2">
+              <button class="erw-btn" aria-label="راضي" type="button">
+                <span role="img" aria-hidden="true">😐</span>
+              </button>
+              <span class="erw-name" id="erwName1">راضي</span>
+            </div>
+            <div class="erw-col" id="erwCol2" data-value="حزين" data-score="1">
+              <button class="erw-btn" aria-label="حزين" type="button">
+                <span role="img" aria-hidden="true">😢</span>
+              </button>
+              <span class="erw-name" id="erwName2">حزين</span>
             </div>
           </div>
-
-          <!-- صحة المقاسات -->
-          <div class="nrw-category">
-            <p class="nrw-cat-label" data-i18n="ratSizes">صحة المقاسات</p>
-            <div class="nrw-numbers" data-cat="sizes">
-              <button class="nrw-num" data-val="1" type="button">1</button>
-              <button class="nrw-num" data-val="2" type="button">2</button>
-              <button class="nrw-num" data-val="3" type="button">3</button>
-              <button class="nrw-num" data-val="4" type="button">4</button>
-              <button class="nrw-num" data-val="5" type="button">5</button>
-            </div>
-          </div>
-
-          <!-- سرعة التوصيل -->
-          <div class="nrw-category">
-            <p class="nrw-cat-label" data-i18n="ratDelivery">سرعة التوصيل</p>
-            <div class="nrw-numbers" data-cat="delivery">
-              <button class="nrw-num" data-val="1" type="button">1</button>
-              <button class="nrw-num" data-val="2" type="button">2</button>
-              <button class="nrw-num" data-val="3" type="button">3</button>
-              <button class="nrw-num" data-val="4" type="button">4</button>
-              <button class="nrw-num" data-val="5" type="button">5</button>
-            </div>
-          </div>
-
-          <!-- خدمة العملاء -->
-          <div class="nrw-category" style="margin-bottom:16px;">
-            <p class="nrw-cat-label" data-i18n="ratService">خدمة العملاء</p>
-            <div class="nrw-numbers" data-cat="service">
-              <button class="nrw-num" data-val="1" type="button">1</button>
-              <button class="nrw-num" data-val="2" type="button">2</button>
-              <button class="nrw-num" data-val="3" type="button">3</button>
-              <button class="nrw-num" data-val="4" type="button">4</button>
-              <button class="nrw-num" data-val="5" type="button">5</button>
-            </div>
-          </div>
-
-          <button class="erw-submit" id="erwSubmit" type="button"
-            style="text-align:center; display:block; margin:0 auto;">إرسال التقييم</button>
+          <button class="erw-submit" id="erwSubmit" type="button">إرسال التقييم</button>
         </div>
 
         <!-- رسالة الشكر -->
         <div class="erw-thanks" id="erwThanks">
           <div class="erw-thanks-icon">🌟</div>
           <div class="erw-thanks-title">شكراً لك!</div>
-          <div class="erw-thanks-sub">رأيك يصنع الفرق.</div>
+          <div class="erw-thanks-sub">رأيك يصنع الفرق،<br>نعمل دائماً على تحسين تجربتك.</div>
         </div>
 
       </div>
       <!-- ══════ END RATING WIDGET ══════ -->
 
-      <!-- زر إرسال الطلب عبر واتساب (Option A) -->
-      <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--line); text-align:center;">
-        <p class="text-xs text-[color:var(--mute)] mb-3">طلبك جاهز — أرسله عبر واتساب الآن</p>
-        <button id="cfSendWa" type="button"
-          style="display:inline-flex; align-items:center; gap:10px; background:#25D366; color:#fff; border:none; padding:14px 28px; font-size:.78rem; font-weight:700; letter-spacing:.14em; cursor:pointer; border-radius:2px; width:100%; justify-content:center; transition:background .2s;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#fff">
-            <path
-              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-            <path
-              d="M12 0C5.373 0 0 5.373 0 12c0 2.117.553 4.103 1.522 5.828L.043 23.757a.5.5 0 00.607.65l6.077-1.592A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.876 9.876 0 01-5.031-1.374l-.36-.214-3.733.979.995-3.638-.234-.374A9.856 9.856 0 012.118 12C2.118 6.535 6.535 2.118 12 2.118c5.464 0 9.882 4.417 9.882 9.882 0 5.464-4.418 9.882-9.882 9.882z" />
-          </svg>
-          إرسال الطلب عبر واتساب
-        </button>
-      </div>
-
-      <button id="cfClose" class="btn-outline mt-4 px-6 py-2 text-xs tracking-[.2em]" data-i18n="cfClose">إغلاق</button>
+      <button id="cfClose" class="btn-outline mt-6 px-6 py-2 text-xs tracking-[.2em]" data-i18n="cfClose">CLOSE</button>
     </div>
   </div>
 
@@ -5093,21 +5017,17 @@
         `${shippingLine}${nl}` +
         `${bold('💰 Total: ')}${fmt(tot.total)}`;
 
-      /* ---- Show confirmation modal (Option A: user rates first, then sends manually) ---- */
+      /* ---- Show confirmation first, then open WhatsApp ---- */
       $('#cfMsg').textContent = t.cfBody(name);
       closeCheckout();
       $('#confirmOverlay').classList.remove('hidden');
       $('#confirmModal').classList.remove('hidden');
       $('#confirmModal').classList.add('flex');
 
-      /* حفظ رابط واتساب — يُفتح عند ضغط الزر يدوياً */
-      window._pendingWaUrl = `https://wa.me/9647739334545?text=${msg}`;
-      const cfSendWa = document.getElementById('cfSendWa');
-      if (cfSendWa) {
-        cfSendWa.onclick = () => {
-          window.open(window._pendingWaUrl, '_blank');
-        };
-      }
+      /* Open WhatsApp after a short delay so modal renders first */
+      setTimeout(() => {
+        window.open(`https://wa.me/9647739334545?text=${msg}`, '_blank');
+      }, 600);
 
       /* Reset cart + coupon */
       state.cart = []; removeCoupon(true); updateCart();
@@ -5841,113 +5761,32 @@
       }
 
       /* ── تهيئة أداة الفوتر ── */
-      /* ════ الدالة المساعدة: تهيئة أداة تقييم 1-5 بفئات متعددة ════ */
-      function initNrwWidget(cfg) {
-        var face = document.getElementById(cfg.faceId);
-        var thanks = document.getElementById(cfg.thanksId);
-        var submit = document.getElementById(cfg.submitId);
-        if (!face || !thanks || !submit) return null;
-
-        /* كل فئة: { cat, val } */
-        var ratings = {};
-
-        /* ربط نقر الأرقام */
-        var allGroups = face.querySelectorAll('.nrw-numbers');
-        allGroups.forEach(function (group) {
-          var cat = group.dataset.cat;
-          var btns = group.querySelectorAll('.nrw-num');
-          btns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-              /* إزالة الاختيار السابق */
-              btns.forEach(function (b) { b.classList.remove('nrw-active'); });
-              btn.classList.add('nrw-active');
-              ratings[cat] = parseInt(btn.dataset.val, 10);
-              /* تأثير حركي على زر الإرسال */
-              submit.style.transform = 'scale(1.04)';
-              setTimeout(function () { submit.style.transform = ''; }, 200);
-            });
-          });
-        });
-
-        /* إرسال */
-        submit.addEventListener('click', function () {
-          var cats = ['fabric', 'sizes', 'delivery', 'service'];
-          var allRated = cats.every(function (c) { return ratings[c]; });
-          if (!allRated) {
-            /* إضاءة الفئات غير المقيّمة */
-            allGroups.forEach(function (g) {
-              if (!ratings[g.dataset.cat]) {
-                g.style.outline = '1px solid var(--accent)';
-                g.style.borderRadius = '2px';
-                setTimeout(function () { g.style.outline = ''; }, 1400);
-              }
-            });
-            return;
-          }
-          submit.disabled = true;
-          submit.textContent = '...';
-
-          /* إرسال كل فئة عبر Image GET */
-          cats.forEach(function (cat) {
-            var ts = encodeURIComponent(new Date().toISOString());
-            var url = SHEETS_URL +
-              '?category=' + encodeURIComponent(cat) +
-              '&score=' + encodeURIComponent(ratings[cat]) +
-              '&timestamp=' + ts +
-              '&source=' + encodeURIComponent(cfg.source || 'sizeme');
-            var img = new Image();
-            img.src = url;
-          });
-
-          /* إظهار رسالة الشكر */
-          setTimeout(function () {
-            face.classList.add('erw-exit');
-            setTimeout(function () {
-              face.style.display = 'none';
-              thanks.classList.add('erw-enter');
-            }, 280);
-          }, 400);
-        });
-
-        /* إعادة ضبط */
-        function reset() {
-          ratings = {};
-          face.querySelectorAll('.nrw-num').forEach(function (b) {
-            b.classList.remove('nrw-active');
-          });
-          submit.disabled = false;
-          submit.textContent = cfg.submitLabel || 'إرسال التقييم';
-          face.style.display = '';
-          face.classList.remove('erw-exit');
-          thanks.classList.remove('erw-enter');
-        }
-
-        return { reset: reset };
-      }
-
-      /* ── تهيئة أداة الفوتر ── */
-      initNrwWidget({
-        faceId: 'frwFace',
-        thanksId: 'frwThanks',
-        submitId: 'frwSubmit',
-        source: 'sizeme-footer',
-        submitLabel: 'إرسال التقييم'
+      initWidget({
+        faceId      : 'frwFace',
+        emojisId    : 'frwEmojis',
+        submitId    : 'frwSubmit',
+        thanksId    : 'frwThanks',
+        colsSelector: '#footRatingWidget .erw-col',
+        source      : 'sizeme-footer',
+        submitLabel : 'إرسال'
       });
 
       /* ── تهيئة أداة مودال التأكيد ── */
-      var confirmInst = initNrwWidget({
-        faceId: 'erwFace',
-        thanksId: 'erwThanks',
-        submitId: 'erwSubmit',
-        source: 'sizeme-order-confirm',
-        submitLabel: 'إرسال التقييم'
+      var confirmInst = initWidget({
+        faceId      : 'erwFace',
+        emojisId    : 'erwEmojis',
+        submitId    : 'erwSubmit',
+        thanksId    : 'erwThanks',
+        colsSelector: '#emojiRatingWidget .erw-col',
+        source      : 'sizeme-order-confirm',
+        submitLabel : 'إرسال التقييم'
       });
 
       /* إعادة ضبط مودال التأكيد عند فتحه مجدداً */
       var confirmModal = document.getElementById('confirmModal');
       if (confirmModal && confirmInst) {
-        new MutationObserver(function (muts) {
-          muts.forEach(function (m) {
+        new MutationObserver(function(muts) {
+          muts.forEach(function(m) {
             if (m.attributeName === 'class' && !confirmModal.classList.contains('hidden')) {
               confirmInst.reset();
             }
