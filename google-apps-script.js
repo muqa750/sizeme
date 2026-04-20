@@ -1,48 +1,49 @@
 /**
  * SizeMe Rating — Google Apps Script (GET Version)
  * ==================================================
- * طريقة الإرسال: GET request عبر Image Trick
- * يتجاوز CORS بالكامل — لا يحتاج أي إعداد إضافي
+ * يستقبل تقييمات 1-5 لكل فئة من الأداة الجديدة
+ *
+ * الأعمدة في Google Sheets:
+ * Timestamp | Source | Category | Score
  *
  * خطوات النشر:
- * 1. افتح Google Sheets الخاص بك
- * 2. Extensions → Apps Script
- * 3. احذف الكود القديم والصق هذا الكود
- * 4. اضغط Save (Ctrl+S)
- * 5. Deploy → Manage Deployments → تأكد أن الـ Deployment موجود
- *    أو: Deploy → New Deployment:
+ * 1. افتح Google Sheets → Extensions → Apps Script
+ * 2. احذف الكود القديم، الصق هذا الكود، احفظ (Ctrl+S)
+ * 3. Deploy → New Deployment:
  *    - Type: Web app
  *    - Execute as: Me
  *    - Who has access: Anyone
- * 6. انسخ الرابط الجديد وضعه في index.html (SHEETS_URL)
- *    ملاحظة: إذا غيّرت الكود يجب Deploy → New Deployment مرة أخرى
+ * 4. انسخ الرابط الجديد وضعه في index.html (SHEETS_URL)
+ * 5. عند تعديل الكود → Deploy → Manage Deployments → Edit → New version
  */
 
 function doGet(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Ratings');
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Ratings');
 
     /* إنشاء الورقة تلقائياً إذا لم تكن موجودة */
     if (!sheet) {
-      sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-      sheet.setName('Ratings');
-      /* صف العناوين */
-      sheet.appendRow(['Timestamp', 'Rating', 'Score', 'Source']);
+      sheet = ss.insertSheet('Ratings');
+      sheet.appendRow(['Timestamp', 'Source', 'Category', 'Score']);
+      /* تنسيق رأس الجدول */
+      sheet.getRange(1, 1, 1, 4)
+           .setFontWeight('bold')
+           .setBackground('#1a1a1a')
+           .setFontColor('#ffffff');
     }
 
-    /* استخراج البيانات من معاملات الـ URL */
     var params    = e.parameter || {};
-    var rating    = params.rating    || 'unknown';
-    var score     = params.score     || '';
     var timestamp = params.timestamp || new Date().toISOString();
     var source    = params.source    || 'sizeme-website';
+    var category  = params.category  || params.rating || 'general';  // دعم النظام القديم
+    var score     = params.score     || '';
 
-    /* كتابة الصف الجديد */
-    sheet.appendRow([timestamp, rating, score, source]);
+    /* إضافة صف جديد */
+    sheet.appendRow([timestamp, source, category, score]);
 
-    /* رد JSON مع CORS headers */
     return ContentService
-      .createTextOutput(JSON.stringify({ status: 'ok', rating: rating }))
+      .createTextOutput(JSON.stringify({ status: 'ok', category: category, score: score }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
@@ -52,7 +53,19 @@ function doGet(e) {
   }
 }
 
-/* اختبار أن الرابط يعمل — افتحه في المتصفح */
+/* دعم POST أيضاً للتوافق */
 function doPost(e) {
   return doGet(e);
+}
+
+/* اختبار يدوي — شغّله من محرر Apps Script للتحقق */
+function testInsert() {
+  var mock = { parameter: {
+    timestamp: new Date().toISOString(),
+    source: 'test',
+    category: 'fabric',
+    score: '5'
+  }};
+  var result = doGet(mock);
+  Logger.log(result.getContent());
 }
