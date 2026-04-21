@@ -418,28 +418,29 @@
     }
 
     .marquee {
-      white-space: nowrap;
       overflow: hidden;
+      white-space: nowrap;
+      display: flex;
     }
 
     .marquee-track {
-      display: inline-block;
-      padding-inline-start: 100%;
-      animation: slide 28s linear infinite;
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 45s linear infinite;
     }
 
-    @keyframes slide {
-      from {
-        transform: translateX(0);
-      }
-
-      to {
-        transform: translateX(-100%);
-      }
+    .marquee-track:hover {
+      animation-play-state: paused;
     }
 
-    [dir="rtl"] .marquee-track {
-      direction: ltr;
+    @keyframes marquee-scroll {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
     }
 
     .lang-btn {
@@ -601,7 +602,7 @@
     }
 
     .sdot.active {
-      background: #fff;
+      background: var(--accent);
       width: 14px;
     }
 
@@ -3043,33 +3044,40 @@
       transition: background .18s ease, border-color .18s ease, color .18s ease, transform .12s ease;
       user-select: none;
     }
+
     .pill-filter:hover:not(.active) {
       background: var(--paper);
       border-color: var(--accent);
     }
+
     .pill-filter:active {
       transform: scale(.96);
     }
+
     .pill-filter.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
       font-weight: 600;
     }
+
     [data-theme="dark"] .pill-filter {
       background: #1e1e1e;
-      border-color: rgba(201,168,76,.25);
+      border-color: rgba(201, 168, 76, .25);
       color: #e8e0cc;
     }
+
     [data-theme="dark"] .pill-filter:hover:not(.active) {
       background: #2a2a2a;
       border-color: var(--accent);
     }
+
     [data-theme="dark"] .pill-filter.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
+
     /* ── Modern Emoji Rating ── */
     .emoji-btn {
       background: transparent;
@@ -3079,6 +3087,7 @@
       outline: none;
       -webkit-tap-highlight-color: transparent;
     }
+
     .emoji-icon {
       display: inline-block;
       font-size: 2.2rem;
@@ -3086,29 +3095,50 @@
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       transform-origin: bottom center;
     }
+
     .emoji-btn:hover .emoji-icon,
     .emoji-btn:focus-visible .emoji-icon {
       filter: grayscale(0%) opacity(100%);
       transform: scale(1.4);
     }
+
     .emoji-btn:active .emoji-icon {
       transform: scale(0.9);
       transition: all 0.1s;
     }
+
     .emoji-bounce {
       animation: emoji-bounce-anim 0.4s ease;
     }
+
     @keyframes emoji-bounce-anim {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.6); }
-      100% { transform: scale(1.4); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.6);
+      }
+
+      100% {
+        transform: scale(1.4);
+      }
     }
+
     .animate-fade-in {
       animation: fadeIn 0.4s ease forwards;
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -3121,14 +3151,20 @@
   </div>
 
   <!-- ================= ANNOUNCEMENT BAR ================= -->
-  <div class="bg-[color:var(--ink)] text-white text-xs py-2 marquee">
+  <div class="bg-[color:var(--ink)] text-white text-xs py-2 marquee" dir="ltr">
     <div class="marquee-track">
-      <span class="mx-8" data-i18n="bar1">Free shipping on orders of 10+ pieces · 20% bulk discount · Specialized sizes
-        2XL–7XL</span>
-      <span class="mx-8" data-i18n="bar2">Replacement guarantee if size doesn't fit</span>
-      <span class="mx-8" data-i18n="bar1">Free shipping on orders of 10+ pieces · 20% bulk discount · Specialized sizes
-        2XL–7XL</span>
-      <span class="mx-8" data-i18n="bar2">Replacement guarantee if size doesn't fit</span>
+      <div class="flex gap-12 px-6 min-w-full justify-around">
+        <span>اطلب وتونس.. التوصيل يجيك وين ما تكون بالعراق</span>
+        <span>وفر فلوسك واطلب 10 قطع.. الشحن يصير علينا والسعر ينزل</span>
+        <span>القياس ما ناسبك؟ لتشيل هم.. الاستبدال عدنا سهل وبسيط</span>
+        <span>كشختك بـ سايزمي غير.. اطلب بسرعة قبل ما تخلص الوجبة</span>
+      </div>
+      <div class="flex gap-12 px-6 min-w-full justify-around" aria-hidden="true">
+        <span>اطلب وتونس.. التوصيل يجيك وين ما تكون بالعراق</span>
+        <span>وفر فلوسك واطلب 10 قطع.. الشحن يصير علينا والسعر ينزل</span>
+        <span>القياس ما ناسبك؟ لتشيل هم.. الاستبدال عدنا سهل وبسيط</span>
+        <span>كشختك بـ سايزمي غير.. اطلب بسرعة قبل ما تخلص الوجبة</span>
+      </div>
     </div>
   </div>
 
@@ -3275,11 +3311,10 @@
         <!-- 1 — ضمان استبدال القياس -->
         <div class="flex flex-col items-center gap-2">
           <div class="w-7 h-7 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round"
-              class="w-full h-full text-[color:var(--accent)]">
-              <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z"/>
-              <path d="M9 12l2 2 4-4"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" class="w-full h-full text-[color:var(--accent)]">
+              <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V7L12 2z" />
+              <path d="M9 12l2 2 4-4" />
             </svg>
           </div>
           <div class="serif text-base leading-tight" data-i18n="trust1">ضمان استبدال القياس</div>
@@ -3289,11 +3324,10 @@
         <!-- 2 — مدى المقاسات -->
         <div class="flex flex-col items-center gap-2">
           <div class="w-7 h-7 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round"
-              class="w-full h-full text-[color:var(--accent)]">
-              <rect x="2" y="7" width="20" height="10" rx="2"/>
-              <path d="M6 7V5M10 7V5M14 7V5M18 7V5M6 17v2M10 17v2M14 17v2M18 17v2"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" class="w-full h-full text-[color:var(--accent)]">
+              <rect x="2" y="7" width="20" height="10" rx="2" />
+              <path d="M6 7V5M10 7V5M14 7V5M18 7V5M6 17v2M10 17v2M14 17v2M18 17v2" />
             </svg>
           </div>
           <div class="serif text-base leading-tight">2XL → 7XL</div>
@@ -3303,11 +3337,10 @@
         <!-- 3 — السعر / الكمية -->
         <div class="flex flex-col items-center gap-2">
           <div class="w-7 h-7 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round"
-              class="w-full h-full text-[color:var(--accent)]">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
-              <circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" class="w-full h-full text-[color:var(--accent)]">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+              <circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none" />
             </svg>
           </div>
           <div class="serif text-base leading-tight">30K <span class="text-sm">/pcs</span></div>
@@ -3317,13 +3350,12 @@
         <!-- 4 — شحن مجاني -->
         <div class="flex flex-col items-center gap-2">
           <div class="w-7 h-7 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round"
-              class="w-full h-full text-[color:var(--accent)]">
-              <rect x="1" y="3" width="15" height="13" rx="1"/>
-              <path d="M16 8h4l3 5v4h-7V8z"/>
-              <circle cx="5.5" cy="18.5" r="1.5"/>
-              <circle cx="18.5" cy="18.5" r="1.5"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" class="w-full h-full text-[color:var(--accent)]">
+              <rect x="1" y="3" width="15" height="13" rx="1" />
+              <path d="M16 8h4l3 5v4h-7V8z" />
+              <circle cx="5.5" cy="18.5" r="1.5" />
+              <circle cx="18.5" cy="18.5" r="1.5" />
             </svg>
           </div>
           <div class="serif text-base leading-tight" data-i18n="trust4v">شحن مجاني</div>
@@ -3422,7 +3454,8 @@
           <!-- شعار WhatsApp الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
             class="group-hover:scale-110 transition-transform duration-200">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378L2 21l1.488-5.441a9.86 9.86 0 01-1.314-4.91C2.176 5.196 6.683.69 12.21.69c2.678 0 5.192 1.044 7.084 2.937a9.964 9.964 0 012.93 7.09c-.003 5.527-4.51 10.031-10.033 10.031"/>
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378L2 21l1.488-5.441a9.86 9.86 0 01-1.314-4.91C2.176 5.196 6.683.69 12.21.69c2.678 0 5.192 1.044 7.084 2.937a9.964 9.964 0 012.93 7.09c-.003 5.527-4.51 10.031-10.033 10.031" />
           </svg>
           <span class="text-[.58rem] tracking-[.18em] text-[color:var(--mute)] uppercase font-medium">WhatsApp</span>
         </a>
@@ -3434,7 +3467,8 @@
           <!-- شعار Instagram الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
             class="group-hover:scale-110 transition-transform duration-200">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            <path
+              d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
           </svg>
           <span class="text-[.58rem] tracking-[.18em] text-[color:var(--mute)] uppercase font-medium">Instagram</span>
         </a>
@@ -3446,7 +3480,8 @@
           <!-- شعار TikTok الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
             class="group-hover:scale-110 transition-transform duration-200">
-            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+            <path
+              d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
           </svg>
           <span class="text-[.58rem] tracking-[.18em] text-[color:var(--mute)] uppercase font-medium">TikTok</span>
         </a>
@@ -3458,7 +3493,8 @@
           <!-- شعار Facebook الأصلي -->
           <svg width="30" height="30" viewBox="0 0 24 24" fill="#1a1a1a"
             class="group-hover:scale-110 transition-transform duration-200">
-            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            <path
+              d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
           </svg>
           <span class="text-[.58rem] tracking-[.18em] text-[color:var(--mute)] uppercase font-medium">Facebook</span>
         </a>
@@ -3945,8 +3981,8 @@
     const I18N = {
       ar: {
         dir: 'rtl',
-        bar1: 'شحن مجاني عند طلب 10 قطع أو أكثر · خصم خاص · مقاسات 2XL–7XL',
-        bar2: 'ضمان استبدال إذا لم يناسبك المقاس',
+        bar1: 'وداعاً لحيرة القياس.. نضمن لك المقاس المثالي أو الاستبدال مجاناً ✅',
+        bar2: ' مقاسات خاصة من 2XL حتى 7XL 📏      شحن مجاني للطلبات الكبيرة 🚛',
         navShop: 'المتجر', navAbout: 'عن SizeMe', navContact: 'تواصل',
         tagline: ' للقياسات الخاصة',
         heroKicker: '   أناقة تناسب كل المقاسات.',
@@ -4457,24 +4493,23 @@
       const t = I18N[state.lang];
       return `
     <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
-      <!-- ── HOVER IMAGE SWAP — اضغط لعرض تفاصيل المنتج كاملاً ── -->
-      <div class="product-img group relative overflow-hidden bg-[#f2ece2]" onclick="openProductModal('${p.id}')" style="cursor:pointer">
-        <!-- الصورة الأساسية -->
-        <img src="${imgPath(p, 1)}" alt="${p.brand}"
-             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-             style="opacity:0;"
-             onload="this.style.opacity='1'; this.parentElement.querySelector('.placeholder-wrap').style.display='none';"
-             onerror="this.style.display='none';" />
-             
-        <!-- الصورة الثانوية (Hover) -->
-        <img src="${imgPath(p, 2)}" alt="${p.brand} detail" loading="lazy"
-             class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-             onerror="this.remove();" />
-             
-        <!-- Watermark / Placeholder -->
-        <div class="placeholder-wrap absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div class="brand-watermark">${p.brand}</div>
-          <div class="brand-sub">${p.sub}</div>
+      <!-- ── TOUCH SLIDER ── -->
+      <div class="product-img slider-wrap relative" data-idx="0">
+        <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
+          <div class="slide">
+            <img src="${imgPath(p, 1)}" alt="${p.brand}"
+                 style="opacity:0;transition:opacity .25s"
+                 onload="this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                 onerror="this.style.display='none';" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2] pointer-events-none">
+              <div class="brand-watermark">${p.brand}</div>
+              <div class="brand-sub">${p.sub}</div>
+            </div>
+          </div>
+        </div>
+        <!-- النقاط بالأسفل - تظهر فقط عندما يكون هناك أكثر من صورة -->
+        <div class="slider-dots absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 hidden z-10">
+          <span class="sdot active"></span>
         </div>
       </div>
       <!-- ── INFO ── -->
@@ -4610,10 +4645,11 @@
 
         /* ── ربط تفاعلات بطاقات المنتجات ── */
         $$('#productSections .product-card').forEach(card => {
-          card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot => {
+          card.querySelectorAll('[data-role="colors"] .color-dot').forEach((dot, index) => {
             dot.addEventListener('click', () => {
               card.querySelectorAll('[data-role="colors"] .color-dot').forEach(d => d.classList.remove('active'));
               dot.classList.add('active');
+              if (card.goToSlide) card.goToSlide(index);
             });
           });
           card.querySelectorAll('[data-role="sizes"] .size-card').forEach(sc => {
@@ -4679,6 +4715,7 @@
           slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
           setTimeout(updateDots, 350);
         }
+        card.goToSlide = goTo;
 
         /* ── مراقبة التمرير لتحديث النقاط ── */
         let scrollTimer;
@@ -5840,7 +5877,7 @@
           '&score=' + encodeURIComponent(score) +
           '&timestamp=' + ts +
           '&source=' + encodeURIComponent(source || 'sizeme-footer');
-        
+
         // إرسال عبر fetch
         fetch(url, { method: 'GET', mode: 'no-cors' })
           .catch(err => console.error(err));
@@ -5862,11 +5899,11 @@
 
             // إرسال التقييم
             sendRating(btn.dataset.value, btn.dataset.score, cfg.source);
-            
+
             // إخفاء الوجوه وإظهار الشكر بحركة ناعمة
-            setTimeout(function() {
+            setTimeout(function () {
               face.style.opacity = '0';
-              setTimeout(function() {
+              setTimeout(function () {
                 face.style.display = 'none';
                 thanks.classList.remove('hidden');
               }, 300);
@@ -5875,7 +5912,7 @@
         });
 
         return {
-          reset: function() {
+          reset: function () {
             face.style.display = '';
             face.style.opacity = '1';
             thanks.classList.add('hidden');
