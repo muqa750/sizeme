@@ -481,11 +481,19 @@
 
     /* base glow overridden below in GLOW FOCUS section */
     .hero-video-wrap {
-      aspect-ratio: 16/9;
+      aspect-ratio: 4/5;
       background: linear-gradient(135deg, #1a1a1a 0%, #2d2a24 100%);
       position: relative;
       overflow: hidden;
       border: 1px solid var(--line);
+    }
+    .hero-video-wrap video {
+      pointer-events: none;
+    }
+    @media (min-width: 768px) {
+      .hero-video-wrap {
+        aspect-ratio: 16/9;
+      }
     }
 
     .play-btn {
@@ -1018,7 +1026,6 @@
 
     /* فيديو Hero — نفس المعالجة لمنع الـ jump */
     .hero-video-wrap {
-      aspect-ratio: 16/9;
       contain: layout;
       overflow: hidden;
     }
@@ -3285,7 +3292,7 @@
       </div>
 
       <div class="hero-video-wrap rounded-sm">
-        <video id="heroVideo" class="w-full h-full object-cover" autoplay loop muted playsinline poster="">
+        <video id="heroVideo" class="w-full h-full object-cover" autoplay loop muted playsinline webkit-playsinline disablepictureinpicture poster="">
           <source src="video/brand-mission.mp4" type="video/mp4" />
         </video>
         <div id="videoFallback" class="play-btn">
