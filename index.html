@@ -522,6 +522,7 @@
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      direction: ltr;
     }
 
     .slider-track::-webkit-scrollbar {
@@ -4739,21 +4740,25 @@
         /* ── Probe extra images (2 → MAX_EXTRA_IMAGES+1) ── */
         for (let seq = 2; seq <= MAX_EXTRA_IMAGES + 1; seq++) {
           (function (s) {
+            const slide = document.createElement('div');
+            slide.className = 'slide hidden';
+            const img = document.createElement('img');
+            img.alt = p.brand;
+            slide.appendChild(img);
+            track.appendChild(slide);
+
+            const dot = document.createElement('span');
+            dot.className = 'sdot hidden';
+            dotsWrap.appendChild(dot);
+
             const probe = new Image();
             probe.onload = () => {
-              const slide = document.createElement('div');
-              slide.className = 'slide';
-              const img = document.createElement('img');
-              img.src = imgPath(p, s);
-              img.alt = p.brand;
-              slide.appendChild(img);
-              track.appendChild(slide);
-              const dot = document.createElement('span');
-              dot.className = 'sdot';
-              dotsWrap.appendChild(dot);
+              img.src = probe.src;
+              slide.classList.remove('hidden');
+              dot.classList.remove('hidden');
               dotsWrap.classList.remove('hidden');
-              btnPrev.classList.remove('hidden');
-              btnNext.classList.remove('hidden');
+              if (btnPrev) btnPrev.classList.remove('hidden');
+              if (btnNext) btnNext.classList.remove('hidden');
             };
             probe.src = imgPath(p, s);
           })(seq);
