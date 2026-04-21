@@ -45,9 +45,20 @@
   </script>
   <meta name="description"
     content="SizeMe — Specialists in premium brand clothing, unique patterns, and specialized sizes (2XL–7XL)." />
+  <!-- ================= OG & SEO TAGS ================= -->
+  <meta property="og:title" content="SizeMe — للقياسات الخاصة" />
+  <meta property="og:description" content="متخصصون بملابس الماركات الحصرية، الأنماط الفاخرة، والقياسات الخاصة (2XL–7XL)." />
+  <meta property="og:image" content="https://sizeme.iq/favicon.png" />
+  <meta property="og:url" content="https://sizeme.iq/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SizeMe — للقياسات الخاصة" />
+  <meta name="twitter:description" content="متخصصون بملابس الماركات الحصرية، الأنماط الفاخرة، والقياسات الخاصة (2XL–7XL)." />
+  <meta name="twitter:image" content="https://sizeme.iq/favicon.png" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="shortcut icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
+  <link href="dist/output.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -3416,6 +3427,16 @@
         <div class="flex items-center gap-3 flex-wrap">
           <span class="kicker me-2" data-i18n="filterColor">Color</span>
           <div id="colorFilters" class="flex gap-2 flex-wrap items-center"></div>
+        </div>
+
+        <!-- Sort filter -->
+        <div class="flex items-center gap-3 flex-wrap mt-4 md:mt-0 md:ms-auto">
+          <span class="kicker me-2" data-i18n="filterSort">Sort By</span>
+          <select id="sortFilter" class="border hairline bg-white text-sm py-1.5 px-3 rounded-none focus:outline-none focus:border-[color:var(--ink)] cursor-pointer">
+            <option value="newest" data-i18n="sortNewest">الأحدث</option>
+            <option value="priceAsc" data-i18n="sortPriceAsc">السعر: الأقل إلى الأعلى</option>
+            <option value="priceDesc" data-i18n="sortPriceDesc">السعر: الأعلى إلى الأقل</option>
+          </select>
         </div>
 
       </div>

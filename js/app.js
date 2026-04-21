@@ -1,4 +1,25 @@
-﻿import { I18N, C, TOTAL_PRODUCTS, PRODUCTS_META, PRODUCTS, COUPONS } from './data.js';
+import { I18N, C, TOTAL_PRODUCTS, PRODUCTS_META, PRODUCTS, COUPONS } from './data.js';
+
+/* --- INJECT SORTING I18N --- */
+if (I18N.ar) {
+  I18N.ar.filterSort = 'الترتيب:';
+  I18N.ar.sortNewest = 'الأحدث';
+  I18N.ar.sortPriceAsc = 'السعر: الأقل إلى الأعلى';
+  I18N.ar.sortPriceDesc = 'السعر: الأعلى إلى الأقل';
+}
+if (I18N.en) {
+  I18N.en.filterSort = 'Sort By:';
+  I18N.en.sortNewest = 'Newest';
+  I18N.en.sortPriceAsc = 'Price: Low to High';
+  I18N.en.sortPriceDesc = 'Price: High to Low';
+}
+if (I18N.ku) {
+  I18N.ku.filterSort = 'ڕیزبەندی:';
+  I18N.ku.sortNewest = 'نوێترین';
+  I18N.ku.sortPriceAsc = 'نرخ: کەمترین بۆ بەرزترین';
+  I18N.ku.sortPriceDesc = 'نرخ: بەرزترین بۆ کەمترین';
+}
+/* --------------------------- */
 
     /*
      * imgPath() — مسار صورة المنتج
@@ -79,7 +100,7 @@
     let state = {
       lang: 'ar',
       cart: [],          // {pid, brand, sub, img, color, size, qty}
-      filter: { brand: 'all', color: 'all' },
+      filter: { brand: 'all', color: 'all', sort: 'newest' },
       catPage: {},          // صفحة كل فئة مستقلة: { tshirt:0, polo:0, ... }
       coupon: null         // { code, type, value } — set by applyCoupon()
     };
@@ -157,6 +178,20 @@
         const activeC = cf.querySelector('.chip.active');
         if (window.moveFilterIndicator && activeC) moveFilterIndicator('colorFilters', activeC);
       });
+
+      /* --- Sort filter --- */
+      const sf = $('#sortFilter');
+      if (sf) {
+        sf.value = state.filter.sort;
+        if (!sf.dataset.bound) {
+          sf.addEventListener('change', (e) => {
+            state.filter.sort = e.target.value;
+            state.catPage = {};
+            renderProducts();
+          });
+          sf.dataset.bound = 'true';
+        }
+      }
     }
 
     /* =================== NEW PRODUCT BADGE =================== */
@@ -263,7 +298,15 @@
 
       setTimeout(function () {
         const t = I18N[state.lang];
-        const all = filteredProducts();
+        let all = filteredProducts();
+        
+        /* ── الفرز (Sorting) ── */
+        if (state.filter.sort === 'priceAsc') {
+          all.sort((a, b) => getPrice(a) - getPrice(b));
+        } else if (state.filter.sort === 'priceDesc') {
+          all.sort((a, b) => getPrice(b) - getPrice(a));
+        }
+
         const total = all.length;
 
         /* ── عداد المنتجات ── */
