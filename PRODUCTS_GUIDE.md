@@ -4,106 +4,90 @@
 
 ## 🗂️ هيكل المجلدات
 
-```
+```text
 sizeme/
 ├── imagestshirts/    ← صور التي شيرت
 ├── imagespolo/       ← صور البولو
 ├── imagesjeans/      ← صور البنطرون
 ├── imagestracksuit/  ← صور التراكسوت
-├── imagesshirts/     ← صور القمصان (فارغ — جاهز)
-└── index.html        ← ملف الموقع الرئيسي
+├── imagesshirts/     ← صور القمصان
+└── js/data.js        ← ملف البيانات الرئيسي (حيث تتم إضافة المنتجات)
 ```
 
 ---
 
-## 📐 قاعدة تسمية الصور
+## 📐 قاعدة تسمية الصور (موحدة لجميع الأقسام)
 
-### التي شيرت — `imagestshirts/`
-```
-{رقم-عالمي}-{رقم-صورة}-{imgKey}.jpg
-
-مثال:
-27-1-gucci-logo.jpg   ← منتج رقم 27 في PRODUCTS_META
-27-2-gucci-logo.jpg   ← صورة ثانية لنفس المنتج
-```
-
-### باقي الأقسام — `imagespolo/ imagesjeans/ imagestracksuit/ imagesshirts/`
-```
+كل قسم يمتلك تسلسلاً خاصاً به ومستقلاً تماماً عن الأقسام الأخرى.
+اسم الصورة دائماً يتبع هذه الصيغة:
+```text
 {catSeq}-{رقم-صورة}-{imgKey}.jpg
-
-مثال (بولو ثانٍ):
-02-1-ralph-lauren.jpg   ← catSeq = 02
-02-2-ralph-lauren.jpg
 ```
 
-> ⚡ catSeq = ترقيم خاص بكل مجلد، مستقل تماماً عن رقم المنتج العالمي
+**أمثلة:**
+- **تي شيرت جديد**: `32-1-gucci-logo.jpg` (حيث التسلسل الخاص بالتيشيرتات `catSeq` وصل لـ 32).
+- **بولو جديد**: `02-1-ralph-lauren.jpg` (التسلسل الخاص بالبولو `catSeq` وصل لـ 02).
+- **بنطرون جديد**: `03-1-cargo.jpg` (التسلسل الخاص بالبنطرونات `catSeq` وصل لـ 03).
+
+> ⚡ **ملاحظة مهمة:** تسلسل المجلد (`catSeq`) مستقل تماماً عن رقم المنتج العام (`TOTAL_PRODUCTS`).
 
 ---
 
 ## 🚀 الخطوات الثلاث لإضافة أي منتج
 
-```
-1. ارفع الصورة بالاسم الصحيح في المجلد الصحيح
+```text
+1. ارفع الصورة بالاسم الصحيح في المجلد المخصص لها (حسب تسلسل القسم).
           ↓
-2. غيّر TOTAL_PRODUCTS في index.html
+2. في ملف js/data.js، قم بزيادة الرقم TOTAL_PRODUCTS بمقدار 1 (لتحديد أن هناك منتجاً جديداً سيظهر أولاً).
           ↓
-3. أضف سطراً في PRODUCTS_META في index.html
+3. أضف بيانات المنتج الجديد في جدول PRODUCTS_META في ملف js/data.js مع إعطائه الرقم العام الجديد (TOTAL_PRODUCTS).
 ```
 
 ---
 
-## 🔍 كيف تجد PRODUCTS_META في index.html
+## 🔍 أين تتم الإضافة في `js/data.js`؟
 
-1. افتح `index.html` في VS Code
-2. اضغط `Ctrl + F`
-3. ابحث عن: `const PRODUCTS_META`
-4. ستجد جدول المنتجات — أضف سطرك في الأسفل
+1. افتح ملف `js/data.js` في المحرر (VS Code).
+2. ابحث عن `export const TOTAL_PRODUCTS` وقم بزيادة الرقم بمقدار المنتجات التي تضيفها.
+3. ابحث عن `export const PRODUCTS_META` وأضف السطر الجديد في نهاية القائمة بالرقم العام الجديد.
 
 ---
 
 ## 📝 نموذج كامل لكل فئة
 
-### تي شيرت (TOTAL_PRODUCTS = 30)
-```js
-// في imagestshirts/ → 30-1-brand-name.jpg
-30: { sku:'XX-30', imgKey:'brand-name', brand:'BRAND NAME', sub:'Collection Name',
-      colors:[C.BLK, C.WHT] },
+### تي شيرت 
+```javascript
+// في imagestshirts/ → 32-1-brand-name.jpg
+38: { sku:'XX-38', imgKey:'brand-name', brand:'BRAND NAME', sub:'Collection Name',
+      colors:[C.BLK, C.WHT], category:'tshirt', catSeq:'32', added:'2026-05-01' },
 ```
 
-### بولو (TOTAL_PRODUCTS = 30)
-```js
+### بولو
+```javascript
 // في imagespolo/ → 02-1-brand-name.jpg
-30: { sku:'XX-30', imgKey:'brand-name', brand:'BRAND NAME', sub:'Collection Name',
-      colors:[C.BLK, C.WHT],
-      category:'polo',
-      catSeq:'02' },
+39: { sku:'XX-39', imgKey:'brand-name', brand:'BRAND NAME', sub:'Collection Name',
+      colors:[C.BLK, C.WHT], category:'polo', catSeq:'02', added:'2026-05-01' },
 ```
 
-### بنطرون (TOTAL_PRODUCTS = 30)
-```js
-// في imagesjeans/ → 02-1-brand-name.jpg
-30: { sku:'XX-30', imgKey:'brand-name', brand:'BRAND NAME', sub:'Slim Fit',
-      colors:[C.BLK, C.DNV],
-      category:'jeans',
-      catSeq:'02' },
+### بنطرون (مقاساته أرقام أوروبية)
+```javascript
+// في imagesjeans/ → 03-1-brand-name.jpg
+40: { sku:'XX-40', imgKey:'brand-name', brand:'BRAND NAME', sub:'Slim Fit',
+      colors:[C.BLK, C.DNV], category:'jeans', catSeq:'03', added:'2026-05-01' },
 ```
 
-### تراكسوت (TOTAL_PRODUCTS = 30)
-```js
+### تراكسوت
+```javascript
 // في imagestracksuit/ → 02-1-brand-name.jpg
-30: { sku:'XX-30', imgKey:'brand-name', brand:'BRAND NAME', sub:'Sport',
-      colors:[C.BLK, C.WHT],
-      category:'tracksuit',
-      catSeq:'02' },
+41: { sku:'XX-41', imgKey:'brand-name', brand:'BRAND NAME', sub:'Sport',
+      colors:[C.BLK, C.WHT], category:'tracksuit', catSeq:'02', added:'2026-05-01' },
 ```
 
-### قميص (TOTAL_PRODUCTS = 30)
-```js
-// في imagesshirts/ → 01-1-brand-name.jpg
-30: { sku:'XX-30', imgKey:'brand-name', brand:'BRAND NAME', sub:'Slim Fit',
-      colors:[C.BLK, C.WHT],
-      category:'shirt',
-      catSeq:'01' },
+### قميص
+```javascript
+// في imagesshirts/ → 02-1-brand-name.jpg
+42: { sku:'XX-42', imgKey:'brand-name', brand:'BRAND NAME', sub:'Slim Fit',
+      colors:[C.BLK, C.WHT], category:'shirt', catSeq:'02', added:'2026-05-01' },
 ```
 
 ---
@@ -124,28 +108,13 @@ sizeme/
 
 ---
 
-## 🔢 حالة TOTAL_PRODUCTS الحالية
-
-```
-TOTAL_PRODUCTS = 29
-
-المنتجات الحالية:
-01–26  → تي شيرت  (imagestshirts/)
-27     → بولو     (imagespolo/  catSeq:01)
-28     → بنطرون   (imagesjeans/ catSeq:01)
-29     → تراكسوت  (imagestracksuit/ catSeq:01)
-
-المنتج القادم → رقم 30
-```
-
----
-
 ## ⚠️ أخطاء شائعة يجب تجنبها
 
 | الخطأ | السبب | الحل |
 |-------|-------|------|
-| الصورة لا تظهر | اسم الملف لا يطابق imgKey | تحقق من كل حرف بما فيها الشرطات |
-| منتج يظهر بدون صورة | نسيت رفع الصورة | ارفع `01-1-imgKey.jpg` على الأقل |
-| المنتج لا يظهر في قسمه | نسيت `category:` | أضف الحقل |
-| أرقام مقاسات خاطئة للبنطرون | نسيت `category:'jeans'` | المقاسات تُحدَّد تلقائياً بالـ category |
-| خطأ في PRODUCTS_META | نسيت تغيير TOTAL_PRODUCTS | غيّر الرقم أولاً |
+| الصورة لا تظهر | اسم الملف لا يطابق `catSeq` أو `imgKey` | تحقق من كل حرف بما فيها الشرطات وتطابق `catSeq` مع بداية اسم الصورة. |
+| منتج يظهر بدون صورة | نسيت رفع الصورة | ارفع `{catSeq}-1-{imgKey}.jpg` على الأقل. |
+| المنتج لا يظهر في قسمه | نسيت `category:` | أضف الحقل (مثلاً `category:'polo'`). |
+| أرقام مقاسات خاطئة للبنطرون | نسيت `category:'jeans'` | المقاسات تُحدَّد تلقائياً بناءً على الفئة (Jeans يستخدم مقاسات الخصر 38-48). |
+| الترتيب لا يظهر الأحدث أولاً | لم تستخدم الرقم العام (TOTAL_PRODUCTS) | تأكد أن المنتجات الأحدث تحصل على الرقم العام الأكبر في `PRODUCTS_META`. |
+| لم يظهر شعار "جديد" | نسيت إضافة تاريخ الإضافة | أضف الحقل `added:'YYYY-MM-DD'` بتاريخ اليوم. |

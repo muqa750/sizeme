@@ -214,7 +214,7 @@ export const C = {
   OLV: { n: 'Olive', h: '#3D4A2A' },
 };
 
-export const TOTAL_PRODUCTS = 29;
+export const TOTAL_PRODUCTS = 36;
 
 export const PRODUCTS_META = {
   1: { sku: 'LA-01', imgKey: 'lacoste-e33', brand: 'LACOSTE', sub: 'E33 Flag', colors: [C.BLK, C.WHT, C.OLV] },
@@ -248,12 +248,40 @@ export const PRODUCTS_META = {
     colors: [C.BLK, C.WHT, C.RBL], category: 'polo', catSeq: '01', added: '2026-04-17'
   },
   28: {
-    sku: 'TZ-28', imgKey: 'tranzet-slimfit', brand: 'TRANZET', sub: 'Slim Fit',
-    colors: [C.BLK, C.DNV], category: 'jeans', catSeq: '01', added: '2026-04-17'
-  },
-  29: {
     sku: 'HE-29', imgKey: 'hermes-ss', brand: 'HERMÈS', sub: 'Sport',
     colors: [C.BLK, C.WHT, C.BRN], category: 'tracksuit', catSeq: '01', added: '2026-04-17'
+  },
+  29: {
+    sku: 'BA-27', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'New Collection',
+    colors: [C.BLK, C.WHT, C.CHR], category: 'tshirt', catSeq: '27', added: '2026-04-23'
+  },
+  30: {
+    sku: 'SU-28', imgKey: 'supreme', brand: 'SUPREME', sub: 'New Collection',
+    colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '28', added: '2026-04-23'
+  },
+  31: {
+    sku: 'LV-29', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'New Collection',
+    colors: [C.BLK, C.WHT, C.TPE], category: 'tshirt', catSeq: '29', added: '2026-04-23'
+  },
+  32: {
+    sku: 'JJ-30', imgKey: 'jackjones', brand: 'JACK & JONES', sub: 'New Collection',
+    colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '30', added: '2026-04-23'
+  },
+  33: {
+    sku: 'LV-31', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'New Collection',
+    colors: [C.BLK, C.WHT, C.DNV], category: 'tshirt', catSeq: '31', added: '2026-04-23'
+  },
+  34: {
+    sku: 'BU-35', imgKey: 'burberry-new', brand: 'BURBERRY', sub: 'Classic',
+    colors: [C.BLK, C.WHT], category: 'shirt', catSeq: '01', added: '2026-04-23'
+  },
+  35: {
+    sku: 'CA-36', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Style',
+    colors: [C.OLV, C.TPE], category: 'jeans', catSeq: '01', added: '2026-04-23'
+  },
+  36: {
+    sku: 'CA-37', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Black',
+    colors: [C.BLK, C.CHR], category: 'jeans', catSeq: '02', added: '2026-04-23'
   },
 };
 
