@@ -326,6 +326,7 @@
       transition: filter .45s ease, transform .45s ease, opacity .3s ease;
       will-change: filter, transform;
     }
+
     .img-lazy.loaded {
       filter: blur(0);
       transform: scale(1);
@@ -1277,6 +1278,7 @@
       100% {
         transform: scale(1);
       }
+
     }
 
     .badge-pop {
@@ -2068,6 +2070,7 @@
       white-space: nowrap;
       line-height: 1.6;
     }
+
     .badge-new::before {
       content: '';
       display: inline-block;
@@ -2096,6 +2099,7 @@
       animation: badge-pulse 2.2s ease-out infinite;
       will-change: box-shadow;
     }
+
     .badge-bestseller::before {
       content: '';
       display: inline-block;
@@ -2110,7 +2114,12 @@
     /* إطار ذهبي + Gradient Glow لبطاقات best-seller — مؤجّل بعد .product-card الأخير */
 
     @media(max-width:768px) {
-      .badge-new, .badge-bestseller { font-size: .46rem; padding: 2px 5px; }
+
+      .badge-new,
+      .badge-bestseller {
+        font-size: .46rem;
+        padding: 2px 5px;
+      }
     }
 
     /* =====================================================
@@ -2791,6 +2800,7 @@
         0 0 0 1px rgba(201, 168, 76, 0.18),
         0 8px 32px -8px rgba(201, 168, 76, 0.28) !important;
     }
+
     .product-card.card-bestseller:hover {
       border-color: rgba(201, 168, 76, 0.85) !important;
       box-shadow:
@@ -3246,6 +3256,22 @@
         transform: translateY(0);
       }
     }
+
+    /* إطار التميز الذهبي لبراند Sizeme */
+    .product-card.card-bestseller {
+      border: 1px solid #c9a84c !important;
+      box-shadow: 0 0 15px rgba(201, 168, 76, 0.2) !important;
+      position: relative;
+    }
+
+    /* تصميم بادج الأكثر طلباً */
+    .badge-bestseller {
+      background: linear-gradient(135deg, #c9a84c 0%, #e8d48b 50%, #c9a84c 100%) !important;
+      color: white !important;
+      font-weight: bold !important;
+      padding: 2px 8px !important;
+      border-radius: 2px !important;
+    }
   </style>
 </head>
 
@@ -3532,7 +3558,7 @@
           <select id="sortFilter"
             class="border hairline bg-white text-sm py-1.5 px-3 rounded-none focus:outline-none focus:border-[color:var(--ink)] cursor-pointer">
             <option value="newest" data-i18n="sortNewest">الأحدث</option>
-            <option value="bestSeller" data-i18n="sortBestSeller">الأكثر طلباً</option>
+            <option value="best-seller" data-i18n="sortBestSeller">الأكثر طلباً</option>
             <option value="newArrivals" data-i18n="sortNewArrivals">وصل حديثاً</option>
             <option value="priceAsc" data-i18n="sortPriceAsc">السعر: الأقل إلى الأعلى</option>
             <option value="priceDesc" data-i18n="sortPriceDesc">السعر: الأعلى إلى الأقل</option>
@@ -4337,12 +4363,12 @@
     // حقل sku → كود المنتج الظاهر في رسالة الواتساب والسلة
     // عدّله يدوياً لأي كود تريده (أرقام، حروف، أو مزيج)
     const PRODUCTS_META = {
-      1: { sku: 'LA-01', imgKey: 'lacoste-e33', brand: 'LACOSTE', sub: 'E33 Flag', colors: [C.BLK, C.WHT, C.OLV] },
-      2: { sku: 'PO-02', imgKey: 'polo', brand: 'U.S. POLO ASSN', sub: 'Polo Classic', colors: [C.BLK, C.WHT, C.RBL, C.TPE] },
+      1: { sku: 'LA-01', imgKey: 'lacoste-e33', brand: 'LACOSTE', sub: 'E33 Flag', colors: [C.BLK, C.WHT, C.OLV], status: 'best-seller' },
+      2: { sku: 'PO-02', imgKey: 'polo', brand: 'U.S. POLO ASSN', sub: 'Polo Classic', colors: [C.BLK, C.WHT, C.RBL, C.TPE], status: 'best-seller' },
       3: { sku: 'GI-03', imgKey: 'givenchy', brand: 'GIVENCHY', sub: 'Paris', colors: [C.BLK, C.WHT, C.BRN] },
       4: { sku: 'OW-04', imgKey: 'off-white', brand: 'OFF-WHITE', sub: 'Hand Logo', colors: [C.BLK, C.WHT, C.RBL] },
       5: { sku: 'HU-05', imgKey: 'hugo', brand: 'HUGO', sub: 'Bold Logo', colors: [C.BLK, C.WHT, C.DNV] },
-      6: { sku: 'LA-06', imgKey: 'lacoste-1927', brand: 'LACOSTE', sub: '1927 Heritage', colors: [C.BLK, C.WHT] },
+      6: { sku: 'LA-06', imgKey: 'lacoste-1927', brand: 'LACOSTE', sub: '1927 Heritage', colors: [C.BLK, C.WHT], status: 'best-seller' },
       7: { sku: 'BA-07', imgKey: 'balmain', brand: 'BALMAIN', sub: 'Paris', colors: [C.BLK, C.WHT, C.OLV, C.BRG] },
       8: { sku: 'AL-08', imgKey: 'alo', brand: 'ALO', sub: 'basic', colors: [C.BLK, C.DNV, C.CHR, C.BRN] },
       9: { sku: 'PR-09', imgKey: 'prada', brand: 'PRADA', sub: 'Milano', colors: [C.BLK, C.WHT, C.BRN, C.CHR] },
@@ -4351,18 +4377,18 @@
       12: { sku: 'CK-12', imgKey: 'ck', brand: 'CALVIN KLEIN', sub: 'CK Monogram', colors: [C.BLK, C.WHT] },
       13: { sku: 'KI-13', imgKey: 'kiton', brand: 'KITON', sub: 'Napoli', colors: [C.BLK, C.WHT] },
       14: { sku: 'LO-14', imgKey: 'loewe', brand: 'LOEWE', sub: 'Madrid 1846', colors: [C.BLK, C.WHT] },
-      15: { sku: 'LV-15', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'Paris', colors: [C.BLK, C.WHT, C.TPE] },
+      15: { sku: 'LV-15', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'Paris', colors: [C.BLK, C.WHT, C.TPE], status: 'best-seller' },
       16: { sku: 'KI-16', imgKey: 'kiton-small', brand: 'KITON', sub: 'Small Logo', colors: [C.BLK, C.WHT, C.CHR] },
       17: { sku: 'CK-17', imgKey: 'calvin-klein', brand: 'CALVIN KLEIN', sub: 'Classic', colors: [C.BLK, C.WHT, C.OLV, C.BRN] },
       18: { sku: 'BO-18', imgKey: 'boos', brand: 'BOSS', sub: 'sun logo', colors: [C.BLK, C.WHT, C.DNV] },
       19: { sku: 'ES-19', imgKey: 'essentials', brand: 'ESSENTIALS', sub: 'NBA', colors: [C.BLK, C.WHT, C.TPE] },
       20: { sku: 'PO-20', imgKey: 'u-s-polo', brand: 'U.S. POLO ASSN', sub: 'Assn horse', colors: [C.BLK, C.WHT, C.OLV] },
-      21: { sku: 'HE-21', imgKey: 'hermes', brand: 'HERMÈS', sub: 'horse Paris', colors: [C.BLK, C.WHT] },
+      21: { sku: 'HE-21', imgKey: 'hermes', brand: 'HERMÈS', sub: 'horse Paris', colors: [C.BLK, C.WHT], status: 'best-seller' },
       22: { sku: 'BA-22', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'balenc shop', colors: [C.BLK, C.WHT, C.RBL] },
       23: { sku: 'SU-23', imgKey: 'supreme', brand: 'SUPREME', sub: 'Earth Logo', colors: [C.BLK, C.WHT, C.CHR] },
       24: { sku: 'HE-24', imgKey: 'hermes-h', brand: 'HERMÈS', sub: 'Lines Logo', colors: [C.BLK, C.WHT] },
       25: { sku: 'MA-25', imgKey: 'massimo-dutti', brand: 'MASSIMO DUTTI', sub: 'since 1985', colors: [C.BLK, C.WHT, C.BRN, C.CHR] },
-      26: { sku: 'LV-26', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'umbrellas', colors: [C.BLK, C.WHT, C.RBL, C.OLV, C.BRG] },
+      26: { sku: 'LV-26', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'umbrellas', colors: [C.BLK, C.WHT, C.RBL, C.OLV, C.BRG], status: 'new' },
 
       // ═══════════════════════════════════════════════════════════════════
       //  المنتجات الجديدة — رقم 27 → 29
@@ -4373,48 +4399,47 @@
       // ── 27: بولو — imagespolo/27-1-polo-plus.jpg ──────────────────────
       27: {
         sku: 'Po-27', imgKey: 'polo-plus', brand: 'POLO PLUS', sub: 'Classic Fit',
-        colors: [C.BLK, C.WHT, C.RBL], category: 'polo', catSeq: '01', added: '2026-04-17'
+        colors: [C.BLK, C.WHT, C.RBL], category: 'polo', catSeq: '01', added: '2026-04-17', status: 'new'
       },
-
 
       // ── 28: تراكسوت — imagestracksuit/01-1-hermes-ss.jpg ──────────────
       28: {
         sku: 'HE-28', imgKey: 'hermes-ss', brand: 'HERMÈS', sub: 'Sport',
-        colors: [C.BLK, C.WHT, C.BRN], category: 'tracksuit', catSeq: '01', added: '2026-04-17'
+        colors: [C.BLK, C.WHT, C.BRN], category: 'tracksuit', catSeq: '01', added: '2026-04-17', status: 'new'
       },
 
       // ── 29-32: تي شيرت جديد — imagestshirts ─────────────────────────────
       29: {
         sku: 'BA-29', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'PARIS',
-        colors: [C.BLK, C.WHT, C.CHR], category: 'tshirt', catSeq: '27', added: '2026-04-23'
+        colors: [C.BLK, C.WHT, C.CHR], category: 'tshirt', catSeq: '27', added: '2026-04-23', status: 'new'
       },
       30: {
         sku: 'SU-30', imgKey: 'supreme', brand: 'SUPREME', sub: 'NASA USA',
-        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '28', added: '2026-04-23'
+        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '28', added: '2026-04-23', status: 'new'
       },
       31: {
         sku: 'LV-31', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'cuneiform',
-        colors: [C.BLK, C.WHT, C.TPE], category: 'tshirt', catSeq: '29', added: '2026-04-23'
+        colors: [C.BLK, C.WHT, C.TPE], category: 'tshirt', catSeq: '29', added: '2026-04-23', status: 'new'
       },
       32: {
         sku: 'JJ-32', imgKey: 'jackjones', brand: 'JACK & JONES', sub: 'WORLD WIDE',
-        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '30', added: '2026-04-23'
+        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '30', added: '2026-04-23', status: 'new'
       },
 
       // ── 33: قميص — imagesshirts/01-1-burberry-new.jpg ──────────────────
       33: {
         sku: 'BU-33', imgKey: 'burberry-new', brand: 'BURBERRY', sub: 'Classic',
-        colors: [C.BLK, C.WHT], category: 'shirt', catSeq: '01', added: '2026-04-17'
+        colors: [C.BLK, C.WHT], category: 'shirt', catSeq: '01', added: '2026-04-17', status: 'new'
       },
 
       // ── 34-35: بنطرون — imagesjeans/01-1-cargo-army.jpg ────────────────
       34: {
         sku: 'CA-34', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Style',
-        colors: [C.OLV, C.TPE], category: 'jeans', catSeq: '01', added: '2026-04-23'
+        colors: [C.OLV, C.TPE], category: 'jeans', catSeq: '01', added: '2026-04-23', status: 'new'
       },
       35: {
         sku: 'CA-35', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Black',
-        colors: [C.BLK, C.CHR], category: 'jeans', catSeq: '02', added: '2026-04-23'
+        colors: [C.BLK, C.CHR], category: 'jeans', catSeq: '02', added: '2026-04-23', status: 'new'
       },
     };
 
@@ -4433,6 +4458,7 @@
         sub: m.sub,
         colors: m.colors,
         category: m.category || 'tshirt',   // الفئة الافتراضية = تي شيرت
+        status: m.status || '',              // 'best-seller' | 'new' | ''
       };
     });
 
@@ -4531,7 +4557,7 @@
     let state = {
       lang: 'ar',
       cart: [],          // {pid, brand, sub, img, color, size, qty}
-      filter: { brand: 'all', color: 'all' },
+      filter: { brand: 'all', color: 'all', sort: 'newest' },
       catPage: {},          // صفحة كل فئة مستقلة: { tshirt:0, polo:0, ... }
       coupon: null         // { code, type, value } — set by applyCoupon()
     };
@@ -4737,7 +4763,7 @@
           all.sort((a, b) => getPrice(a) - getPrice(b));
         } else if (state.filter.sort === 'priceDesc') {
           all.sort((a, b) => getPrice(b) - getPrice(a));
-        } else if (state.filter.sort === 'bestSeller') {
+        } else if (state.filter.sort === 'best-seller') {
           all.sort((a, b) => (b.status === 'best-seller' ? 1 : 0) - (a.status === 'best-seller' ? 1 : 0));
         } else if (state.filter.sort === 'newArrivals') {
           all.sort((a, b) => (b.status === 'new' ? 1 : 0) - (a.status === 'new' ? 1 : 0));
@@ -5213,6 +5239,13 @@
     }
 
     /* =================== EVENTS =================== */
+    /* ── Sort filter ── */
+    $('#sortFilter').addEventListener('change', function () {
+      state.filter.sort = this.value;
+      state.catPage = {};
+      renderProducts();
+    });
+
     $('#cartBtn').onclick = openCart;
     $('#cartClose').onclick = closeCart;
     $('#cartOverlay').onclick = closeCart;

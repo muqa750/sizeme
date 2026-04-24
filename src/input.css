@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+
+    /* بادج الأكثر طلباً الذهبي */
+    .badge-bestseller {
+        background: linear-gradient(135deg, #c9a84c 0%, #e8d48b 50%, #c9a84c 100%);
+        color: #fff;
+        padding: 2px 8px;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* الإطار الذهبي المتدرج للبطاقة */
+    .card-bestseller {
+        border: 1px solid rgba(201, 168, 76, 0.4) !important;
+        box-shadow: 0 0 15px rgba(201, 168, 76, 0.15) !important;
+    }
+
+    /* بادج وصل حديثاً */
+    .badge-new {
+        background: #8a8578;
+        color: #fff;
+        padding: 2px 8px;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 2px;
+    }
+}
