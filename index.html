@@ -4233,7 +4233,7 @@
     // ║  ← غيّر هذا الرقم فقط عند إضافة منتج جديد                      ║
     // ║  مثال: أضف صورة 27-1-brand.jpg ثم غيّر الرقم إلى 27           ║
     // ╚═══════════════════════════════════════════════════════════════════╝
-    const TOTAL_PRODUCTS = 29;
+    const TOTAL_PRODUCTS = 36;
 
     // بيانات كل منتج — مرقّمة من 1 إلى TOTAL_PRODUCTS
     // لإضافة منتج جديد: أضف سطراً جديداً برقم prefix التالي هنا
@@ -4292,17 +4292,39 @@
         colors: [C.BLK, C.WHT, C.BRN], category: 'tracksuit', catSeq: '01', added: '2026-04-17'
       },
 
-      // ═══════════════════════════════════════════════════════════════════
-      //  عند إضافة منتج جديد:
-      //  1. غيّر TOTAL_PRODUCTS إلى 30
-      //  2. أضف سطراً برقم 30 هنا مع البيانات الصحيحة
-      //  3. ارفع الصورة: {مجلد-الفئة}/02-1-brand-name.jpg  (catSeq:'02')
-      // ═══════════════════════════════════════════════════════════════════
+      // ── 30-33: تي شيرت جديد — imagestshirts ─────────────────────────────
+      30: {
+        sku: 'BA-30', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'New Collection',
+        colors: [C.BLK, C.WHT, C.CHR], category: 'tshirt', catSeq: '27', added: '2026-04-23'
+      },
+      31: {
+        sku: 'SU-31', imgKey: 'supreme', brand: 'SUPREME', sub: 'New Collection',
+        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '28', added: '2026-04-23'
+      },
+      32: {
+        sku: 'LV-32', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'New Collection',
+        colors: [C.BLK, C.WHT, C.TPE], category: 'tshirt', catSeq: '29', added: '2026-04-23'
+      },
+      33: {
+        sku: 'JJ-33', imgKey: 'jackjones', brand: 'JACK & JONES', sub: 'New Collection',
+        colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '30', added: '2026-04-23'
+      },
 
-      // ── قميص (جاهز عند رفع الصور) ─────────────────────────────────────
-      // TOTAL_PRODUCTS = 30  ثم:
-      // 30: { sku:'SH-30', imgKey:'shirt-name', brand:'BRAND', sub:'Slim Fit',
-      //       colors:[C.BLK,C.WHT], category:'shirt', catSeq:'01', added:'2026-04-17' },
+      // ── 34: قميص — imagesshirts/01-1-burberry-new.jpg ──────────────────
+      34: {
+        sku: 'BU-34', imgKey: 'burberry-new', brand: 'BURBERRY', sub: 'Classic',
+        colors: [C.BLK, C.WHT], category: 'shirt', catSeq: '01', added: '2026-04-23'
+      },
+
+      // ── 35-36: بنطرون — imagesjeans/01-1-cargo-army.jpg ────────────────
+      35: {
+        sku: 'CA-35', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Style',
+        colors: [C.OLV, C.TPE], category: 'jeans', catSeq: '01', added: '2026-04-23'
+      },
+      36: {
+        sku: 'CA-36', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Black',
+        colors: [C.BLK, C.CHR], category: 'jeans', catSeq: '02', added: '2026-04-23'
+      },
     };
 
     // ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
