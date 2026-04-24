@@ -2107,18 +2107,7 @@
       animation: dot-blink 1.1s ease-in-out infinite alternate;
     }
 
-    /* إطار ذهبي + Gradient Glow لبطاقات best-seller */
-    .card-bestseller {
-      border-color: rgba(201, 168, 76, 0.45) !important;
-      box-shadow:
-        0 0 0 1px rgba(201, 168, 76, 0.12),
-        0 8px 32px -8px rgba(201, 168, 76, 0.22);
-    }
-    .card-bestseller:hover {
-      box-shadow:
-        0 0 0 1px rgba(201, 168, 76, 0.25),
-        0 20px 50px -12px rgba(201, 168, 76, 0.3) !important;
-    }
+    /* إطار ذهبي + Gradient Glow لبطاقات best-seller — مؤجّل بعد .product-card الأخير */
 
     @media(max-width:768px) {
       .badge-new, .badge-bestseller { font-size: .46rem; padding: 2px 5px; }
@@ -2793,6 +2782,20 @@
 
     .product-card:hover {
       border-color: var(--accent);
+    }
+
+    /* ── Best-seller: إطار ذهبي + Glow — يأتي بعد كل قواعد .product-card ── */
+    .product-card.card-bestseller {
+      border-color: rgba(201, 168, 76, 0.55) !important;
+      box-shadow:
+        0 0 0 1px rgba(201, 168, 76, 0.18),
+        0 8px 32px -8px rgba(201, 168, 76, 0.28) !important;
+    }
+    .product-card.card-bestseller:hover {
+      border-color: rgba(201, 168, 76, 0.85) !important;
+      box-shadow:
+        0 0 0 2px rgba(201, 168, 76, 0.3),
+        0 20px 50px -12px rgba(201, 168, 76, 0.35) !important;
     }
 
     /* Gold accent line on card hover */
@@ -3529,6 +3532,8 @@
           <select id="sortFilter"
             class="border hairline bg-white text-sm py-1.5 px-3 rounded-none focus:outline-none focus:border-[color:var(--ink)] cursor-pointer">
             <option value="newest" data-i18n="sortNewest">الأحدث</option>
+            <option value="bestSeller" data-i18n="sortBestSeller">الأكثر طلباً</option>
+            <option value="newArrivals" data-i18n="sortNewArrivals">وصل حديثاً</option>
             <option value="priceAsc" data-i18n="sortPriceAsc">السعر: الأقل إلى الأعلى</option>
             <option value="priceDesc" data-i18n="sortPriceDesc">السعر: الأعلى إلى الأقل</option>
           </select>
@@ -4158,6 +4163,7 @@
         payWhatsApp: 'الدفع عند الاستلام',
         mbarLabel: 'السلة', mbarPcs: 'قطعة', mbarTotalLbl: 'المجموع', mbarBtn: 'عرض السلة',
         newBadge: 'جديد',
+        sortBestSeller: 'الأكثر طلباً', sortNewArrivals: 'وصل حديثاً',
         sizeCalcBtn: 'احسب مقاسك', sizeCalcTitle: 'احسب مقاسك',
         scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scCalcBtn: 'احسب'
       },
@@ -4225,6 +4231,7 @@
         payWhatsApp: 'Cash on Delivery',
         mbarLabel: 'Cart', mbarPcs: 'pcs', mbarTotalLbl: 'Total', mbarBtn: 'View Bag',
         newBadge: 'NEW',
+        sortBestSeller: 'Best Seller', sortNewArrivals: 'New Arrivals',
         sizeCalcBtn: 'Size Guide', sizeCalcTitle: 'Find Your Size',
         scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scCalcBtn: 'Calculate'
       },
@@ -4292,6 +4299,7 @@
         payWhatsApp: 'پارەدان لە کاتی وەرگرتن',
         mbarLabel: 'سەبەتە', mbarPcs: 'دانە', mbarTotalLbl: 'کۆی گشتی', mbarBtn: 'سەبەتەکەت ببینە',
         newBadge: 'نوێ',
+        sortBestSeller: 'زۆرترین داواکاری', sortNewArrivals: 'تازە گەیشتوو',
         sizeCalcBtn: 'قەبارەکەت بزانە', sizeCalcTitle: 'قەبارەکەت بزانە',
         scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scCalcBtn: 'حیساب بکە'
       }
@@ -4620,18 +4628,33 @@
     }
 
     /* =================== RENDER PRODUCTS =================== */
+    /* دالة مساعدة — تُرجع HTML البادج حسب status */
+    function renderBadge(p, t) {
+      if (p.status === 'best-seller') {
+        const label = { ar: 'الأكثر طلباً', en: 'Best Seller', ku: 'زۆرترین داواکاری' }[state.lang] || 'الأكثر طلباً';
+        return `<span class="badge-bestseller">${label}</span>`;
+      }
+      if (p.status === 'new') {
+        return `<span class="badge-new">${t.newBadge || 'جديد'}</span>`;
+      }
+      return '';
+    }
+
     /* بناء HTML بطاقة منتج واحدة */
     function renderCard(p, i) {
       const t = I18N[state.lang];
+      const isBestSeller = p.status === 'best-seller';
       return `
-    <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
+    <article class="product-card fade-in reveal${isBestSeller ? ' card-bestseller' : ''}" data-pid="${p.id}" data-d="${(i % 8) + 1}">
       <!-- ── TOUCH SLIDER ── -->
       <div class="product-img slider-wrap relative" data-idx="0">
         <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
           <div class="slide">
             <img src="${imgPath(p, 1)}" alt="${p.brand}"
+                 loading="${i === 0 ? 'eager' : 'lazy'}"
+                 class="img-lazy"
                  style="opacity:0;transition:opacity .25s"
-                 onload="this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                 onload="this.classList.add('loaded');this.style.opacity='1'; this.nextElementSibling.style.display='none';"
                  onerror="this.style.display='none';" />
             <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2] pointer-events-none">
               <div class="brand-watermark">${p.brand}</div>
@@ -4654,7 +4677,7 @@
         <!-- السعر — سطر منفصل دائماً ظاهر -->
         <div class="card-price-row">
           <span class="card-price">${fmt(getPrice(p))}</span>
-          ${isNewProduct(p) ? `<span class="new-badge">${t.newBadge || 'جديد'}</span>` : ''}
+          ${renderBadge(p, t)}
         </div>
         <!-- الألوان -->
         <div class="card-colors-wrap">
@@ -4707,7 +4730,19 @@
 
       setTimeout(function () {
         const t = I18N[state.lang];
-        const all = filteredProducts();
+        let all = filteredProducts();
+
+        /* ── الفرز (Sorting) ── */
+        if (state.filter.sort === 'priceAsc') {
+          all.sort((a, b) => getPrice(a) - getPrice(b));
+        } else if (state.filter.sort === 'priceDesc') {
+          all.sort((a, b) => getPrice(b) - getPrice(a));
+        } else if (state.filter.sort === 'bestSeller') {
+          all.sort((a, b) => (b.status === 'best-seller' ? 1 : 0) - (a.status === 'best-seller' ? 1 : 0));
+        } else if (state.filter.sort === 'newArrivals') {
+          all.sort((a, b) => (b.status === 'new' ? 1 : 0) - (a.status === 'new' ? 1 : 0));
+        }
+
         const total = all.length;
 
         /* ── عداد المنتجات ── */

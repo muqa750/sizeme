@@ -6,18 +6,24 @@ if (I18N.ar) {
   I18N.ar.sortNewest = 'الأحدث';
   I18N.ar.sortPriceAsc = 'السعر: الأقل إلى الأعلى';
   I18N.ar.sortPriceDesc = 'السعر: الأعلى إلى الأقل';
+  I18N.ar.sortBestSeller = 'الأكثر طلباً';
+  I18N.ar.sortNewArrivals = 'وصل حديثاً';
 }
 if (I18N.en) {
   I18N.en.filterSort = 'Sort By:';
   I18N.en.sortNewest = 'Newest';
   I18N.en.sortPriceAsc = 'Price: Low to High';
   I18N.en.sortPriceDesc = 'Price: High to Low';
+  I18N.en.sortBestSeller = 'Best Seller';
+  I18N.en.sortNewArrivals = 'New Arrivals';
 }
 if (I18N.ku) {
   I18N.ku.filterSort = 'ڕیزبەندی:';
   I18N.ku.sortNewest = 'نوێترین';
   I18N.ku.sortPriceAsc = 'نرخ: کەمترین بۆ بەرزترین';
   I18N.ku.sortPriceDesc = 'نرخ: بەرزترین بۆ کەمترین';
+  I18N.ku.sortBestSeller = 'زۆرترین داواکاری';
+  I18N.ku.sortNewArrivals = 'تازە گەیشتوو';
 }
 /* --------------------------- */
 
@@ -320,6 +326,10 @@ if (I18N.ku) {
           all.sort((a, b) => getPrice(a) - getPrice(b));
         } else if (state.filter.sort === 'priceDesc') {
           all.sort((a, b) => getPrice(b) - getPrice(a));
+        } else if (state.filter.sort === 'bestSeller') {
+          all.sort((a, b) => (b.status === 'best-seller' ? 1 : 0) - (a.status === 'best-seller' ? 1 : 0));
+        } else if (state.filter.sort === 'newArrivals') {
+          all.sort((a, b) => (b.status === 'new' ? 1 : 0) - (a.status === 'new' ? 1 : 0));
         }
 
         const total = all.length;
