@@ -242,7 +242,7 @@ export const PRODUCTS_META = {
   23: { sku: 'SU-24', imgKey: 'supreme', brand: 'SUPREME', sub: 'Earth Logo', colors: [C.BLK, C.WHT, C.CHR] },
   24: { sku: 'HE-25', imgKey: 'hermes-h', brand: 'HERMÈS', sub: 'Lines Logo', colors: [C.BLK, C.WHT] },
   25: { sku: 'MA-26', imgKey: 'massimo-dutti', brand: 'MASSIMO DUTTI', sub: 'since 1985', colors: [C.BLK, C.WHT, C.BRN, C.CHR] },
-  26: { sku: 'ZA-27', imgKey: 'zara-Turkey', brand: 'ZARA', sub: 'turkey', colors: [C.BRN, C.WHT, C.BLK], added: '2026-04-17' },
+  26: { sku: 'LV-26', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'umbrellas', colors: [C.BLK, C.WHT, C.TPE], added: '2026-04-17' },
   27: {
     sku: 'PP-27', imgKey: 'polo-plus', brand: 'POLO PLUS', sub: 'Classic Fit',
     colors: [C.BLK, C.WHT, C.RBL], category: 'polo', catSeq: '01', added: '2026-04-17'
