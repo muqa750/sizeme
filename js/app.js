@@ -212,17 +212,32 @@ if (I18N.ku) {
 
     /* =================== RENDER PRODUCTS =================== */
     /* بناء HTML بطاقة منتج واحدة */
+    /* دالة مساعدة — تُرجع HTML البادج حسب status */
+    function renderBadge(p, t) {
+      if (p.status === 'best-seller') {
+        const label = { ar: 'الأكثر طلباً', en: 'Best Seller', ku: 'زۆرترین داواکاری' }[state.lang] || 'الأكثر طلباً';
+        return `<span class="badge-bestseller">${label}</span>`;
+      }
+      if (p.status === 'new') {
+        return `<span class="badge-new">${t.newBadge || 'جديد'}</span>`;
+      }
+      return '';
+    }
+
     function renderCard(p, i) {
       const t = I18N[state.lang];
+      const isBestSeller = p.status === 'best-seller';
       return `
-    <article class="product-card fade-in reveal" data-pid="${p.id}" data-d="${(i % 8) + 1}">
+    <article class="product-card fade-in reveal${isBestSeller ? ' card-bestseller' : ''}" data-pid="${p.id}" data-d="${(i % 8) + 1}">
       <!-- ── TOUCH SLIDER ── -->
       <div class="product-img slider-wrap relative" data-idx="0">
         <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
           <div class="slide">
             <img src="${imgPath(p, 1)}" alt="${p.brand}"
+                 loading="${i === 0 ? 'eager' : 'lazy'}"
+                 class="img-lazy"
                  style="opacity:0;transition:opacity .25s"
-                 onload="this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                 onload="this.classList.add('loaded');this.style.opacity='1'; this.nextElementSibling.style.display='none';"
                  onerror="this.style.display='none';" />
             <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2] pointer-events-none">
               <div class="brand-watermark">${p.brand}</div>
@@ -245,7 +260,7 @@ if (I18N.ku) {
         <!-- السعر — سطر منفصل دائماً ظاهر -->
         <div class="card-price-row">
           <span class="card-price">${fmt(getPrice(p))}</span>
-          ${isNewProduct(p) ? `<span class="new-badge">${t.newBadge || 'جديد'}</span>` : ''}
+          ${renderBadge(p, t)}
         </div>
         <!-- الألوان -->
         <div class="card-colors-wrap">
@@ -1336,7 +1351,9 @@ if (I18N.ku) {
 
         const img = document.createElement('img');
         img.alt = p.brand + ' ' + seq;
-        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+        img.loading = seq === 1 ? 'eager' : 'lazy';
+        img.classList.add('img-lazy');
+        img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;';
         img.onload = () => {
           img.classList.add('loaded');
           img.style.opacity = '1';
@@ -1486,66 +1503,6 @@ if (I18N.ku) {
     </div>
   `;
     }
-
-    /* =====================================================
-       NEW ARRIVALS — renderNewArrivals()
-       منتجات أُضيفت خلال آخر 90 يوماً
-       ===================================================== */
-    const NEW_ARRIVALS_DAYS = 90;
-
-    function getNewArrivals() {
-      return PRODUCTS.filter(p => {
-        const num = parseInt(p.id.replace('p', ''), 10);
-        const meta = PRODUCTS_META[num];
-        if (!meta || !meta.added) return false;
-        const diff = (Date.now() - new Date(meta.added + 'T00:00:00').getTime()) / 86400000;
-        return diff >= 0 && diff <= NEW_ARRIVALS_DAYS;
-      });
-    }
-
-    function renderNewArrivals() {
-      const t = I18N[state.lang];
-      const list = getNewArrivals();
-      const wrap = document.getElementById('newArrivalsSection');
-      if (!wrap) return;
-      if (list.length === 0) { wrap.classList.add('hidden'); return; }
-      wrap.classList.remove('hidden');
-
-      const lbl = { ar: 'وصل حديثاً', en: 'New Arrivals', ku: 'تازە گەیشتوو' }[state.lang] || 'وصل حديثاً';
-
-      wrap.innerHTML = `
-    <div class="new-arrivals-section">
-      <div class="na-header">
-        <h3 class="serif text-xl">${lbl}</h3>
-        <span class="na-badge">${{ ar: 'جديد', en: 'NEW', ku: 'نوێ' }[state.lang] || 'NEW'}</span>
-      </div>
-      <div class="na-scroll">
-        ${list.map(p => `
-          <div class="na-card" data-pid="${p.id}" onclick="openProductModal('${p.id}')">
-            <div class="na-img">
-              <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]">
-                <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.06em;color:#2b2b2b">${p.brand}</div>
-              </div>
-              <img src="${imgPath(p, 1)}" alt="${p.brand}"
-                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s"
-                   onload="this.style.opacity='1';this.previousElementSibling.style.display='none';"
-                   onerror="this.style.display='none';" />
-            </div>
-            <div class="na-brand">${p.brand}</div>
-            <div class="na-price">${fmt(getPrice(p))}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-    }
-
-    /* hook renderNewArrivals into renderProducts */
-    const _origRenderProducts = renderProducts;
-    renderProducts = function () {
-      _origRenderProducts.apply(this, arguments);
-      setTimeout(renderNewArrivals, 20);
-    };
 
     window.moveFilterIndicator = moveFilterIndicator;
 

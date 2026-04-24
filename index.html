@@ -60,7 +60,7 @@
   <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="shortcut icon" type="image/png" href="favicon.png" />
   <link rel="apple-touch-icon" href="favicon.png" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="dist/output.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -317,6 +317,18 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    /* ── Lazy Load Blur-up ── */
+    .img-lazy {
+      filter: blur(12px);
+      transform: scale(1.04);
+      transition: filter .45s ease, transform .45s ease, opacity .3s ease;
+      will-change: filter, transform;
+    }
+    .img-lazy.loaded {
+      filter: blur(0);
+      transform: scale(1);
     }
 
     .brand-watermark {
@@ -2034,6 +2046,82 @@
         font-size: .46rem;
         padding: 2px 5px;
       }
+    }
+
+    /* =====================================================
+     STATUS BADGES — new / best-seller
+     ===================================================== */
+
+    /* بادج "جديد" — هادئ وكلاسيكي */
+    .badge-new {
+      display: inline-flex;
+      align-items: center;
+      gap: .22rem;
+      font-size: .5rem;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: #fff;
+      background: #3a3a3a;
+      padding: 2px 7px 2px 6px;
+      border-radius: 2px;
+      white-space: nowrap;
+      line-height: 1.6;
+    }
+    .badge-new::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: .7;
+    }
+
+    /* بادج "الأكثر طلباً" — ذهبي فاخر مع نبض */
+    .badge-bestseller {
+      display: inline-flex;
+      align-items: center;
+      gap: .22rem;
+      font-size: .5rem;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: #fff;
+      background: #c9a84c;
+      padding: 2px 7px 2px 6px;
+      border-radius: 2px;
+      white-space: nowrap;
+      line-height: 1.6;
+      animation: badge-pulse 2.2s ease-out infinite;
+      will-change: box-shadow;
+    }
+    .badge-bestseller::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: .85;
+      animation: dot-blink 1.1s ease-in-out infinite alternate;
+    }
+
+    /* إطار ذهبي + Gradient Glow لبطاقات best-seller */
+    .card-bestseller {
+      border-color: rgba(201, 168, 76, 0.45) !important;
+      box-shadow:
+        0 0 0 1px rgba(201, 168, 76, 0.12),
+        0 8px 32px -8px rgba(201, 168, 76, 0.22);
+    }
+    .card-bestseller:hover {
+      box-shadow:
+        0 0 0 1px rgba(201, 168, 76, 0.25),
+        0 20px 50px -12px rgba(201, 168, 76, 0.3) !important;
+    }
+
+    @media(max-width:768px) {
+      .badge-new, .badge-bestseller { font-size: .46rem; padding: 2px 5px; }
     }
 
     /* =====================================================
@@ -5793,66 +5881,6 @@
     </div>
   `;
     }
-
-    /* =====================================================
-       NEW ARRIVALS — renderNewArrivals()
-       منتجات أُضيفت خلال آخر 90 يوماً
-       ===================================================== */
-    const NEW_ARRIVALS_DAYS = 90;
-
-    function getNewArrivals() {
-      return PRODUCTS.filter(p => {
-        const num = parseInt(p.id.replace('p', ''), 10);
-        const meta = PRODUCTS_META[num];
-        if (!meta || !meta.added) return false;
-        const diff = (Date.now() - new Date(meta.added + 'T00:00:00').getTime()) / 86400000;
-        return diff >= 0 && diff <= NEW_ARRIVALS_DAYS;
-      });
-    }
-
-    function renderNewArrivals() {
-      const t = I18N[state.lang];
-      const list = getNewArrivals();
-      const wrap = document.getElementById('newArrivalsSection');
-      if (!wrap) return;
-      if (list.length === 0) { wrap.classList.add('hidden'); return; }
-      wrap.classList.remove('hidden');
-
-      const lbl = { ar: 'وصل حديثاً', en: 'New Arrivals', ku: 'تازە گەیشتوو' }[state.lang] || 'وصل حديثاً';
-
-      wrap.innerHTML = `
-    <div class="new-arrivals-section">
-      <div class="na-header">
-        <h3 class="serif text-xl">${lbl}</h3>
-        <span class="na-badge">${{ ar: 'جديد', en: 'NEW', ku: 'نوێ' }[state.lang] || 'NEW'}</span>
-      </div>
-      <div class="na-scroll">
-        ${list.map(p => `
-          <div class="na-card" data-pid="${p.id}" onclick="openProductModal('${p.id}')">
-            <div class="na-img">
-              <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]">
-                <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.06em;color:#2b2b2b">${p.brand}</div>
-              </div>
-              <img src="${imgPath(p, 1)}" alt="${p.brand}"
-                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s"
-                   onload="this.style.opacity='1';this.previousElementSibling.style.display='none';"
-                   onerror="this.style.display='none';" />
-            </div>
-            <div class="na-brand">${p.brand}</div>
-            <div class="na-price">${fmt(getPrice(p))}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-    }
-
-    /* hook renderNewArrivals into renderProducts */
-    const _origRenderProducts = renderProducts;
-    renderProducts = function () {
-      _origRenderProducts.apply(this, arguments);
-      setTimeout(renderNewArrivals, 20);
-    };
 
     window.moveFilterIndicator = moveFilterIndicator;
 

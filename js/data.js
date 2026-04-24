@@ -217,72 +217,42 @@ export const C = {
 export const TOTAL_PRODUCTS = 36;
 
 export const PRODUCTS_META = {
-  1: { sku: 'LA-01', imgKey: 'lacoste-e33', brand: 'LACOSTE', sub: 'E33 Flag', colors: [C.BLK, C.WHT, C.OLV] },
-  2: { sku: 'PO-02', imgKey: 'polo', brand: 'U.S. POLO ASSN', sub: 'Polo Classic', colors: [C.BLK, C.WHT, C.RBL, C.TPE] },
-  3: { sku: 'GI-03', imgKey: 'givenchy', brand: 'GIVENCHY', sub: 'Paris', colors: [C.BLK, C.WHT, C.BRN] },
-  4: { sku: 'OW-04', imgKey: 'off-white', brand: 'OFF-WHITE', sub: 'Hand Logo', colors: [C.BLK, C.WHT, C.RBL] },
-  5: { sku: 'HU-05', imgKey: 'hugo', brand: 'HUGO', sub: 'Bold Logo', colors: [C.BLK, C.WHT, C.DNV] },
-  6: { sku: 'LA-07', imgKey: 'lacoste-1927', brand: 'LACOSTE', sub: '1927 Heritage', colors: [C.BLK, C.WHT] },
-  7: { sku: 'BA-08', imgKey: 'balmain', brand: 'BALMAIN', sub: 'Paris', colors: [C.BLK, C.WHT, C.OLV, C.BRG] },
-  8: { sku: 'AL-09', imgKey: 'alo', brand: 'ALO', sub: 'basic', colors: [C.BLK, C.DNV, C.CHR, C.BRN] },
-  9: { sku: 'PR-10', imgKey: 'prada', brand: 'PRADA', sub: 'Milano', colors: [C.BLK, C.WHT, C.BRN, C.CHR] },
-  10: { sku: 'BU-11', imgKey: 'burberry', brand: 'BURBERRY', sub: 'Knight', colors: [C.BLK, C.WHT, C.CHR] },
-  11: { sku: 'TO-12', imgKey: 'tommy', brand: 'TOMMY JEANS', sub: 'Graffiti', colors: [C.BLK, C.WHT, C.CHR] },
-  12: { sku: 'CK-13', imgKey: 'ck', brand: 'CALVIN KLEIN', sub: 'CK Monogram', colors: [C.BLK, C.WHT] },
-  13: { sku: 'KI-14', imgKey: 'kiton', brand: 'KITON', sub: 'Napoli', colors: [C.BLK, C.WHT] },
-  14: { sku: 'LO-15', imgKey: 'loewe', brand: 'LOEWE', sub: 'Madrid 1846', colors: [C.BLK, C.WHT] },
-  15: { sku: 'LV-16', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'Paris', colors: [C.BLK, C.WHT, C.TPE] },
-  16: { sku: 'KI-17', imgKey: 'kiton-small', brand: 'KITON', sub: 'Small Logo', colors: [C.BLK, C.WHT, C.CHR] },
-  17: { sku: 'CK-18', imgKey: 'calvin-klein', brand: 'CALVIN KLEIN', sub: 'Classic', colors: [C.BLK, C.WHT, C.OLV, C.BRN] },
-  18: { sku: 'BO-19', imgKey: 'boos', brand: 'BOSS', sub: 'sun logo', colors: [C.BLK, C.WHT, C.DNV] },
-  19: { sku: 'ES-20', imgKey: 'essentials', brand: 'ESSENTIALS', sub: 'NBA', colors: [C.BLK, C.WHT, C.TPE] },
-  20: { sku: 'PO-21', imgKey: 'u-s-polo', brand: 'U.S. POLO ASSN', sub: 'Assn horse', colors: [C.BLK, C.WHT, C.OLV] },
-  21: { sku: 'HE-22', imgKey: 'hermes', brand: 'HERMÈS', sub: 'horse Paris', colors: [C.BLK, C.WHT] },
-  22: { sku: 'BA-23', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'balenc shop', colors: [C.BLK, C.WHT, C.RBL] },
-  23: { sku: 'SU-24', imgKey: 'supreme', brand: 'SUPREME', sub: 'Earth Logo', colors: [C.BLK, C.WHT, C.CHR] },
-  24: { sku: 'HE-25', imgKey: 'hermes-h', brand: 'HERMÈS', sub: 'Lines Logo', colors: [C.BLK, C.WHT] },
-  25: { sku: 'MA-26', imgKey: 'massimo-dutti', brand: 'MASSIMO DUTTI', sub: 'since 1985', colors: [C.BLK, C.WHT, C.BRN, C.CHR] },
-  26: { sku: 'LV-26', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'umbrellas', colors: [C.BLK, C.WHT, C.TPE], added: '2026-04-17' },
-  27: {
-    sku: 'PP-27', imgKey: 'polo-plus', brand: 'POLO PLUS', sub: 'Classic Fit',
-    colors: [C.BLK, C.WHT, C.RBL], category: 'polo', catSeq: '01', added: '2026-04-17'
-  },
-  28: {
-    sku: 'HE-29', imgKey: 'hermes-ss', brand: 'HERMÈS', sub: 'Sport',
-    colors: [C.BLK, C.WHT, C.BRN], category: 'tracksuit', catSeq: '01', added: '2026-04-17'
-  },
-  29: {
-    sku: 'BA-27', imgKey: 'balenciaga', brand: 'BALENCIAGA', sub: 'New Collection',
-    colors: [C.BLK, C.WHT, C.CHR], category: 'tshirt', catSeq: '27', added: '2026-04-23'
-  },
-  30: {
-    sku: 'SU-28', imgKey: 'supreme', brand: 'SUPREME', sub: 'New Collection',
-    colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '28', added: '2026-04-23'
-  },
-  31: {
-    sku: 'LV-29', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'New Collection',
-    colors: [C.BLK, C.WHT, C.TPE], category: 'tshirt', catSeq: '29', added: '2026-04-23'
-  },
-  32: {
-    sku: 'JJ-30', imgKey: 'jackjones', brand: 'JACK & JONES', sub: 'New Collection',
-    colors: [C.BLK, C.WHT], category: 'tshirt', catSeq: '30', added: '2026-04-23'
-  },
-  33: {
-    sku: 'LV-31', imgKey: 'lv', brand: 'LOUIS VUITTON', sub: 'New Collection',
-    colors: [C.BLK, C.WHT, C.DNV], category: 'tshirt', catSeq: '31', added: '2026-04-23'
-  },
-  34: {
-    sku: 'BU-35', imgKey: 'burberry-new', brand: 'BURBERRY', sub: 'Classic',
-    colors: [C.BLK, C.WHT], category: 'shirt', catSeq: '01', added: '2026-04-23'
-  },
-  35: {
-    sku: 'CA-36', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Style',
-    colors: [C.OLV, C.TPE], category: 'jeans', catSeq: '01', added: '2026-04-23'
-  },
-  36: {
-    sku: 'CA-37', imgKey: 'cargo-army', brand: 'CARGO', sub: 'Army Black',
-    colors: [C.BLK, C.CHR], category: 'jeans', catSeq: '02', added: '2026-04-23'
-  },
+  1:  { sku: 'LA-01', imgKey: 'lacoste-e33',  brand: 'LACOSTE',        sub: 'E33 Flag',       colors: [C.BLK, C.WHT, C.OLV],         status: 'best-seller' },
+  2:  { sku: 'PO-02', imgKey: 'polo',          brand: 'U.S. POLO ASSN', sub: 'Polo Classic',   colors: [C.BLK, C.WHT, C.RBL, C.TPE],  status: 'best-seller' },
+  3:  { sku: 'GI-03', imgKey: 'givenchy',      brand: 'GIVENCHY',       sub: 'Paris',          colors: [C.BLK, C.WHT, C.BRN],         status: '' },
+  4:  { sku: 'OW-04', imgKey: 'off-white',     brand: 'OFF-WHITE',      sub: 'Hand Logo',      colors: [C.BLK, C.WHT, C.RBL],         status: '' },
+  5:  { sku: 'HU-05', imgKey: 'hugo',          brand: 'HUGO',           sub: 'Bold Logo',      colors: [C.BLK, C.WHT, C.DNV],         status: '' },
+  6:  { sku: 'LA-07', imgKey: 'lacoste-1927',  brand: 'LACOSTE',        sub: '1927 Heritage',  colors: [C.BLK, C.WHT],                status: 'best-seller' },
+  7:  { sku: 'BA-08', imgKey: 'balmain',       brand: 'BALMAIN',        sub: 'Paris',          colors: [C.BLK, C.WHT, C.OLV, C.BRG], status: '' },
+  8:  { sku: 'AL-09', imgKey: 'alo',           brand: 'ALO',            sub: 'basic',          colors: [C.BLK, C.DNV, C.CHR, C.BRN], status: '' },
+  9:  { sku: 'PR-10', imgKey: 'prada',         brand: 'PRADA',          sub: 'Milano',         colors: [C.BLK, C.WHT, C.BRN, C.CHR], status: '' },
+  10: { sku: 'BU-11', imgKey: 'burberry',      brand: 'BURBERRY',       sub: 'Knight',         colors: [C.BLK, C.WHT, C.CHR],         status: '' },
+  11: { sku: 'TO-12', imgKey: 'tommy',         brand: 'TOMMY JEANS',    sub: 'Graffiti',       colors: [C.BLK, C.WHT, C.CHR],         status: '' },
+  12: { sku: 'CK-13', imgKey: 'ck',            brand: 'CALVIN KLEIN',   sub: 'CK Monogram',    colors: [C.BLK, C.WHT],                status: '' },
+  13: { sku: 'KI-14', imgKey: 'kiton',         brand: 'KITON',          sub: 'Napoli',         colors: [C.BLK, C.WHT],                status: '' },
+  14: { sku: 'LO-15', imgKey: 'loewe',         brand: 'LOEWE',          sub: 'Madrid 1846',    colors: [C.BLK, C.WHT],                status: '' },
+  15: { sku: 'LV-16', imgKey: 'lv',            brand: 'LOUIS VUITTON',  sub: 'Paris',          colors: [C.BLK, C.WHT, C.TPE],         status: 'best-seller' },
+  16: { sku: 'KI-17', imgKey: 'kiton-small',   brand: 'KITON',          sub: 'Small Logo',     colors: [C.BLK, C.WHT, C.CHR],         status: '' },
+  17: { sku: 'CK-18', imgKey: 'calvin-klein',  brand: 'CALVIN KLEIN',   sub: 'Classic',        colors: [C.BLK, C.WHT, C.OLV, C.BRN], status: '' },
+  18: { sku: 'BO-19', imgKey: 'boos',          brand: 'BOSS',           sub: 'sun logo',       colors: [C.BLK, C.WHT, C.DNV],         status: '' },
+  19: { sku: 'ES-20', imgKey: 'essentials',    brand: 'ESSENTIALS',     sub: 'NBA',            colors: [C.BLK, C.WHT, C.TPE],         status: '' },
+  20: { sku: 'PO-21', imgKey: 'u-s-polo',      brand: 'U.S. POLO ASSN', sub: 'Assn horse',     colors: [C.BLK, C.WHT, C.OLV],         status: '' },
+  21: { sku: 'HE-22', imgKey: 'hermes',        brand: 'HERMÈS',         sub: 'horse Paris',    colors: [C.BLK, C.WHT],                status: 'best-seller' },
+  22: { sku: 'BA-23', imgKey: 'balenciaga',    brand: 'BALENCIAGA',     sub: 'balenc shop',    colors: [C.BLK, C.WHT, C.RBL],         status: '' },
+  23: { sku: 'SU-24', imgKey: 'supreme',       brand: 'SUPREME',        sub: 'Earth Logo',     colors: [C.BLK, C.WHT, C.CHR],         status: '' },
+  24: { sku: 'HE-25', imgKey: 'hermes-h',      brand: 'HERMÈS',         sub: 'Lines Logo',     colors: [C.BLK, C.WHT],                status: '' },
+  25: { sku: 'MA-26', imgKey: 'massimo-dutti', brand: 'MASSIMO DUTTI',  sub: 'since 1985',     colors: [C.BLK, C.WHT, C.BRN, C.CHR], status: '' },
+  26: { sku: 'LV-26', imgKey: 'lv',            brand: 'LOUIS VUITTON',  sub: 'umbrellas',      colors: [C.BLK, C.WHT, C.TPE],         status: 'new' },
+  27: { sku: 'PP-27', imgKey: 'polo-plus',    brand: 'POLO PLUS',      sub: 'Classic Fit',    colors: [C.BLK, C.WHT, C.RBL],         status: 'new', category: 'polo',      catSeq: '01' },
+  28: { sku: 'HE-29', imgKey: 'hermes-ss',    brand: 'HERMÈS',         sub: 'Sport',          colors: [C.BLK, C.WHT, C.BRN],         status: 'new', category: 'tracksuit', catSeq: '01' },
+  29: { sku: 'BA-27', imgKey: 'balenciaga',   brand: 'BALENCIAGA',     sub: 'New Collection', colors: [C.BLK, C.WHT, C.CHR],         status: 'new', category: 'tshirt',    catSeq: '27' },
+  30: { sku: 'SU-28', imgKey: 'supreme',      brand: 'SUPREME',        sub: 'New Collection', colors: [C.BLK, C.WHT],                status: 'new', category: 'tshirt',    catSeq: '28' },
+  31: { sku: 'LV-29', imgKey: 'lv',           brand: 'LOUIS VUITTON',  sub: 'New Collection', colors: [C.BLK, C.WHT, C.TPE],         status: 'new', category: 'tshirt',    catSeq: '29' },
+  32: { sku: 'JJ-30', imgKey: 'jackjones',    brand: 'JACK & JONES',   sub: 'New Collection', colors: [C.BLK, C.WHT],                status: 'new', category: 'tshirt',    catSeq: '30' },
+  33: { sku: 'LV-31', imgKey: 'lv',           brand: 'LOUIS VUITTON',  sub: 'New Collection', colors: [C.BLK, C.WHT, C.DNV],         status: 'new', category: 'tshirt',    catSeq: '31' },
+  34: { sku: 'BU-35', imgKey: 'burberry-new', brand: 'BURBERRY',       sub: 'Classic',        colors: [C.BLK, C.WHT],                status: 'new', category: 'shirt',     catSeq: '01' },
+  35: { sku: 'CA-36', imgKey: 'cargo-army',   brand: 'CARGO',          sub: 'Army Style',     colors: [C.OLV, C.TPE],                status: 'new', category: 'jeans',     catSeq: '01' },
+  36: { sku: 'CA-37', imgKey: 'cargo-army',   brand: 'CARGO',          sub: 'Army Black',     colors: [C.BLK, C.CHR],                status: 'new', category: 'jeans',     catSeq: '02' },
 };
 
 export const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
@@ -299,6 +269,7 @@ export const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
     sub: m.sub,
     colors: m.colors,
     category: m.category || 'tshirt',
+    status: m.status || '',
   };
 });
 
