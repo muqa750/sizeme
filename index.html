@@ -2448,20 +2448,24 @@
       opacity: 1;
     }
 
-    /* progress bars للصور — modal */
+    /* progress bars للصور — modal (مراكبة أسفل الصورة) */
     .pm-dots {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
       display: flex;
-      gap: 3px;
-      padding: 6px 10px 4px;
+      gap: 2px;
+      padding: 0 8px 8px;
+      z-index: 3;
+      pointer-events: none;
     }
     .pm-dot {
       flex: 1; height: 2px;
       border-radius: 1px;
-      background: var(--line);
+      background: rgba(255,255,255,.35);
       cursor: pointer; pointer-events: auto;
       transition: background .25s;
     }
-    .pm-dot.active { background: var(--ink); }
+    .pm-dot.active { background: #fff; }
 
     #productModal .pm-close {
       position: absolute;
@@ -4390,6 +4394,45 @@
       },
     };
 
+    // ── أوصاف المنتجات — عدّل النص هنا لكتابة الوصف الحقيقي لكل منتج ──
+    const PRODUCTS_DESC = {
+      1:  'تيشيرت Lacoste E33 Flag بشعار العلم الأيقوني — خامة قطنية فاخرة ومريحة',
+      2:  'U.S. Polo Assn Classic بقصة كلاسيكية — أناقة رياضية مميزة بأعلى جودة',
+      3:  'تيشيرت Givenchy Paris بشعار الماركة المميز — خامة فاخرة من باريس',
+      4:  'Off-White Hand Logo بتصميم عصري — شعار اليد الأيقوني بأسلوب ستريت مميز',
+      5:  'Hugo Bold Logo بشعار مضخم مميز — خامة متميزة وتصميم رجالي حديث',
+      6:  'Lacoste 1927 Heritage — إرث عريق منذ 1927 بتصميم كلاسيكي أصيل',
+      7:  'Balmain Paris بتصميم باريسي فاخر — خامة راقية وأسلوب موضة عالية',
+      8:  'ALO Basic بخامة مريحة جداً — مثالي للاستخدام اليومي والرياضة',
+      9:  'Prada Milano بلمسة ميلانية عصرية — أيقونة الأناقة الإيطالية الراقية',
+      10: 'Burberry Knight بشعار الفارس الأيقوني — تراث بريطاني بخامة استثنائية',
+      11: 'Tommy Jeans Graffiti بتصميم غرافيتي مميز — أسلوب شبابي عصري وجريء',
+      12: 'Calvin Klein CK Monogram — مونوغرام CK الكلاسيكي بأسلوب بسيط وأنيق',
+      13: 'Kiton Napoli بصناعة يدوية ناعمة — قمة الرقي من نابولي الإيطالية',
+      14: 'Loewe Madrid 1846 — تراث إسباني عريق منذ 1846 بخامة جلدية أصيلة',
+      15: 'Louis Vuitton Paris بشعار LV الأيقوني — رمز الفخامة الفرنسية الأصيلة',
+      16: 'Kiton Small Logo بشعار صغير أنيق — خامة فاخرة ولمسة رجالية راقية',
+      17: 'Calvin Klein Classic بأسلوب كلاسيكي راقٍ — تصميم أمريكي أيقوني',
+      18: 'Boss Sun Logo بشعار الشمس الأيقوني — خامة ألمانية عالية الجودة',
+      19: 'Essentials NBA بتصميم كرة السلة المميز — خامة مريحة وأسلوب رياضي',
+      20: 'U.S. Polo Assn Horse بشعار الحصان الكلاسيكي — أناقة أمريكية أصيلة',
+      21: 'Hermès Horse Paris بشعار الحصان الأيقوني — رمز الفخامة الفرنسية الأعلى',
+      22: 'Balenciaga Shop بتصميم الشعار المميز — ستريت ويئر فاخر من باريس',
+      23: 'Supreme Earth Logo بشعار كرة الأرض — أيقونة ثقافة الشارع العالمية',
+      24: 'Hermès Lines Logo بشعار الخطوط الأنيق — رقي دار Hermès لا مثيل له',
+      25: 'Massimo Dutti Since 1985 — أناقة إسبانية راقية منذ 1985 بخامة طبيعية',
+      26: 'Louis Vuitton Umbrellas بنقش المظلات الأيقوني — تيشيرت LV فاخر جديد',
+      27: 'Polo Plus Classic Fit بقصة كلاسيكية مريحة — تصميم بولو أنيق ومتميز',
+      28: 'Hermès Sport طقم رياضي فاخر — خامة استثنائية لأسلوب رياضي راقٍ',
+      29: 'Balenciaga Paris بتصميم حديث وجريء — ستريت ويئر من أيقونات الموضة',
+      30: 'Supreme NASA USA بشعار ناسا الأيقوني — تيشيرت مميز من أيقونات Supreme',
+      31: 'Louis Vuitton Cuneiform بنقش مسماري مستوحى من التراث — تصميم LV فريد',
+      32: 'Jack & Jones World Wide بتصميم عالمي مميز — أسلوب عصري وراحة يومية',
+      33: 'Burberry Classic Shirt قميص كلاسيكي بخامة فاخرة — تراث بريطاني أصيل',
+      34: 'Cargo Army Style بتصميم عسكري مريح — أوسع وأجود بنطلون كارغو',
+      35: 'Cargo Army Black بتصميم عسكري أسود أنيق — راحة مطلقة وأسلوب متميز',
+    };
+
     // ── توليد مصفوفة المنتجات تلقائياً بترتيب عكسي (الأحدث أولاً) ──
     const PRODUCTS = Array.from({ length: TOTAL_PRODUCTS }, (_, i) => {
       const n = TOTAL_PRODUCTS - i;                    // تنازلي: 29، 28، 27 ...
@@ -4406,6 +4449,7 @@
         colors: m.colors,
         category: m.category || 'tshirt',   // الفئة الافتراضية = تي شيرت
         status: m.status || '',              // 'best-seller' | 'new' | ''
+        desc: PRODUCTS_DESC[n] || '',        // الوصف — عدّله في PRODUCTS_DESC أعلاه
       };
     });
 
@@ -5763,9 +5807,12 @@
 
       /* ── صور: slider أفقي مع scroll-snap ── */
       const imgWrap = modal.querySelector('.pm-img-wrap');
-      const dotsWrap = modal.querySelector('.pm-dots');
       imgWrap.innerHTML = '';
-      dotsWrap.innerHTML = '';
+      /* أنشئ dotsWrap داخل imgWrap ليُراكب أسفل الصورة */
+      const dotsWrap = document.createElement('div');
+      dotsWrap.className = 'pm-dots';
+      dotsWrap.style.display = 'none';
+      imgWrap.appendChild(dotsWrap);
 
       /* اكتشاف عدد الصور المتاحة (نجرب حتى 6) */
       const maxProbe = 6;
@@ -5776,9 +5823,12 @@
           d.classList.toggle('active', i === getCurrentSlide());
         });
       }
+      /* استخدم .pm-slide فقط (تجاهل dotsWrap الذي صار children[0]) */
+      function getSlides() { return imgWrap.querySelectorAll('.pm-slide'); }
       function getCurrentSlide() {
-        if (!imgWrap.children.length) return 0;
-        const sw = imgWrap.children[0].offsetWidth;
+        const slides = getSlides();
+        if (!slides.length) return 0;
+        const sw = slides[0].offsetWidth;
         return sw ? Math.round(imgWrap.scrollLeft / sw) : 0;
       }
       imgWrap.addEventListener('scroll', updateDots);
@@ -5801,13 +5851,13 @@
           img.style.opacity = '1';
           wm.style.display = 'none';
           loadedSlides++;
-          /* build dots */
+          /* build progress bars */
           dotsWrap.innerHTML = '';
           for (let d = 0; d < loadedSlides; d++) {
             const dot = document.createElement('span');
             dot.className = 'pm-dot' + (d === 0 ? ' active' : '');
             dot.addEventListener('click', () => {
-              imgWrap.children[d].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+              getSlides()[d]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
             });
             dotsWrap.appendChild(dot);
           }
@@ -5827,8 +5877,6 @@
       const info = modal.querySelector('.pm-info');
       const sizes = getSizes(p);
       const wgMap = p.category === 'jeans' ? t.wgJeans : t.wg;
-      const catDesc = { tshirt:{ar:'تيشيرت',en:'T-Shirt',ku:'تیشرت'}, jeans:{ar:'جينز',en:'Jeans',ku:'جینز'}, hoodie:{ar:'هودي',en:'Hoodie',ku:'هودی'} }[p.category] || {ar:'منتج',en:'Item',ku:'بەرهەم'};
-      const descTxt = { ar:`${catDesc.ar} ${p.brand} بخامة فاخرة — متوفر بمقاسات 2XL حتى 7XL`, en:`Premium ${p.brand} ${catDesc.en} — Available from 2XL to 7XL`, ku:`${catDesc.ku}ی ${p.brand} بە کواڵیتی بەرز — لە 2XL تا 7XL` }[state.lang];
       info.innerHTML = `
     <div class="flex items-start justify-between mb-1">
       <div>
@@ -5837,7 +5885,7 @@
       </div>
       <div class="text-lg font-medium">${fmt(getPrice(p))}</div>
     </div>
-    <p class="text-xs leading-relaxed mt-2" style="color:var(--mute)">${descTxt}</p>
+    ${p.desc ? `<p class="text-xs leading-relaxed mt-2" style="color:var(--mute)">${p.desc}</p>` : ''}
     <div class="mt-4">
       <p class="kicker mb-2">${t.selectColor}</p>
       <div class="flex gap-2.5 flex-wrap pm-colors">
@@ -6164,7 +6212,6 @@
         <!-- صورة -->
         <div class="sm:w-2/5 flex-shrink-0">
           <div class="pm-img-wrap"></div>
-          <div class="pm-dots"></div>
         </div>
         <!-- تفاصيل -->
         <div class="pm-info p-5 flex-1 overflow-y-auto"></div>
