@@ -4665,7 +4665,7 @@
     <article class="product-card fade-in reveal${isBestSeller ? ' card-bestseller' : ''}" data-pid="${p.id}" data-d="${(i % 8) + 1}">
       <!-- ── TOUCH SLIDER ── -->
       <div class="product-img slider-wrap relative" data-idx="0">
-        <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
+        <div class="slider-track" style="cursor:pointer">
           <div class="slide">
             <img ${i === 0
                 ? `src="${imgPath(p, 1)}"`
@@ -4845,48 +4845,45 @@
       $$('#productSections .product-card').forEach(card => {
         const p = PRODUCTS.find(x => x.id === card.dataset.pid);
         if (!p) return;
-        const wrap = card.querySelector('.slider-wrap');
         const track = card.querySelector('.slider-track');
-        if (!track) return; // حماية في حال عدم وجود السلايدر
+        if (!track) return;
         const dotsWrap = card.querySelector('.slider-dots');
-        const btnPrev = card.querySelector('.slider-arrow.prev');
-        const btnNext = card.querySelector('.slider-arrow.next');
 
         let currentIdx = 0;
 
+        function getSlides() { return track.querySelectorAll('.slide'); }
+
         /* ── الحصول على الـ slide الحالي من موضع التمرير ── */
         function getCurrentIdx() {
-          const slides = track.querySelectorAll('.slide');
+          const slides = getSlides();
           if (!slides.length) return 0;
-          const sw = slides[0].offsetWidth;
+          const sw = slides[0].offsetWidth || track.offsetWidth;
           return sw ? Math.round(track.scrollLeft / sw) : 0;
         }
 
-        /* ── تحديث النقاط ── */
+        /* ── تحديث Progress Bars ── */
         function updateDots() {
           currentIdx = getCurrentIdx();
-          dotsWrap.querySelectorAll('.sdot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+          dotsWrap.querySelectorAll('.sdot').forEach((d, i) =>
+            d.classList.toggle('active', i === currentIdx));
         }
 
-        /* ── الانتقال لـ slide معين ── */
+        /* ── الانتقال لـ slide بـ scrollTo لضمان الدقة ── */
         function goTo(idx) {
-          const slides = track.querySelectorAll('.slide');
+          const slides = getSlides();
           idx = Math.max(0, Math.min(idx, slides.length - 1));
           currentIdx = idx;
-          slides[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-          setTimeout(updateDots, 350);
+          const sw = slides[0]?.offsetWidth || track.offsetWidth;
+          track.scrollTo({ left: idx * sw, behavior: 'smooth' });
+          setTimeout(updateDots, 380);
         }
 
-        /* ── مراقبة التمرير لتحديث النقاط ── */
+        /* ── Scroll sync (للحالات التي تحدث فيها scroll خارج touch) ── */
         let scrollTimer;
         track.addEventListener('scroll', () => {
           clearTimeout(scrollTimer);
-          scrollTimer = setTimeout(updateDots, 80);
+          scrollTimer = setTimeout(updateDots, 150);
         }, { passive: true });
-
-        /* ── Arrow clicks ── */
-        btnPrev?.addEventListener('click', e => { e.stopPropagation(); goTo(currentIdx - 1); });
-        btnNext?.addEventListener('click', e => { e.stopPropagation(); goTo(currentIdx + 1); });
 
         /* ── Dot clicks ── */
         dotsWrap?.addEventListener('click', e => {
@@ -4896,24 +4893,63 @@
           goTo([...dotsWrap.querySelectorAll('.sdot')].indexOf(dot));
         });
 
-        /* ── Probe extra images (2 → MAX_EXTRA_IMAGES+1) ── */
+        /* ── Touch: يمين = التالي، يسار = السابق ── */
+        let tsX = 0, tsY = 0, tsMoved = false, preventClick = false;
+        track.addEventListener('touchstart', e => {
+          tsX = e.touches[0].clientX;
+          tsY = e.touches[0].clientY;
+          tsMoved = false;
+        }, { passive: true });
+
+        track.addEventListener('touchmove', e => {
+          const dx = Math.abs(e.touches[0].clientX - tsX);
+          const dy = Math.abs(e.touches[0].clientY - tsY);
+          if (dx > 5 || dy > 5) tsMoved = true;
+          if (dx > dy + 3) e.preventDefault(); // منع scroll أفقي مدمج
+        }, { passive: false });
+
+        track.addEventListener('touchend', e => {
+          const dx = e.changedTouches[0].clientX - tsX;
+          const dy = e.changedTouches[0].clientY - tsY;
+          /* حركة صغيرة أو رأسية = نقرة */
+          if (!tsMoved || Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
+          /* سحب أفقي — منع click التالي */
+          preventClick = true;
+          if (dx > 0) goTo(currentIdx + 1); // يمين → التالي
+          else        goTo(currentIdx - 1); // يسار → السابق
+        });
+
+        /* ── Click (ديسكتوب أو tap لم يتحرك) ── */
+        track.addEventListener('click', e => {
+          if (preventClick) { preventClick = false; return; }
+          openProductModal(p.id);
+        });
+
+        /* ── Probe extra images بترتيب صحيح ── */
         for (let seq = 2; seq <= MAX_EXTRA_IMAGES + 1; seq++) {
-          (function (s) {
+          (function(s) {
             const probe = new Image();
             probe.onload = () => {
+              /* أنشئ slide مع data-seq لضمان الترتيب الصحيح */
               const slide = document.createElement('div');
               slide.className = 'slide';
+              slide.dataset.seq = s;
               const img = document.createElement('img');
               img.src = imgPath(p, s);
               img.alt = p.brand;
               slide.appendChild(img);
-              track.appendChild(slide);
+              /* إدراج في المكان الصحيح حسب التسلسل */
+              const after = [...track.querySelectorAll('.slide[data-seq]')]
+                .find(el => +el.dataset.seq > s);
+              after ? track.insertBefore(slide, after) : track.appendChild(slide);
+              /* أضف dot في نفس الموضع */
+              const allSlides = [...track.querySelectorAll('.slide')];
+              const pos = allSlides.indexOf(slide);
+              const refDot = dotsWrap.querySelectorAll('.sdot')[pos] || null;
               const dot = document.createElement('span');
               dot.className = 'sdot';
-              dotsWrap.appendChild(dot);
+              refDot ? dotsWrap.insertBefore(dot, refDot) : dotsWrap.appendChild(dot);
               dotsWrap.classList.remove('hidden');
-              btnPrev.classList.remove('hidden');
-              btnNext.classList.remove('hidden');
             };
             probe.src = imgPath(p, s);
           })(seq);
@@ -5818,24 +5854,56 @@
       const maxProbe = 6;
       let loadedSlides = 0;
 
-      function updateDots() {
-        dotsWrap.querySelectorAll('.pm-dot').forEach((d, i) => {
-          d.classList.toggle('active', i === getCurrentSlide());
-        });
-      }
       /* استخدم .pm-slide فقط (تجاهل dotsWrap الذي صار children[0]) */
       function getSlides() { return imgWrap.querySelectorAll('.pm-slide'); }
       function getCurrentSlide() {
         const slides = getSlides();
         if (!slides.length) return 0;
-        const sw = slides[0].offsetWidth;
+        const sw = slides[0].offsetWidth || imgWrap.offsetWidth;
         return sw ? Math.round(imgWrap.scrollLeft / sw) : 0;
       }
-      imgWrap.addEventListener('scroll', updateDots);
+      function goToSlide(idx) {
+        const slides = getSlides();
+        idx = Math.max(0, Math.min(idx, slides.length - 1));
+        const sw = slides[0]?.offsetWidth || imgWrap.offsetWidth;
+        imgWrap.scrollTo({ left: idx * sw, behavior: 'smooth' });
+        setTimeout(updateDots, 380);
+      }
+      function updateDots() {
+        const cur = getCurrentSlide();
+        dotsWrap.querySelectorAll('.pm-dot').forEach((d, i) =>
+          d.classList.toggle('active', i === cur));
+      }
+      let pmScrollTimer;
+      imgWrap.addEventListener('scroll', () => {
+        clearTimeout(pmScrollTimer);
+        pmScrollTimer = setTimeout(updateDots, 150);
+      }, { passive: true });
+
+      /* ── Touch: يمين = التالي في المودال ── */
+      let pmTsX = 0, pmTsY = 0, pmMoved = false;
+      imgWrap.addEventListener('touchstart', e => {
+        pmTsX = e.touches[0].clientX;
+        pmTsY = e.touches[0].clientY;
+        pmMoved = false;
+      }, { passive: true });
+      imgWrap.addEventListener('touchmove', e => {
+        const dx = Math.abs(e.touches[0].clientX - pmTsX);
+        const dy = Math.abs(e.touches[0].clientY - pmTsY);
+        if (dx > 5 || dy > 5) pmMoved = true;
+        if (dx > dy + 3) e.preventDefault();
+      }, { passive: false });
+      imgWrap.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - pmTsX;
+        const dy = e.changedTouches[0].clientY - pmTsY;
+        if (!pmMoved || Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
+        goToSlide(getCurrentSlide() + (dx > 0 ? 1 : -1));
+      });
 
       for (let seq = 1; seq <= maxProbe; seq++) {
         const slide = document.createElement('div');
         slide.className = 'pm-slide';
+        slide.dataset.seq = seq;
 
         /* watermark */
         const wm = document.createElement('div');
@@ -5851,22 +5919,20 @@
           img.style.opacity = '1';
           wm.style.display = 'none';
           loadedSlides++;
-          /* build progress bars */
+          /* أعد بناء progress bars بعد كل تحميل صورة */
           dotsWrap.innerHTML = '';
           for (let d = 0; d < loadedSlides; d++) {
             const dot = document.createElement('span');
             dot.className = 'pm-dot' + (d === 0 ? ' active' : '');
-            dot.addEventListener('click', () => {
-              getSlides()[d]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-            });
+            const di = d;
+            dot.addEventListener('click', () => goToSlide(di));
             dotsWrap.appendChild(dot);
           }
-          if (loadedSlides <= 1) dotsWrap.style.display = 'none';
-          else dotsWrap.style.display = '';
+          dotsWrap.style.display = loadedSlides <= 1 ? 'none' : '';
         };
         img.onerror = () => {
-          if (seq === 1) { /* الصورة الأولى فشلت — نبقي الـ watermark */ img.style.display = 'none'; }
-          else { slide.remove(); } /* نحذف slides الفارغة */
+          if (seq === 1) img.style.display = 'none';
+          else slide.remove();
         };
         img.src = imgPath(p, seq);
         slide.appendChild(img);
