@@ -70,7 +70,7 @@
     :root {
       /* ── الألوان — Luxury Gold Theme ── */
       --ink: #1a1a1a;
-      --paper: #fcfcfc;
+      --paper: #ffffff;
       --accent: #c9a84c;
       --accent-light: #d4b968;
       --accent-glow: rgba(201, 168, 76, 0.25);
@@ -305,7 +305,7 @@
 
     .product-img {
       aspect-ratio: 3/4;
-      background: #f2ece2;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -532,6 +532,8 @@
 
     .slider-track {
       display: flex;
+      flex-direction: row; /* يمنع RTL من عكس ترتيب الصور */
+      direction: ltr;      /* يضمن البدء دائماً من الصورة الأولى */
       height: 100%;
       overflow-x: auto;
       overflow-y: hidden;
@@ -559,6 +561,18 @@
       object-fit: cover;
       display: block;
       pointer-events: none;
+    }
+
+    /* ── Blur-up lazy loading ── */
+    .img-lazy {
+      filter: blur(8px);
+      transform: scale(1.03);
+      transition: filter .4s ease, transform .4s ease, opacity .25s ease;
+      will-change: filter, transform;
+    }
+    .img-lazy.loaded {
+      filter: blur(0);
+      transform: scale(1);
     }
 
     .slider-arrow {
@@ -728,7 +742,7 @@
       .slide img {
         object-fit: contain !important;
         object-position: center top !important;
-        background: #f2ece2;
+        background: #ffffff;
       }
 
       /* ── M3b: Product Modal slider — 100vw على الموبايل ── */
@@ -747,7 +761,7 @@
       #productModal .pm-img-wrap .pm-slide img {
         object-fit: contain !important;
         object-position: center top !important;
-        background: #f2ece2;
+        background: #ffffff;
       }
 
       #productModal .pm-sheet {
@@ -1007,7 +1021,7 @@
       overflow: hidden;
       contain: layout paint;
       position: relative;
-      background: #f2ece2;
+      background: #ffffff;
     }
 
     .product-img img {
@@ -2283,7 +2297,7 @@
      BULK BAR — تحسين بصري
      ===================================================== */
     #bulkBar {
-      background: linear-gradient(135deg, #fff 0%, #faf8f5 100%);
+      background: #ffffff;
       border: 1px solid var(--line);
       border-radius: 0;
       padding: 1rem 1.25rem;
@@ -2403,7 +2417,7 @@
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      background: #f2ece2;
+      background: #ffffff;
       position: relative;
     }
 
@@ -2418,7 +2432,7 @@
       scroll-snap-stop: always;
       aspect-ratio: 3/4;
       position: relative;
-      background: #f2ece2;
+      background: #ffffff;
     }
 
     @media(min-width:640px) {
@@ -2624,7 +2638,7 @@
 
     .na-card .na-img {
       aspect-ratio: 3/4;
-      background: #f2ece2;
+      background: #ffffff;
       overflow: hidden;
       position: relative;
       margin-bottom: .6rem;
@@ -3355,7 +3369,7 @@
 
       <div class="hero-video-wrap rounded-sm">
         <video id="heroVideo" class="w-full h-full object-cover" autoplay loop muted playsinline webkit-playsinline
-          disablepictureinpicture poster="">
+          disablepictureinpicture preload="auto">
           <source src="video/brand-mission.mp4" type="video/mp4" />
         </video>
         <div id="videoFallback" class="play-btn">
@@ -4623,13 +4637,13 @@
       <div class="product-img slider-wrap relative" data-idx="0">
         <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
           <div class="slide">
-            <img src="${imgPath(p, 1)}" alt="${p.brand}"
-                 loading="${i === 0 ? 'eager' : 'lazy'}"
+            <img ${i === 0 ? `src="${imgPath(p, 1)}"` : `data-src="${imgPath(p, 1)}" src=""`}
+                 alt="${p.brand}"
                  class="img-lazy"
                  style="opacity:0;transition:opacity .25s"
                  onload="this.classList.add('loaded');this.style.opacity='1'; this.nextElementSibling.style.display='none';"
                  onerror="this.style.display='none';" />
-            <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2] pointer-events-none">
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white pointer-events-none">
               <div class="brand-watermark">${p.brand}</div>
               <div class="brand-sub">${p.sub}</div>
             </div>
@@ -4811,7 +4825,11 @@
         });
 
         /* ── تهيئة السلايدر + كشف التمرير ── */
-        requestAnimationFrame(() => { initSliders(); if (window.observeRevealElements) observeRevealElements(); });
+        requestAnimationFrame(() => {
+          initSliders();
+          if (window.observeRevealElements) observeRevealElements();
+          if (window.observeNewImages) observeNewImages();
+        });
 
       }, 0);
     }
@@ -5503,6 +5521,35 @@
       applyLang(saved);
     });
 
+    /* ── IntersectionObserver: تحميل صور المنتجات عند الاقتراب من الشاشة ── */
+    (function initImageObserver() {
+      if (!('IntersectionObserver' in window)) {
+        // fallback: load all images immediately
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          img.src = img.dataset.src;
+          delete img.dataset.src;
+        });
+        return;
+      }
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const img = e.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            delete img.dataset.src;
+          }
+          io.unobserve(img);
+        });
+      }, { rootMargin: '300px 0px', threshold: 0 });
+
+      window._imageObserver = io;
+      window.observeNewImages = function () {
+        document.querySelectorAll('img[data-src]').forEach(img => io.observe(img));
+      };
+      window.observeNewImages();
+    })();
+
     /* hide video fallback when video has real source loaded */
     const vid = $('#heroVideo');
     vid.addEventListener('loadeddata', () => { $('#videoFallback').style.display = 'none'; });
@@ -5740,7 +5787,7 @@
 
         /* watermark */
         const wm = document.createElement('div');
-        wm.className = 'absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]';
+        wm.className = 'absolute inset-0 flex flex-col items-center justify-center bg-white';
         wm.innerHTML = `<div class="brand-watermark">${p.brand}</div><div class="brand-sub">${p.sub}</div>`;
         slide.appendChild(wm);
 
@@ -5933,7 +5980,7 @@
         ${list.map(p => `
           <div class="na-card" data-pid="${p.id}" onclick="openProductModal('${p.id}')">
             <div class="na-img">
-              <div class="absolute inset-0 flex flex-col items-center justify-center bg-[#f2ece2]">
+              <div class="absolute inset-0 flex flex-col items-center justify-center bg-white">
                 <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.06em;color:#2b2b2b">${p.brand}</div>
               </div>
               <img src="${imgPath(p, 1)}" alt="${p.brand}"
