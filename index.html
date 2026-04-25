@@ -494,6 +494,43 @@
       pointer-events: none;
     }
 
+    /* ── Mobile: يخفي الفيديو ويُظهر الـ slideshow ── */
+    @media (max-width: 768px) {
+      .hero-video-wrap video { display: none; }
+      .mobile-hero-slides { display: block; }
+    }
+    @media (min-width: 769px) {
+      .mobile-hero-slides { display: none; }
+    }
+
+    /* ── Slideshow CSS — 5 صور تتبادل بـ crossfade تلقائي ── */
+    .mobile-hero-slides {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .mobile-hero-slides img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      animation: hero-fade 20s infinite;
+    }
+    .mobile-hero-slides img:nth-child(1) { animation-delay:  0s; }
+    .mobile-hero-slides img:nth-child(2) { animation-delay:  4s; }
+    .mobile-hero-slides img:nth-child(3) { animation-delay:  8s; }
+    .mobile-hero-slides img:nth-child(4) { animation-delay: 12s; }
+    .mobile-hero-slides img:nth-child(5) { animation-delay: 16s; }
+
+    @keyframes hero-fade {
+      0%,3%   { opacity: 0; transform: scale(1.04); }
+      8%,18%  { opacity: 1; transform: scale(1);    }
+      23%,100%{ opacity: 0; transform: scale(1);    }
+    }
+
     .play-btn {
       position: absolute;
       inset: 0;
@@ -3372,6 +3409,16 @@
           disablepictureinpicture preload="auto">
           <source src="video/brand-mission.mp4" type="video/mp4" />
         </video>
+
+        <!-- موبايل فقط: slideshow CSS بدون فيديو — يعمل فوراً بدون أي تدخل -->
+        <div class="mobile-hero-slides" aria-hidden="true">
+          <img src="imagestshirts/01-1-lacoste-e33.jpg"   alt="" loading="eager" />
+          <img src="imagestshirts/21-1-hermes.jpg"         alt="" loading="eager" />
+          <img src="imagestshirts/02-1-polo.jpg"           alt="" loading="eager" />
+          <img src="imagestshirts/15-1-lv.jpg"             alt="" loading="eager" />
+          <img src="imagestshirts/06-1-lacoste-1927.jpg"   alt="" loading="eager" />
+        </div>
+
         <div id="videoFallback" class="play-btn">
           <div class="text-center">
             <div class="play-circle mx-auto mb-4">
@@ -5552,30 +5599,14 @@
       window.observeNewImages();
     })();
 
-    /* ── Video: يظهر مباشرة، يُشغَّل تلقائياً، الـ fallback فقط عند غياب الملف ── */
+    /* ── Video: للديسكتوب فقط — الموبايل يستخدم الـ slideshow CSS ── */
     (function initVideo() {
       const vid = $('#heroVideo');
-      const fallback = $('#videoFallback');
       if (!vid) return;
-
-      /* إذا فشل تحميل الملف كلياً — أظهر الـ fallback */
-      vid.addEventListener('error', () => {
-        if (fallback) { fallback.style.display = 'flex'; }
-      });
-
-      /* حاول التشغيل بكل الطرق الممكنة */
+      /* لا نحتاج أي JS على الموبايل — الـ slideshow CSS يعمل تلقائياً */
+      /* على الديسكتوب: autoplay يعمل مباشرة من HTML attributes */
       vid.muted = true;
-      const attempt = () => {
-        const p = vid.play();
-        if (p) p.catch(() => {
-          /* إذا بقي محجوباً — شغّله عند أول لمسة */
-          document.addEventListener('touchstart', () => vid.play().catch(() => {}), { once: true });
-          document.addEventListener('click', () => vid.play().catch(() => {}), { once: true });
-        });
-      };
-
-      if (vid.readyState >= 1) { attempt(); }
-      else { vid.addEventListener('loadedmetadata', attempt, { once: true }); }
+      vid.play().catch(() => {});
     })();
 
     /* =====================================================
