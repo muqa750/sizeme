@@ -614,28 +614,21 @@
 
     .slider-dots {
       position: absolute;
-      bottom: 8px;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       display: flex;
-      justify-content: center;
-      gap: 5px;
+      gap: 2px;
+      padding: 0 6px 6px;
       z-index: 3;
+      pointer-events: none;
     }
-
     .sdot {
-      width: 5px;
-      height: 5px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .55);
-      cursor: pointer;
-      transition: all .2s;
+      flex: 1; height: 2px;
+      border-radius: 1px;
+      background: rgba(255,255,255,.35);
+      cursor: pointer; pointer-events: auto;
+      transition: background .25s;
     }
-
-    .sdot.active {
-      background: #fff;
-      width: 14px;
-    }
+    .sdot.active { background: #fff; }
 
     /* =====================================================
      MOBILE FIXES  ·  max-width: 768px
@@ -2455,28 +2448,20 @@
       opacity: 1;
     }
 
-    /* dots للصور */
+    /* progress bars للصور — modal */
     .pm-dots {
       display: flex;
-      justify-content: center;
-      gap: 5px;
-      padding: 8px 0 4px;
+      gap: 3px;
+      padding: 6px 10px 4px;
     }
-
     .pm-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      flex: 1; height: 2px;
+      border-radius: 1px;
       background: var(--line);
-      cursor: pointer;
-      transition: all .2s;
+      cursor: pointer; pointer-events: auto;
+      transition: background .25s;
     }
-
-    .pm-dot.active {
-      background: var(--ink);
-      width: 16px;
-      border-radius: 3px;
-    }
+    .pm-dot.active { background: var(--ink); }
 
     #productModal .pm-close {
       position: absolute;
@@ -4652,38 +4637,26 @@
             </div>
           </div>
         </div>
-        <!-- النقاط بالأسفل - تظهر فقط عندما يكون هناك أكثر من صورة -->
-        <div class="slider-dots absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 hidden z-10 pointer-events-none">
+        <!-- progress bars — تظهر فقط عندما يكون هناك أكثر من صورة -->
+        <div class="slider-dots hidden">
           <span class="sdot active"></span>
         </div>
       </div>
       <!-- ── INFO ── -->
-      <div class="p-4 card-info">
-        <!-- الاسم والوصف -->
+      <div class="p-4 card-info" onclick="openProductModal('${p.id}')" style="cursor:pointer">
         <div class="card-head">
           <h3 class="serif text-lg leading-tight card-brand">${p.brand}</h3>
           <p class="card-sub">${p.sub}</p>
         </div>
-        <!-- السعر — سطر منفصل دائماً ظاهر -->
         <div class="card-price-row">
           <span class="card-price">${fmt(getPrice(p))}</span>
           ${renderBadge(p, t)}
         </div>
-        <!-- الألوان -->
         <div class="card-colors-wrap">
-          <div class="flex gap-2 flex-wrap" data-role="colors">
+          <div class="flex gap-2 flex-wrap" data-role="colors" onclick="event.stopPropagation()">
             ${p.colors.map((c, ci) => `<span class="color-dot ${ci === 0 ? 'active' : ''}" data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`).join('')}
           </div>
         </div>
-        <!-- المقاسات -->
-        <div class="card-sizes-wrap">
-          <div class="grid grid-cols-3 gap-1.5" data-role="sizes">${(() => {
-          const sizes = getSizes(p);
-          const wgMap = p.category === 'jeans' ? t.wgJeans : t.wg;
-          return sizes.map(s => `<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${wgMap[s] || ''}</div></div>`).join('');
-        })()}</div>
-        </div>
-        <button class="btn-outline w-full py-2.5 mt-4 text-[11px] tracking-[.2em]" data-role="add">${t.addBag}</button>
       </div>
     </article>`;
     }
@@ -4803,27 +4776,11 @@
         /* ── ربط تفاعلات بطاقات المنتجات ── */
         $$('#productSections .product-card').forEach(card => {
           card.querySelectorAll('[data-role="colors"] .color-dot').forEach(dot => {
-            dot.addEventListener('click', () => {
+            dot.addEventListener('click', e => {
+              e.stopPropagation();
               card.querySelectorAll('[data-role="colors"] .color-dot').forEach(d => d.classList.remove('active'));
               dot.classList.add('active');
             });
-          });
-          card.querySelectorAll('[data-role="sizes"] .size-card').forEach(sc => {
-            sc.addEventListener('click', () => {
-              card.querySelectorAll('[data-role="sizes"] .size-card').forEach(x => x.classList.remove('active'));
-              sc.classList.add('active');
-            });
-          });
-          const addBtn = card.querySelector('[data-role="add"]');
-          addBtn?.addEventListener('click', () => {
-            const p = PRODUCTS.find(x => x.id === card.dataset.pid);
-            const color = card.querySelector('[data-role="colors"] .active')?.dataset.color;
-            const size = card.querySelector('[data-role="sizes"] .active')?.dataset.size;
-            const t2 = I18N[state.lang];
-            if (!size) { alert(t2.selectSize); return; }
-            if (window.flashAddBtn) flashAddBtn(addBtn);
-            addToCart({ pid: p.id, brand: p.brand, sub: p.sub, sku: p.sku, img: imgPath(p, 1), color, size, qty: 1, price: getPrice(p) });
-            openCart();
           });
         });
 
@@ -5870,6 +5827,8 @@
       const info = modal.querySelector('.pm-info');
       const sizes = getSizes(p);
       const wgMap = p.category === 'jeans' ? t.wgJeans : t.wg;
+      const catDesc = { tshirt:{ar:'تيشيرت',en:'T-Shirt',ku:'تیشرت'}, jeans:{ar:'جينز',en:'Jeans',ku:'جینز'}, hoodie:{ar:'هودي',en:'Hoodie',ku:'هودی'} }[p.category] || {ar:'منتج',en:'Item',ku:'بەرهەم'};
+      const descTxt = { ar:`${catDesc.ar} ${p.brand} بخامة فاخرة — متوفر بمقاسات 2XL حتى 7XL`, en:`Premium ${p.brand} ${catDesc.en} — Available from 2XL to 7XL`, ku:`${catDesc.ku}ی ${p.brand} بە کواڵیتی بەرز — لە 2XL تا 7XL` }[state.lang];
       info.innerHTML = `
     <div class="flex items-start justify-between mb-1">
       <div>
@@ -5878,7 +5837,8 @@
       </div>
       <div class="text-lg font-medium">${fmt(getPrice(p))}</div>
     </div>
-    <div class="mt-5">
+    <p class="text-xs leading-relaxed mt-2" style="color:var(--mute)">${descTxt}</p>
+    <div class="mt-4">
       <p class="kicker mb-2">${t.selectColor}</p>
       <div class="flex gap-2.5 flex-wrap pm-colors">
         ${p.colors.map((c, ci) => `<span class="color-dot ${ci === 0 ? 'active' : ''}" data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`).join('')}
