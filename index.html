@@ -4637,11 +4637,13 @@
       <div class="product-img slider-wrap relative" data-idx="0">
         <div class="slider-track" onclick="openProductModal('${p.id}')" style="cursor:pointer">
           <div class="slide">
-            <img ${i === 0 ? `src="${imgPath(p, 1)}"` : `data-src="${imgPath(p, 1)}" src=""`}
+            <img ${i === 0
+                ? `src="${imgPath(p, 1)}"`
+                : `data-src="${imgPath(p, 1)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="`}
                  alt="${p.brand}"
                  class="img-lazy"
                  style="opacity:0;transition:opacity .25s"
-                 onload="this.classList.add('loaded');this.style.opacity='1'; this.nextElementSibling.style.display='none';"
+                 onload="if(this.naturalWidth>1){this.classList.add('loaded');this.style.opacity='1';var n=this.nextElementSibling;if(n)n.style.display='none';}"
                  onerror="this.style.display='none';" />
             <div class="absolute inset-0 flex flex-col items-center justify-center bg-white pointer-events-none">
               <div class="brand-watermark">${p.brand}</div>
@@ -5541,7 +5543,7 @@
           }
           io.unobserve(img);
         });
-      }, { rootMargin: '300px 0px', threshold: 0 });
+      }, { rootMargin: '600px 0px', threshold: 0 });
 
       window._imageObserver = io;
       window.observeNewImages = function () {
@@ -5550,10 +5552,48 @@
       window.observeNewImages();
     })();
 
-    /* hide video fallback when video has real source loaded */
-    const vid = $('#heroVideo');
-    vid.addEventListener('loadeddata', () => { $('#videoFallback').style.display = 'none'; });
-    vid.addEventListener('error', () => { /* keep fallback */ });
+    /* ── Video autoplay — mobile-safe ── */
+    (function initVideo() {
+      const vid = $('#heroVideo');
+      const fallback = $('#videoFallback');
+      if (!vid) return;
+
+      function tryPlay() {
+        const p = vid.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => {
+            /* تشغيل ناجح — أخفِ الـ fallback */
+            if (fallback) fallback.style.display = 'none';
+          }).catch(() => {
+            /* autoplay محجوب — اجعل الـ fallback قابل للنقر */
+            if (fallback) {
+              fallback.style.display = '';
+              fallback.style.cursor = 'pointer';
+              fallback.addEventListener('click', function handler() {
+                vid.play().then(() => { fallback.style.display = 'none'; });
+                fallback.removeEventListener('click', handler);
+              });
+            }
+          });
+        }
+      }
+
+      /* جرب الآن إذا كان الفيديو جاهزاً */
+      if (vid.readyState >= 2) {
+        tryPlay();
+      } else {
+        vid.addEventListener('loadedmetadata', tryPlay, { once: true });
+        vid.addEventListener('canplay', tryPlay, { once: true });
+      }
+
+      /* IntersectionObserver: شغّل الفيديو عند ظهوره في الشاشة */
+      if ('IntersectionObserver' in window) {
+        const vio = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting && vid.paused) tryPlay();
+        }, { threshold: 0.1 });
+        vio.observe(vid);
+      }
+    })();
 
     /* =====================================================
        PREMIUM ANIMATIONS — JavaScript Engine
