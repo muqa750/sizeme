@@ -497,7 +497,7 @@
     .play-btn {
       position: absolute;
       inset: 0;
-      display: flex;
+      display: none; /* مخفي افتراضياً — يظهر فقط إذا فشل تحميل الفيديو */
       align-items: center;
       justify-content: center;
     }
@@ -5552,47 +5552,30 @@
       window.observeNewImages();
     })();
 
-    /* ── Video autoplay — mobile-safe ── */
+    /* ── Video: يظهر مباشرة، يُشغَّل تلقائياً، الـ fallback فقط عند غياب الملف ── */
     (function initVideo() {
       const vid = $('#heroVideo');
       const fallback = $('#videoFallback');
       if (!vid) return;
 
-      function tryPlay() {
+      /* إذا فشل تحميل الملف كلياً — أظهر الـ fallback */
+      vid.addEventListener('error', () => {
+        if (fallback) { fallback.style.display = 'flex'; }
+      });
+
+      /* حاول التشغيل بكل الطرق الممكنة */
+      vid.muted = true;
+      const attempt = () => {
         const p = vid.play();
-        if (p && typeof p.then === 'function') {
-          p.then(() => {
-            /* تشغيل ناجح — أخفِ الـ fallback */
-            if (fallback) fallback.style.display = 'none';
-          }).catch(() => {
-            /* autoplay محجوب — اجعل الـ fallback قابل للنقر */
-            if (fallback) {
-              fallback.style.display = '';
-              fallback.style.cursor = 'pointer';
-              fallback.addEventListener('click', function handler() {
-                vid.play().then(() => { fallback.style.display = 'none'; });
-                fallback.removeEventListener('click', handler);
-              });
-            }
-          });
-        }
-      }
+        if (p) p.catch(() => {
+          /* إذا بقي محجوباً — شغّله عند أول لمسة */
+          document.addEventListener('touchstart', () => vid.play().catch(() => {}), { once: true });
+          document.addEventListener('click', () => vid.play().catch(() => {}), { once: true });
+        });
+      };
 
-      /* جرب الآن إذا كان الفيديو جاهزاً */
-      if (vid.readyState >= 2) {
-        tryPlay();
-      } else {
-        vid.addEventListener('loadedmetadata', tryPlay, { once: true });
-        vid.addEventListener('canplay', tryPlay, { once: true });
-      }
-
-      /* IntersectionObserver: شغّل الفيديو عند ظهوره في الشاشة */
-      if ('IntersectionObserver' in window) {
-        const vio = new IntersectionObserver(entries => {
-          if (entries[0].isIntersecting && vid.paused) tryPlay();
-        }, { threshold: 0.1 });
-        vio.observe(vid);
-      }
+      if (vid.readyState >= 1) { attempt(); }
+      else { vid.addEventListener('loadedmetadata', attempt, { once: true }); }
     })();
 
     /* =====================================================
