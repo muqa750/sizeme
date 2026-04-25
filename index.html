@@ -5553,14 +5553,51 @@
       window.observeNewImages();
     })();
 
-    /* ── Video: للديسكتوب فقط — الموبايل يستخدم الـ slideshow CSS ── */
+    /* ── Video autoplay — يعمل على الموبايل والديسكتوب ── */
     (function initVideo() {
       const vid = $('#heroVideo');
       if (!vid) return;
-      /* لا نحتاج أي JS على الموبايل — الـ slideshow CSS يعمل تلقائياً */
-      /* على الديسكتوب: autoplay يعمل مباشرة من HTML attributes */
+
+      /* 1. ضبط خصائص الكتم — ضروري لـ iOS Safari */
       vid.muted = true;
-      vid.play().catch(() => {});
+      vid.defaultMuted = true;
+      vid.setAttribute('muted', '');
+      vid.setAttribute('playsinline', '');
+      vid.setAttribute('webkit-playsinline', '');
+
+      let started = false;
+      const doPlay = () => {
+        if (started) return;
+        vid.play().then(() => { started = true; }).catch(() => {});
+      };
+
+      /* 2. أعد تحميل الفيديو لتفعيل خاصية muted على iOS Safari */
+      vid.load();
+
+      /* 3. استمع لأحداث التحميل */
+      vid.addEventListener('loadedmetadata',  doPlay, { once: true });
+      vid.addEventListener('canplay',         doPlay, { once: true });
+      vid.addEventListener('canplaythrough',  doPlay, { once: true });
+
+      /* 4. شغّل فور ظهور الفيديو في الشاشة (IntersectionObserver) */
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting) { doPlay(); io.disconnect(); }
+        }, { threshold: 0.01 });
+        io.observe(vid);
+      }
+
+      /* 5. محاولات متعددة في فترات زمنية مختلفة */
+      [50, 200, 500, 1000, 2000, 3500].forEach(t => setTimeout(doPlay, t));
+
+      /* 6. أعد التشغيل عند العودة للصفحة (tab switch) */
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && vid.paused) doPlay();
+      });
+
+      /* 7. أول لمسة على الشاشة كضمان أخير (صامت — لا يحتاج المستخدم للضغط على زر) */
+      const onFirst = () => { doPlay(); document.removeEventListener('touchstart', onFirst); };
+      document.addEventListener('touchstart', onFirst, { once: true, passive: true });
     })();
 
     /* =====================================================
