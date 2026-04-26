@@ -4999,8 +4999,8 @@
           const dy = e.changedTouches[0].clientY - tsY;
           if (!tsMoved || Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
           preventClick = true;
-          if (dx < 0) goTo(currentIdx + 1);
-          else        goTo(currentIdx - 1);
+          if (dx > 0) goTo(currentIdx + 1); /* يمين → التالي (RTL) */
+          else        goTo(currentIdx - 1); /* يسار → السابق */
         });
 
         /* ── Click ── */
