@@ -197,18 +197,38 @@
       transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s ease;
       position: relative;
       flex-shrink: 0;
+      /* ── حلقة تكيّفية: تُظهر الألوان الفاتحة على الخلفية الفاتحة ── */
+      box-shadow: 0 0 0 1px rgba(0,0,0,.14);
+    }
+    /* الوضع الليلي: حلقة فاتحة لإظهار الألوان الداكنة */
+    [data-theme="dark"] .color-dot {
+      box-shadow: 0 0 0 1px rgba(255,255,255,.22);
     }
 
     .color-dot:active {
       transform: scale(0.9);
     }
 
+    /* النشط: حلقة اللون + حلقة خارجية للتعريف في كلا الثيمين */
     .color-dot.active {
-      box-shadow: inset 0 0 0 2.5px var(--paper), 0 0 0 2px currentColor;
+      box-shadow:
+        inset 0 0 0 2.5px var(--paper),
+        0 0 0 2px currentColor,
+        0 0 0 3.5px rgba(0,0,0,.14);
+    }
+    [data-theme="dark"] .color-dot.active {
+      box-shadow:
+        inset 0 0 0 2.5px var(--paper),
+        0 0 0 2px currentColor,
+        0 0 0 3.5px rgba(255,255,255,.22);
     }
 
     .color-dot:not(.active):hover {
-      box-shadow: inset 0 0 0 2px var(--paper), 0 0 0 1.5px rgba(0, 0, 0, .18);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.14), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(0,0,0,.22);
+      transform: scale(1.1);
+    }
+    [data-theme="dark"] .color-dot:not(.active):hover {
+      box-shadow: 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(255,255,255,.35);
       transform: scale(1.1);
     }
 
@@ -243,7 +263,16 @@
     }
 
     .pm-colors .color-dot.active {
-      box-shadow: inset 0 0 0 3px var(--paper), 0 0 0 2.5px currentColor;
+      box-shadow:
+        inset 0 0 0 3px var(--paper),
+        0 0 0 2.5px currentColor,
+        0 0 0 4px rgba(0,0,0,.14);
+    }
+    [data-theme="dark"] .pm-colors .color-dot.active {
+      box-shadow:
+        inset 0 0 0 3px var(--paper),
+        0 0 0 2.5px currentColor,
+        0 0 0 4px rgba(255,255,255,.22);
     }
 
     .product-card {
@@ -2557,6 +2586,48 @@
       transition: background .25s;
     }
     .pm-dot.active { background: #fff; }
+
+    /* ── Modal nav strips — أسهم المودال ── */
+    .pm-img-outer { position: relative; }
+    .pm-nav {
+      position: absolute;
+      top: 0; bottom: 0;
+      z-index: 5;
+      width: 42px;
+      display: none; /* تظهر عبر JS عند تحميل صور متعددة */
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      opacity: .55;
+      transition: opacity .2s ease;
+    }
+    .pm-nav:hover { opacity: .95; }
+    .pm-nav-prev { inset-inline-start: 0; }
+    .pm-nav-next { inset-inline-end: 0; }
+    [dir="ltr"] .pm-nav-prev,
+    [dir="rtl"] .pm-nav-next {
+      background: linear-gradient(to right, rgba(255,255,255,.55) 0%, transparent 100%);
+    }
+    [dir="ltr"] .pm-nav-next,
+    [dir="rtl"] .pm-nav-prev {
+      background: linear-gradient(to left, rgba(255,255,255,.55) 0%, transparent 100%);
+    }
+    .pm-nav svg {
+      width: 15px; height: 15px;
+      stroke: rgba(20,20,20,.7);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      pointer-events: none;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,.9));
+    }
+    [dir="rtl"] .pm-nav svg { transform: scaleX(-1); }
+    @media (max-width: 768px) {
+      .pm-nav { width: 36px; opacity: .6; }
+    }
 
     #productModal .pm-close {
       position: absolute;
@@ -6005,6 +6076,25 @@
       /* ── صور: slider أفقي مع scroll-snap ── */
       const imgWrap = modal.querySelector('.pm-img-wrap');
       imgWrap.innerHTML = '';
+
+      /* ── أسهم التنقل — إزالة القديمة وإنشاء جديدة ── */
+      const imgOuter = imgWrap.parentElement;
+      imgOuter.querySelectorAll('.pm-nav').forEach(b => b.remove());
+
+      const pmPrevBtn = document.createElement('button');
+      pmPrevBtn.className = 'pm-nav pm-nav-prev';
+      pmPrevBtn.setAttribute('aria-label', 'السابق');
+      pmPrevBtn.setAttribute('tabindex', '-1');
+      pmPrevBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>';
+      imgOuter.appendChild(pmPrevBtn);
+
+      const pmNextBtn = document.createElement('button');
+      pmNextBtn.className = 'pm-nav pm-nav-next';
+      pmNextBtn.setAttribute('aria-label', 'التالي');
+      pmNextBtn.setAttribute('tabindex', '-1');
+      pmNextBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+      imgOuter.appendChild(pmNextBtn);
+
       /* أنشئ dotsWrap داخل imgWrap ليُراكب أسفل الصورة */
       const dotsWrap = document.createElement('div');
       dotsWrap.className = 'pm-dots';
@@ -6035,31 +6125,39 @@
         dotsWrap.querySelectorAll('.pm-dot').forEach((d, i) =>
           d.classList.toggle('active', i === cur));
       }
-      /* ── Sync dots مع native scroll-snap (يسار = التالي تلقائياً) ── */
+      /* ── Sync dots مع scroll ── */
       let pmScrollTimer;
       imgWrap.addEventListener('scroll', () => {
         clearTimeout(pmScrollTimer);
         pmScrollTimer = setTimeout(updateDots, 160);
       }, { passive: true });
 
-      /* ── Touch: يسار = التالي (مطابق للمواقع العربية) ── */
+      /* ── ربط أحداث الأسهم ── */
+      pmPrevBtn.addEventListener('click', () => goToSlide(getCurrentSlide() - 1));
+      pmNextBtn.addEventListener('click', () => goToSlide(getCurrentSlide() + 1));
+
+      /* ── Touch: إصلاح السحب اليدوي — passive:false لمنع تضارب scroll-snap ── */
       let pmTsX = 0, pmTsY = 0, pmMoved = false;
       imgWrap.addEventListener('touchstart', e => {
         pmTsX = e.touches[0].clientX;
         pmTsY = e.touches[0].clientY;
         pmMoved = false;
       }, { passive: true });
+
       imgWrap.addEventListener('touchmove', e => {
-        if (Math.abs(e.touches[0].clientX - pmTsX) > 8) pmMoved = true;
-      }, { passive: true }); /* passive:true → native scroll-snap يعمل */
+        const dx = Math.abs(e.touches[0].clientX - pmTsX);
+        const dy = Math.abs(e.touches[0].clientY - pmTsY);
+        if (dx > 8) pmMoved = true;
+        if (dx > dy + 5) e.preventDefault(); /* منع scroll الصفحة عند السحب الأفقي */
+      }, { passive: false });
+
       imgWrap.addEventListener('touchend', e => {
         if (!pmMoved) return;
         const dx = e.changedTouches[0].clientX - pmTsX;
         const dy = e.changedTouches[0].clientY - pmTsY;
         if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
-        /* أجبر الانتقال الصحيح بعد انتهاء native scroll-snap */
         const cur = getCurrentSlide();
-        setTimeout(() => goToSlide(cur + (dx < 0 ? 1 : -1)), 50);
+        goToSlide(dx > 0 ? cur + 1 : cur - 1); /* RTL: يمين = التالي */
       });
 
       for (let seq = 1; seq <= maxProbe; seq++) {
@@ -6091,6 +6189,10 @@
             dotsWrap.appendChild(dot);
           }
           dotsWrap.style.display = loadedSlides <= 1 ? 'none' : '';
+          /* أظهر أسهم المودال عند وجود أكثر من صورة */
+          const showNav = loadedSlides > 1 ? 'flex' : 'none';
+          pmPrevBtn.style.display = showNav;
+          pmNextBtn.style.display = showNav;
         };
         img.onerror = () => {
           if (seq === 1) img.style.display = 'none';
@@ -6464,7 +6566,7 @@
       <button class="pm-close" onclick="closeProductModal()" aria-label="close">✕</button>
       <div class="flex flex-col sm:flex-row" style="min-height:0">
         <!-- صورة -->
-        <div class="sm:w-2/5 flex-shrink-0">
+        <div class="sm:w-2/5 flex-shrink-0 pm-img-outer">
           <div class="pm-img-wrap"></div>
         </div>
         <!-- تفاصيل -->
