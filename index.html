@@ -630,6 +630,26 @@
     }
     .sdot.active { background: #fff; }
 
+    /* ── Fade transition للتقليب التلقائي في البطاقات ── */
+    .slider-track { transition: opacity .28s ease; }
+
+    /* ── Shake animation لتحقق اللون في المودال ── */
+    @keyframes shake-colors {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-7px); }
+      40%       { transform: translateX(7px); }
+      60%       { transform: translateX(-4px); }
+      80%       { transform: translateX(4px); }
+    }
+    .pm-colors.shake { animation: shake-colors .42s var(--smooth); }
+    .pm-color-hint {
+      font-size: var(--fs-xs);
+      color: var(--error);
+      margin-top: 5px;
+      min-height: 1.2em;
+      transition: opacity .2s;
+    }
+
     /* =====================================================
      MOBILE FIXES  ·  max-width: 768px
      ===================================================== */
@@ -4126,7 +4146,7 @@
         valPhoneFmt: 'رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 11 رقماً',
         cfTitle: 'تم استلام طلبك', cfBody: (n) => `شكراً ${n}, فريق SizeMe سيتواصل معك قريبًا لتأكيد طلبك. ملاحظة: نوفّر ضمان استبدال في حال عدم مناسبة القياس.`,
         cfClose: 'إغلاق',
-        addBag: 'أضف إلى السلة', selectSize: 'اختر المقاس', selectColor: 'اختر اللون', qty: 'الكمية',
+        addBag: 'أضف إلى السلة', selectSize: 'اختر المقاس', selectColor: 'اختر اللون', colorRequired: 'يرجى اختيار اللون أولاً', sizeRequired: 'يرجى اختيار المقاس أولاً', qty: 'الكمية',
         empty: 'سلتك فارغة.', remove: 'إزالة',
         wg: { '2XL': '95–105 كغ', '3XL': '105–115 كغ', '4XL': '115–125 كغ', '5XL': '125–140 كغ', '6XL': '140–155 كغ', '7XL': '155–175 كغ' },
         wgJeans: { '38': '75–85 كغ', '40': '85–95 كغ', '42': '95–110 كغ', '44': '110–125 كغ', '46': '125–140 كغ', '48': '140–155 كغ' },
@@ -4194,7 +4214,7 @@
         valPhoneFmt: 'Phone must start with 07 and be 11 digits',
         cfTitle: 'Order Received', cfBody: (n) => `Thank you ${n}, the SizeMe team will contact you shortly to confirm your order. Note: We provide a replacement guarantee if the size is not suitable.`,
         cfClose: 'CLOSE',
-        addBag: 'Add to Bag', selectSize: 'Select Size', selectColor: 'Select Color', qty: 'Qty',
+        addBag: 'Add to Bag', selectSize: 'Select Size', selectColor: 'Select Color', colorRequired: 'Please select a color first', sizeRequired: 'Please select a size first', qty: 'Qty',
         empty: 'Your bag is empty.', remove: 'Remove',
         wg: { '2XL': '95–105 kg', '3XL': '105–115 kg', '4XL': '115–125 kg', '5XL': '125–140 kg', '6XL': '140–155 kg', '7XL': '155–175 kg' },
         wgJeans: { '38': '75–85 kg', '40': '85–95 kg', '42': '95–110 kg', '44': '110–125 kg', '46': '125–140 kg', '48': '140–155 kg' },
@@ -4262,7 +4282,7 @@
         valPhoneFmt: 'ژمارەکە دەبێت بە 07 دەست پێ بکات و ١١ ژمارە بێت',
         cfTitle: 'داواکاریت وەرگیرا', cfBody: (n) => `سوپاس ${n}, تیمی SizeMe بەم زووانە پەیوەندیت پێوە دەکات بۆ پشتڕاستکردنەوەی داواکاریت. تێبینی: گەرەنتی گۆڕینەوە لەبەردەستە ئەگەر قەبارەکە گونجاو نەبوو.`,
         cfClose: 'داخستن',
-        addBag: 'زیادکردن بۆ سەبەتە', selectSize: 'قەبارە هەڵبژێرە', selectColor: 'ڕەنگ هەڵبژێرە', qty: 'ژمارە',
+        addBag: 'زیادکردن بۆ سەبەتە', selectSize: 'قەبارە هەڵبژێرە', selectColor: 'ڕەنگ هەڵبژێرە', colorRequired: 'تکایە ئەو رەنگەی دەتەوێت هەڵبژێرە', sizeRequired: 'تکایە قەبارەکەت هەڵبژێرە', qty: 'ژمارە',
         empty: 'سەبەتەکەت بەتاڵە.', remove: 'سڕینەوە',
         wg: { '2XL': '٩٥–١٠٥ کیلۆ', '3XL': '١٠٥–١١٥ کیلۆ', '4XL': '١١٥–١٢٥ کیلۆ', '5XL': '١٢٥–١٤٠ کیلۆ', '6XL': '١٤٠–١٥٥ کیلۆ', '7XL': '١٥٥–١٧٥ کیلۆ' },
         wgJeans: { '38': '٧٥–٨٥ کیلۆ', '40': '٨٥–٩٥ کیلۆ', '42': '٩٥–١١٠ کیلۆ', '44': '١١٠–١٢٥ کیلۆ', '46': '١٢٥–١٤٠ کیلۆ', '48': '١٤٠–١٥٥ کیلۆ' },
@@ -4855,6 +4875,20 @@
     const MAX_EXTRA_IMAGES = 6;
 
     function initSliders() {
+      /* ── مرجع عالمي للـ stopAuto النشط حالياً (بطاقة واحدة فقط تتحرك) ── */
+      if (!window._activeSliderStop) window._activeSliderStop = null;
+
+      /* ── تنظيف عند مغادرة الصفحة ── */
+      if (!window._sliderVisibilityBound) {
+        window._sliderVisibilityBound = true;
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && window._activeSliderStop) {
+            window._activeSliderStop();
+            window._activeSliderStop = null;
+          }
+        });
+      }
+
       $$('#productSections .product-card').forEach(card => {
         const p = PRODUCTS.find(x => x.id === card.dataset.pid);
         if (!p) return;
@@ -4866,7 +4900,6 @@
 
         function getSlides() { return track.querySelectorAll('.slide'); }
 
-        /* ── الحصول على الـ slide الحالي من موضع التمرير ── */
         function getCurrentIdx() {
           const slides = getSlides();
           if (!slides.length) return 0;
@@ -4874,14 +4907,13 @@
           return sw ? Math.round(track.scrollLeft / sw) : 0;
         }
 
-        /* ── تحديث Progress Bars ── */
         function updateDots() {
           currentIdx = getCurrentIdx();
           dotsWrap.querySelectorAll('.sdot').forEach((d, i) =>
             d.classList.toggle('active', i === currentIdx));
         }
 
-        /* ── الانتقال لـ slide بـ scrollTo لضمان الدقة ── */
+        /* ── الانتقال اليدوي: slide أفقي ناعم ── */
         function goTo(idx) {
           const slides = getSlides();
           idx = Math.max(0, Math.min(idx, slides.length - 1));
@@ -4891,7 +4923,39 @@
           setTimeout(updateDots, 380);
         }
 
-        /* ── Scroll sync (للحالات التي تحدث فيها scroll خارج touch) ── */
+        /* ── التقليب التلقائي بالـ Fade — يبدأ فقط عند التفاعل ── */
+        function startAuto() {
+          stopAuto();
+          if (getSlides().length < 2 || document.hidden) return;
+          /* أوقف أي بطاقة أخرى كانت تتحرك */
+          if (window._activeSliderStop && window._activeSliderStop !== stopAuto) {
+            window._activeSliderStop();
+          }
+          window._activeSliderStop = stopAuto;
+          track._autoTimer = setInterval(() => {
+            if (document.hidden) { stopAuto(); return; }
+            const slides = getSlides();
+            if (slides.length < 2) return;
+            const next = (getCurrentIdx() + 1) % slides.length;
+            track.style.opacity = '0';
+            setTimeout(() => {
+              const sw = slides[0]?.offsetWidth || track.offsetWidth;
+              track.scrollTo({ left: next * sw, behavior: 'instant' });
+              currentIdx = next;
+              updateDots();
+              track.style.opacity = '1';
+            }, 280);
+          }, 2000);
+        }
+
+        function stopAuto() {
+          clearInterval(track._autoTimer);
+          track._autoTimer = null;
+          track.style.opacity = '1';
+          if (window._activeSliderStop === stopAuto) window._activeSliderStop = null;
+        }
+
+        /* ── Scroll sync ── */
         let scrollTimer;
         track.addEventListener('scroll', () => {
           clearTimeout(scrollTimer);
@@ -4904,35 +4968,42 @@
           if (!dot) return;
           e.stopPropagation();
           goTo([...dotsWrap.querySelectorAll('.sdot')].indexOf(dot));
+          startAuto();
         });
 
-        /* ── Touch: يمين = التالي، يسار = السابق ── */
+        /* ── Desktop: hover يبدأ التقليب، مغادرة يوقفه ── */
+        card.addEventListener('mouseenter', () => {
+          if (getSlides().length >= 2) startAuto();
+        });
+        card.addEventListener('mouseleave', stopAuto);
+
+        /* ── Mobile: touch يبدأ التقليب على هذه البطاقة ── */
         let tsX = 0, tsY = 0, tsMoved = false, preventClick = false;
         track.addEventListener('touchstart', e => {
           tsX = e.touches[0].clientX;
           tsY = e.touches[0].clientY;
           tsMoved = false;
+          /* ابدأ التقليب على هذه البطاقة فوراً */
+          if (getSlides().length >= 2) startAuto();
         }, { passive: true });
 
         track.addEventListener('touchmove', e => {
           const dx = Math.abs(e.touches[0].clientX - tsX);
           const dy = Math.abs(e.touches[0].clientY - tsY);
           if (dx > 5 || dy > 5) tsMoved = true;
-          if (dx > dy + 3) e.preventDefault(); // منع scroll أفقي مدمج
+          if (dx > dy + 3) e.preventDefault();
         }, { passive: false });
 
         track.addEventListener('touchend', e => {
           const dx = e.changedTouches[0].clientX - tsX;
           const dy = e.changedTouches[0].clientY - tsY;
-          /* حركة صغيرة أو رأسية = نقرة */
           if (!tsMoved || Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
-          /* سحب أفقي — منع click التالي */
           preventClick = true;
-          if (dx < 0) goTo(currentIdx + 1); // يسار → التالي (عربي)
-          else        goTo(currentIdx - 1); // يمين → السابق
+          if (dx < 0) goTo(currentIdx + 1);
+          else        goTo(currentIdx - 1);
         });
 
-        /* ── Click (ديسكتوب أو tap لم يتحرك) ── */
+        /* ── Click ── */
         track.addEventListener('click', e => {
           if (preventClick) { preventClick = false; return; }
           openProductModal(p.id);
@@ -4943,7 +5014,6 @@
           (function(s) {
             const probe = new Image();
             probe.onload = () => {
-              /* أنشئ slide مع data-seq لضمان الترتيب الصحيح */
               const slide = document.createElement('div');
               slide.className = 'slide';
               slide.dataset.seq = s;
@@ -4951,11 +5021,9 @@
               img.src = imgPath(p, s);
               img.alt = p.brand;
               slide.appendChild(img);
-              /* إدراج في المكان الصحيح حسب التسلسل */
               const after = [...track.querySelectorAll('.slide[data-seq]')]
                 .find(el => +el.dataset.seq > s);
               after ? track.insertBefore(slide, after) : track.appendChild(slide);
-              /* أضف dot في نفس الموضع */
               const allSlides = [...track.querySelectorAll('.slide')];
               const pos = allSlides.indexOf(slide);
               const refDot = dotsWrap.querySelectorAll('.sdot')[pos] || null;
@@ -4963,6 +5031,7 @@
               dot.className = 'sdot';
               refDot ? dotsWrap.insertBefore(dot, refDot) : dotsWrap.appendChild(dot);
               dotsWrap.classList.remove('hidden');
+              /* لا نبدأ تلقائياً — ننتظر تفاعل الزبون */
             };
             probe.src = imgPath(p, s);
           })(seq);
@@ -5969,8 +6038,9 @@
     <div class="mt-4">
       <p class="kicker mb-2">${t.selectColor}</p>
       <div class="flex gap-2.5 flex-wrap pm-colors">
-        ${p.colors.map((c, ci) => `<span class="color-dot ${ci === 0 ? 'active' : ''}" data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`).join('')}
+        ${p.colors.map(c => `<span class="color-dot" data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`).join('')}
       </div>
+      <p class="pm-color-hint" style="opacity:0"></p>
     </div>
     <div class="mt-4">
       <div class="flex items-center justify-between mb-2">
@@ -6001,10 +6071,34 @@
         });
       });
       info.querySelector('.pm-add-btn').addEventListener('click', () => {
-        const color = info.querySelector('.pm-colors .active')?.dataset.color;
-        const size = info.querySelector('.pm-sizes .active')?.dataset.size;
-        if (!size) { alert(t.selectSize); return; }
-        addToCart({ pid: p.id, brand: p.brand, sub: p.sub, sku: p.sku, img: imgPath(p, 1), color, size, qty: 1, price: getPrice(p) });
+        const colorDot  = info.querySelector('.pm-colors .active');
+        const sizeSc    = info.querySelector('.pm-sizes .active');
+        const colorsWrap = info.querySelector('.pm-colors');
+        const colorHint  = info.querySelector('.pm-color-hint');
+
+        /* ── تحقق اللون أولاً ── */
+        if (!colorDot) {
+          /* اهتزاز */
+          colorsWrap.classList.remove('shake');
+          void colorsWrap.offsetWidth;
+          colorsWrap.classList.add('shake');
+          colorsWrap.addEventListener('animationend', () => colorsWrap.classList.remove('shake'), { once: true });
+          /* رسالة تحت الألوان */
+          colorHint.textContent = t.colorRequired;
+          colorHint.style.opacity = '1';
+          setTimeout(() => { colorHint.style.opacity = '0'; }, 3000);
+          /* Toast */
+          if (window.showToast) showToast(t.colorRequired);
+          return;
+        }
+        /* ── تحقق المقاس ── */
+        if (!sizeSc) {
+          if (window.showToast) showToast(t.sizeRequired);
+          return;
+        }
+
+        colorHint.style.opacity = '0';
+        addToCart({ pid: p.id, brand: p.brand, sub: p.sub, sku: p.sku, img: imgPath(p, 1), color: colorDot.dataset.color, size: sizeSc.dataset.size, qty: 1, price: getPrice(p) });
         closeProductModal();
         openCart();
       });
