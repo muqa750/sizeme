@@ -633,6 +633,62 @@
     /* ── Fade transition للتقليب التلقائي في البطاقات ── */
     .slider-track { transition: opacity .28s ease; }
 
+    /* ══════════════════════════════════════════════════
+       Card Nav Strips — شريط جانبي مع سهم (الخيار 2)
+       يظهر فقط عند وجود أكثر من صورة
+    ══════════════════════════════════════════════════ */
+    .card-nav {
+      position: absolute;
+      top: 0; bottom: 0;
+      z-index: 4;
+      width: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+    .card-nav-prev { inset-inline-start: 0; }
+    .card-nav-next { inset-inline-end: 0; }
+
+    /* تدرج يبدأ من الحافة ويتلاشى نحو المركز */
+    [dir="ltr"] .card-nav-prev,
+    [dir="rtl"] .card-nav-next {
+      background: linear-gradient(to right, rgba(255,255,255,.52) 0%, transparent 100%);
+    }
+    [dir="ltr"] .card-nav-next,
+    [dir="rtl"] .card-nav-prev {
+      background: linear-gradient(to left, rgba(255,255,255,.52) 0%, transparent 100%);
+    }
+    .card-nav svg {
+      width: 13px; height: 13px;
+      stroke: rgba(20,20,20,.65);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      pointer-events: none;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,.9));
+    }
+    /* عكس اتجاه الأيقونة في RTL */
+    [dir="rtl"] .card-nav svg { transform: scaleX(-1); }
+
+    /* ظاهر عند وجود صور متعددة */
+    .card-nav.has-images { opacity: .5; pointer-events: auto; }
+
+    /* الموبايل: ظاهر دائماً عند وجود صور */
+    @media (max-width: 768px) {
+      .card-nav.has-images { opacity: .55 !important; }
+    }
+    /* الحاسوب: أوضح عند hover */
+    @media (hover: hover) and (pointer: fine) {
+      .slider-wrap:hover .card-nav.has-images { opacity: .9; }
+    }
+
     /* ── Shake animation لتحقق اللون في المودال ── */
     @keyframes shake-colors {
       0%, 100% { transform: translateX(0); }
@@ -4714,6 +4770,13 @@
             </div>
           </div>
         </div>
+        <!-- أسهم التنقل — تظهر فقط عند وجود أكثر من صورة -->
+        <button class="card-nav card-nav-prev" aria-label="السابق" tabindex="-1">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="card-nav card-nav-next" aria-label="التالي" tabindex="-1">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
         <!-- progress bars — تظهر فقط عندما يكون هناك أكثر من صورة -->
         <div class="slider-dots hidden">
           <span class="sdot active"></span>
@@ -4962,6 +5025,20 @@
           scrollTimer = setTimeout(updateDots, 150);
         }, { passive: true });
 
+        /* ── Card nav buttons ── */
+        const prevBtn = card.querySelector('.card-nav-prev');
+        const nextBtn = card.querySelector('.card-nav-next');
+        prevBtn?.addEventListener('click', e => {
+          e.stopPropagation();
+          goTo(getCurrentIdx() - 1);
+          startAuto();
+        });
+        nextBtn?.addEventListener('click', e => {
+          e.stopPropagation();
+          goTo(getCurrentIdx() + 1);
+          startAuto();
+        });
+
         /* ── Dot clicks ── */
         dotsWrap?.addEventListener('click', e => {
           const dot = e.target.closest('.sdot');
@@ -5031,7 +5108,9 @@
               dot.className = 'sdot';
               refDot ? dotsWrap.insertBefore(dot, refDot) : dotsWrap.appendChild(dot);
               dotsWrap.classList.remove('hidden');
-              /* لا نبدأ تلقائياً — ننتظر تفاعل الزبون */
+              /* أظهر أسهم التنقل عند أول صورة إضافية */
+              prevBtn?.classList.add('has-images');
+              nextBtn?.classList.add('has-images');
             };
             probe.src = imgPath(p, s);
           })(seq);
