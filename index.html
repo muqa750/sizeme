@@ -608,7 +608,7 @@
     .slider-track {
       display: flex;
       flex-direction: row; /* يمنع RTL من عكس ترتيب الصور */
-      direction: ltr;      /* يضمن البدء دائماً من الصورة الأولى */
+      direction: rtl;      /* RTL: سحب يمين = التالي من اليسار */
       height: 100%;
       overflow-x: auto;
       overflow-y: hidden;
@@ -2623,7 +2623,7 @@
     .pm-dots {
       position: absolute;
       bottom: 14px;
-      inset-inline-end: 10px;
+      right: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2675,6 +2675,7 @@
 
     /* ── Modal nav strips — أسهم المودال ── */
     .pm-img-outer { position: relative; }
+    .pm-img-zone  { position: relative; } /* حاوية الصورة — dots ترتبط بها وليس بـ scroll container */
     .pm-nav {
       position: absolute;
       top: 0; bottom: 0;
@@ -5545,7 +5546,7 @@
           const slides = getSlides();
           if (!slides.length) return 0;
           const sw = slides[0].offsetWidth || track.offsetWidth;
-          return sw ? Math.round(track.scrollLeft / sw) : 0;
+          return sw ? Math.round(-track.scrollLeft / sw) : 0; /* RTL: scrollLeft سالب */
         }
 
         function updateDots() {
@@ -5560,7 +5561,7 @@
           idx = Math.max(0, Math.min(idx, slides.length - 1));
           currentIdx = idx;
           const sw = slides[0]?.offsetWidth || track.offsetWidth;
-          track.scrollTo({ left: idx * sw, behavior: 'smooth' });
+          track.scrollTo({ left: -idx * sw, behavior: 'smooth' }); /* RTL */
           setTimeout(updateDots, 380);
         }
 
@@ -5581,7 +5582,7 @@
             track.style.opacity = '0';
             setTimeout(() => {
               const sw = slides[0]?.offsetWidth || track.offsetWidth;
-              track.scrollTo({ left: next * sw, behavior: 'instant' });
+              track.scrollTo({ left: -next * sw, behavior: 'instant' }); /* RTL */
               currentIdx = next;
               updateDots();
               track.style.opacity = '1';
@@ -6617,16 +6618,20 @@
       /* ── صور: slider أفقي مع scroll-snap ── */
       const imgWrap = modal.querySelector('.pm-img-wrap');
       imgWrap.innerHTML = '';
-      imgWrap.setAttribute('dir', 'ltr'); /* فرض LTR حتى يكون scrollLeft دائماً موجباً */
+      imgWrap.setAttribute('dir', 'rtl'); /* RTL: سحب يمين = التالي من اليسار، scrollLeft سالب في Chrome */
 
-      /* أنشئ dotsWrap داخل imgWrap ليُراكب أسفل الصورة */
+      /* imgZone — حاوية الصورة الرئيسية (لا تسكرول) */
+      const imgZone  = imgWrap.parentElement;         /* .pm-img-zone */
+      const imgOuter = imgZone.parentElement;          /* .pm-img-outer */
+
+      /* dotsWrap داخل imgZone وليس imgWrap حتى لا تسكرول مع الصور */
+      imgZone.querySelectorAll('.pm-dots').forEach(d => d.remove()); /* تنظيف سابق */
       const dotsWrap = document.createElement('div');
       dotsWrap.className = 'pm-dots';
       dotsWrap.style.display = 'none';
-      imgWrap.appendChild(dotsWrap);
+      imgZone.appendChild(dotsWrap);
 
       /* thumbsWrap — الشريط أسفل المعرض */
-      const imgOuter = imgWrap.parentElement;
       const thumbsWrap = imgOuter.querySelector('.pm-thumbs');
       if (thumbsWrap) thumbsWrap.innerHTML = '';
 
@@ -6641,13 +6646,13 @@
         const slides = getSlides();
         if (!slides.length) return 0;
         const sw = slides[0].offsetWidth || imgWrap.offsetWidth;
-        return sw ? Math.round(imgWrap.scrollLeft / sw) : 0;
+        return sw ? Math.round(-imgWrap.scrollLeft / sw) : 0; /* RTL: scrollLeft سالب → قيمة موجبة */
       }
       function goToSlide(idx) {
         const slides = getSlides();
         idx = Math.max(0, Math.min(idx, slides.length - 1));
         const sw = slides[0]?.offsetWidth || imgWrap.offsetWidth;
-        imgWrap.scrollTo({ left: idx * sw, behavior: 'smooth' });
+        imgWrap.scrollTo({ left: -idx * sw, behavior: 'smooth' }); /* RTL: positions are negative */
         setTimeout(updateDots, 380);
       }
       function updateDots() {
@@ -7160,7 +7165,10 @@
       <div class="flex flex-col sm:flex-row" style="min-height:0">
         <!-- صورة -->
         <div class="sm:w-2/5 flex-shrink-0 pm-img-outer">
-          <div class="pm-img-wrap"></div>
+          <div class="pm-img-zone">
+            <div class="pm-img-wrap"></div>
+            <!-- dotsWrap يُضاف هنا بـ JS — خارج scroll container -->
+          </div>
           <div class="pm-thumbs" style="display:none"></div>
         </div>
         <!-- تفاصيل -->
