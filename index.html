@@ -5633,29 +5633,34 @@
         card.addEventListener('mouseleave', stopAuto);
 
         /* ── Mobile: touch يبدأ التقليب على هذه البطاقة ── */
-        let tsX = 0, tsY = 0, tsMoved = false, preventClick = false;
+        let tsX = 0, tsY = 0, tsStartSL = 0, tsMoved = false, preventClick = false;
         track.addEventListener('touchstart', e => {
           tsX = e.touches[0].clientX;
           tsY = e.touches[0].clientY;
+          tsStartSL = track.scrollLeft;
           tsMoved = false;
-          /* ابدأ التقليب على هذه البطاقة فوراً */
+          stopAuto();
           if (getSlides().length >= 2) startAuto();
         }, { passive: true });
 
         track.addEventListener('touchmove', e => {
-          const dx = Math.abs(e.touches[0].clientX - tsX);
+          const dx = e.touches[0].clientX - tsX;
           const dy = Math.abs(e.touches[0].clientY - tsY);
-          if (dx > 5 || dy > 5) tsMoved = true;
-          if (dx > dy + 3) e.preventDefault();
+          if (Math.abs(dx) > 5 || dy > 5) tsMoved = true;
+          if (Math.abs(dx) > dy + 3) {
+            e.preventDefault();
+            /* سحب مرئي: الإصبع يسحب المحتوى معه */
+            track.scrollLeft = tsStartSL - dx;
+          }
         }, { passive: false });
 
         track.addEventListener('touchend', e => {
           const dx = e.changedTouches[0].clientX - tsX;
           const dy = e.changedTouches[0].clientY - tsY;
-          if (!tsMoved || Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
+          if (!tsMoved || Math.abs(dx) < 25 || Math.abs(dy) > Math.abs(dx)) return;
           preventClick = true;
-          if (dx > 0) goTo(currentIdx + 1); /* يمين → التالي (RTL) */
-          else        goTo(currentIdx - 1); /* يسار → السابق */
+          /* انجذاب للصورة الأقرب للمنتصف بعد السحب */
+          goTo(getCurrentIdx());
         });
 
         /* ── Click ── */
@@ -6676,7 +6681,7 @@
         if (Math.abs(dx) > 8) pmMoved = true;
         if (Math.abs(dx) > dy + 5) {
           e.preventDefault();
-          imgWrap.scrollLeft = pmStartSL - dx; /* سحب مرئي: يسار = تقدم */
+          imgWrap.scrollLeft = pmStartSL - dx; /* محاكاة اللمس: الإصبع يسحب المحتوى */
         }
       }, { passive: false });
 
@@ -6685,8 +6690,8 @@
         const dx = e.changedTouches[0].clientX - pmTsX;
         const dy = e.changedTouches[0].clientY - pmTsY;
         if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx)) return;
-        const cur = getCurrentSlide();
-        goToSlide(dx < 0 ? cur + 1 : cur - 1); /* يسار = التالي (LTR carousel) */
+        /* استخدم موضع الـ scroll الفعلي — الصورة الأقرب للمنتصف تنجذب */
+        goToSlide(getCurrentSlide());
       });
 
       for (let seq = 1; seq <= maxProbe; seq++) {
@@ -6710,11 +6715,12 @@
           loadedSlides++;
           loadedSrcs.push(img.src);
 
-          /* أعد بناء الدوائر */
+          /* أعد بناء الدوائر — النشطة = الصورة الحالية الفعلية */
+          const activeCur = getCurrentSlide();
           dotsWrap.innerHTML = '';
           for (let d = 0; d < loadedSlides; d++) {
             const dot = document.createElement('span');
-            dot.className = 'pm-dot' + (d === 0 ? ' active' : '');
+            dot.className = 'pm-dot' + (d === activeCur ? ' active' : '');
             const di = d;
             dot.addEventListener('click', () => goToSlide(di));
             dotsWrap.appendChild(dot);
@@ -6728,7 +6734,7 @@
               const th = document.createElement('img');
               th.src = src;
               th.alt = '';
-              th.className = 'pm-thumb' + (d === 0 ? ' active' : '');
+              th.className = 'pm-thumb' + (d === activeCur ? ' active' : '');
               const di = d;
               th.addEventListener('click', () => goToSlide(di));
               thumbsWrap.appendChild(th);
