@@ -1352,6 +1352,75 @@
     .btn-size-guide:hover { background: #1a1a1a; transform: scale(1.03); }
     .btn-size-guide svg { stroke: #c9a84c; flex-shrink: 0; }
 
+    /* ── Sort Floating Label Select ── */
+    .sort-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .sort-wrap select {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      padding: 1.15rem 2.4rem .45rem 1.1rem;
+      font-size: .78rem;
+      font-family: inherit;
+      min-width: 148px;
+      cursor: pointer;
+      transition: border-color .18s;
+      outline: none;
+    }
+    [dir="rtl"] .sort-wrap select {
+      padding: 1.15rem 1.1rem .45rem 2.4rem;
+    }
+    .sort-wrap select:focus { border-color: var(--ink); }
+    .sort-label {
+      position: absolute;
+      top: .38rem;
+      inset-inline-start: 1.05rem;
+      font-size: .56rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--mute);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .sort-chevron {
+      position: absolute;
+      top: 50%;
+      inset-inline-end: .85rem;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--mute);
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Delivery Countdown ── */
+    #deliveryCountdown {
+      background: #F2F2F2;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: .65rem 1rem;
+      text-align: center;
+    }
+    [data-theme="dark"] #deliveryCountdown { background: #3a3a3a; border-color: #4a4a4a; }
+    [data-theme="dark"] #deliveryCountdown .delivery-inner { color: #ffffff; }
+    [data-theme="dark"] #deliveryCountdown .delivery-inner svg { color: #ffffff; }
+    .delivery-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: .8rem;
+      color: var(--ink);
+    }
+    .delivery-inner svg { flex-shrink: 0; color: var(--ink); }
+    #deliveryMsg { font-weight: 500; }
+    #deliveryMsg strong { font-variant-numeric: tabular-nums; }
+
     /* ── Product card — spring transition (hover only on real pointer, see @media hover below) ── */
     .product-card {
       transition: transform .3s var(--spring), box-shadow .3s var(--smooth), border-color .15s;
@@ -2550,24 +2619,59 @@
       opacity: 1;
     }
 
-    /* progress bars للصور — modal (مراكبة أسفل الصورة) */
+    /* ── Dots — دوائر عمودية overlay أسفل يمين الصورة ── */
     .pm-dots {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
+      bottom: 14px;
+      inset-inline-end: 10px;
       display: flex;
-      gap: 2px;
-      padding: 0 8px 8px;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
       z-index: 3;
       pointer-events: none;
     }
     .pm-dot {
-      flex: 1; height: 2px;
-      border-radius: 1px;
-      background: rgba(255,255,255,.35);
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1.5px solid rgba(90,90,90,.55);
       cursor: pointer; pointer-events: auto;
-      transition: background .25s;
+      transition: background .22s, border-color .22s;
+      flex-shrink: 0;
     }
-    .pm-dot.active { background: #fff; }
+    .pm-dot.active {
+      background: #555;
+      border-color: #555;
+    }
+
+    /* ── Thumbnails — شريط أسفل المعرض ── */
+    .pm-thumbs {
+      display: flex;
+      gap: 5px;
+      padding: 8px 0 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pm-thumbs::-webkit-scrollbar { display: none; }
+    .pm-thumb {
+      width: 60px; height: 60px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1.5px solid transparent;
+      border-radius: 2px;
+      cursor: pointer;
+      opacity: .72;
+      transition: border-color .18s, opacity .18s;
+    }
+    .pm-thumb.active {
+      border-color: #333;
+      opacity: 1;
+    }
+    .pm-thumb:hover { opacity: .9; }
+    [data-theme="dark"] .pm-dot { border-color: rgba(200,200,200,.45); }
+    [data-theme="dark"] .pm-dot.active { background: #ccc; border-color: #ccc; }
+    [data-theme="dark"] .pm-thumb.active { border-color: #ddd; }
 
     /* ── Modal nav strips — أسهم المودال ── */
     .pm-img-outer { position: relative; }
@@ -3906,6 +4010,19 @@
       </div>
     </section>
 
+    <!-- ================= DELIVERY COUNTDOWN ================= -->
+    <div id="deliveryCountdown">
+      <div class="delivery-inner">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="1"/>
+          <path d="M16 8h4l3 5v4h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="1.5"/>
+          <circle cx="18.5" cy="18.5" r="1.5"/>
+        </svg>
+        <span id="deliveryMsg"></span>
+      </div>
+    </div>
+
     <!-- ================= PRODUCT GRID ================= -->
     <section id="shop" class="max-w-7xl mx-auto px-5 py-16 md:py-24">
 
@@ -3959,17 +4076,21 @@
           <div id="colorFilters" class="flex gap-2 flex-wrap items-center"></div>
         </div>
 
-        <!-- Sort filter -->
-        <div class="flex items-center gap-3 flex-wrap mt-4 md:mt-0 md:ms-auto">
-          <span class="kicker me-2" data-i18n="filterSort">Sort By</span>
-          <select id="sortFilter"
-            class="border hairline bg-white text-sm py-1.5 px-3 rounded-none focus:outline-none focus:border-[color:var(--ink)] cursor-pointer">
-            <option value="newest" data-i18n="sortNewest">الأحدث</option>
-            <option value="best-seller" data-i18n="sortBestSeller">الأكثر طلباً</option>
-            <option value="newArrivals" data-i18n="sortNewArrivals">وصل حديثاً</option>
-            <option value="priceAsc" data-i18n="sortPriceAsc">السعر: الأقل إلى الأعلى</option>
-            <option value="priceDesc" data-i18n="sortPriceDesc">السعر: الأعلى إلى الأقل</option>
-          </select>
+        <!-- Sort filter — Floating Label Select -->
+        <div class="mt-4 md:mt-0 md:ms-auto">
+          <div class="sort-wrap">
+            <select id="sortFilter">
+              <option value="newest" data-i18n="sortNewest">الأحدث</option>
+              <option value="best-seller" data-i18n="sortBestSeller">الأكثر طلباً</option>
+              <option value="newArrivals" data-i18n="sortNewArrivals">وصل حديثاً</option>
+              <option value="priceAsc" data-i18n="sortPriceAsc">السعر: الأقل إلى الأعلى</option>
+              <option value="priceDesc" data-i18n="sortPriceDesc">السعر: الأعلى إلى الأقل</option>
+            </select>
+            <span class="sort-label" data-i18n="filterSort">فرز حسب</span>
+            <span class="sort-chevron">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
         </div>
 
       </div>
@@ -4655,6 +4776,8 @@
         wgJeans: { '38': '75–85 كغ', '40': '85–95 كغ', '42': '95–110 كغ', '44': '110–125 كغ', '46': '125–140 كغ', '48': '140–155 كغ' },
         free: 'مجاني',
         filterBrand: 'الماركة', filterColor: 'اللون', filterAll: 'الكل',
+        filterSort: 'فرز حسب',
+        sortNewest: 'الأحدث', sortPriceAsc: 'السعر: الأقل إلى الأعلى', sortPriceDesc: 'السعر: الأعلى إلى الأقل',
         filterCat: 'الفئة', catAll: 'الكل', catTshirt: 'تي شيرت', catPolo: 'بولو', catShirt: 'قميص', catJeans: 'بنطرون', catTracksuit: 'تراكسوت',
         ratingKicker: 'تقييمات زبائننا', ratingScore: '4.9', ratingCount: 'من +143 زبون راضٍ',
         ratFabric: 'جودة القماش', ratSizes: 'صحة المقاسات', ratDelivery: 'سرعة التوصيل', ratService: 'خدمة العملاء',
@@ -4725,6 +4848,8 @@
         wgJeans: { '38': '75–85 kg', '40': '85–95 kg', '42': '95–110 kg', '44': '110–125 kg', '46': '125–140 kg', '48': '140–155 kg' },
         free: 'Free',
         filterBrand: 'Brand', filterColor: 'Color', filterAll: 'All',
+        filterSort: 'Sort By',
+        sortNewest: 'Newest', sortPriceAsc: 'Price: Low to High', sortPriceDesc: 'Price: High to Low',
         filterCat: 'Category', catAll: 'All', catTshirt: 'T-Shirt', catPolo: 'Polo', catShirt: 'Shirt', catJeans: 'Jeans', catTracksuit: 'Tracksuit',
         ratingKicker: 'Customer Ratings', ratingScore: '4.9', ratingCount: 'From 143+ happy customers',
         ratFabric: 'Fabric Quality', ratSizes: 'True to Size', ratDelivery: 'Fast Delivery', ratService: 'Customer Service',
@@ -4795,6 +4920,8 @@
         wgJeans: { '38': '٧٥–٨٥ کیلۆ', '40': '٨٥–٩٥ کیلۆ', '42': '٩٥–١١٠ کیلۆ', '44': '١١٠–١٢٥ کیلۆ', '46': '١٢٥–١٤٠ کیلۆ', '48': '١٤٠–١٥٥ کیلۆ' },
         free: 'بێبەرامبەر',
         filterBrand: 'مارکە', filterColor: 'ڕەنگ', filterAll: 'هەموو',
+        filterSort: 'ڕیزکردن',
+        sortNewest: 'نوێترین', sortPriceAsc: 'نرخ: کەمترین بۆ زۆرترین', sortPriceDesc: 'نرخ: زۆرترین بۆ کەمترین',
         filterCat: 'جۆر', catAll: 'هەموو', catTshirt: 'تی شێرت', catPolo: 'پۆلۆ', catShirt: 'کراس', catJeans: 'جینز', catTracksuit: 'تراکسوت',
         ratingKicker: 'هەڵسەنگاندنی کڕیاران', ratingScore: '4.9', ratingCount: 'لە +١٤٣ کڕیارى دلخۆش',
         ratFabric: 'کوالیتی پەڕەکە', ratSizes: 'ڕاستی سایز', ratDelivery: 'خێرایی گەیاندن', ratService: 'خزمەتگوزارى',
@@ -6487,33 +6614,21 @@
       imgWrap.innerHTML = '';
       imgWrap.setAttribute('dir', 'ltr'); /* فرض LTR حتى يكون scrollLeft دائماً موجباً */
 
-      /* ── أسهم التنقل — إزالة القديمة وإنشاء جديدة ── */
-      const imgOuter = imgWrap.parentElement;
-      imgOuter.querySelectorAll('.pm-nav').forEach(b => b.remove());
-
-      const pmPrevBtn = document.createElement('button');
-      pmPrevBtn.className = 'pm-nav pm-nav-prev';
-      pmPrevBtn.setAttribute('aria-label', 'السابق');
-      pmPrevBtn.setAttribute('tabindex', '-1');
-      pmPrevBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>';
-      imgOuter.appendChild(pmPrevBtn);
-
-      const pmNextBtn = document.createElement('button');
-      pmNextBtn.className = 'pm-nav pm-nav-next';
-      pmNextBtn.setAttribute('aria-label', 'التالي');
-      pmNextBtn.setAttribute('tabindex', '-1');
-      pmNextBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
-      imgOuter.appendChild(pmNextBtn);
-
       /* أنشئ dotsWrap داخل imgWrap ليُراكب أسفل الصورة */
       const dotsWrap = document.createElement('div');
       dotsWrap.className = 'pm-dots';
       dotsWrap.style.display = 'none';
       imgWrap.appendChild(dotsWrap);
 
+      /* thumbsWrap — الشريط أسفل المعرض */
+      const imgOuter = imgWrap.parentElement;
+      const thumbsWrap = imgOuter.querySelector('.pm-thumbs');
+      if (thumbsWrap) thumbsWrap.innerHTML = '';
+
       /* اكتشاف عدد الصور المتاحة (نجرب حتى 6) */
       const maxProbe = 6;
       let loadedSlides = 0;
+      const loadedSrcs = [];
 
       /* استخدم .pm-slide فقط (تجاهل dotsWrap الذي صار children[0]) */
       function getSlides() { return imgWrap.querySelectorAll('.pm-slide'); }
@@ -6534,6 +6649,10 @@
         const cur = getCurrentSlide();
         dotsWrap.querySelectorAll('.pm-dot').forEach((d, i) =>
           d.classList.toggle('active', i === cur));
+        if (thumbsWrap) {
+          thumbsWrap.querySelectorAll('.pm-thumb').forEach((t, i) =>
+            t.classList.toggle('active', i === cur));
+        }
       }
       /* ── Sync dots مع scroll ── */
       let pmScrollTimer;
@@ -6541,10 +6660,6 @@
         clearTimeout(pmScrollTimer);
         pmScrollTimer = setTimeout(updateDots, 160);
       }, { passive: true });
-
-      /* ── ربط أحداث الأسهم ── */
-      pmPrevBtn.addEventListener('click', () => goToSlide(getCurrentSlide() - 1));
-      pmNextBtn.addEventListener('click', () => goToSlide(getCurrentSlide() + 1));
 
       /* ── Touch: سحب يدوي مرئي مع منع scroll الصفحة أفقياً ── */
       let pmTsX = 0, pmTsY = 0, pmMoved = false, pmStartSL = 0;
@@ -6593,7 +6708,9 @@
           img.style.opacity = '1';
           wm.style.display = 'none';
           loadedSlides++;
-          /* أعد بناء progress bars بعد كل تحميل صورة */
+          loadedSrcs.push(img.src);
+
+          /* أعد بناء الدوائر */
           dotsWrap.innerHTML = '';
           for (let d = 0; d < loadedSlides; d++) {
             const dot = document.createElement('span');
@@ -6603,10 +6720,21 @@
             dotsWrap.appendChild(dot);
           }
           dotsWrap.style.display = loadedSlides <= 1 ? 'none' : '';
-          /* أظهر أسهم المودال عند وجود أكثر من صورة */
-          const showNav = loadedSlides > 1 ? 'flex' : 'none';
-          pmPrevBtn.style.display = showNav;
-          pmNextBtn.style.display = showNav;
+
+          /* أعد بناء الـ thumbnails */
+          if (thumbsWrap) {
+            thumbsWrap.innerHTML = '';
+            loadedSrcs.forEach((src, d) => {
+              const th = document.createElement('img');
+              th.src = src;
+              th.alt = '';
+              th.className = 'pm-thumb' + (d === 0 ? ' active' : '');
+              const di = d;
+              th.addEventListener('click', () => goToSlide(di));
+              thumbsWrap.appendChild(th);
+            });
+            thumbsWrap.style.display = loadedSlides <= 1 ? 'none' : '';
+          }
         };
         img.onerror = () => {
           if (seq === 1) img.style.display = 'none';
@@ -6971,6 +7099,51 @@
       }
 
     })();
+
+    /* =================== DELIVERY COUNTDOWN =================== */
+    (function initDeliveryCountdown() {
+      const el = document.getElementById('deliveryMsg');
+      if (!el) return;
+
+      const MSGS_ACTIVE = {
+        ar: (t) => `اطلب خلال ${t} ليصلك الطلب غداً!`,
+        en: (t) => `Order within ${t} for delivery tomorrow!`,
+        ku: (t) => `لە ماوەی ${t} داوا بکە بۆ گەیاندنی سبەی!`
+      };
+      const MSGS_NIGHT = {
+        ar: 'اطلب الآن ليتم شحن طلبك صباح الغد!',
+        en: 'Order now — we ship your order tomorrow morning!',
+        ku: 'ئێستا داوا بکە تا سبەی بەیانیان دەنێردرێت!'
+      };
+
+      function tick() {
+        const now = new Date();
+        /* توقيت العراق = UTC+3 */
+        const iraq = new Date(now.getTime() + 3 * 3600000);
+        const h = iraq.getUTCHours();
+        const m = iraq.getUTCMinutes();
+        const s = iraq.getUTCSeconds();
+        const totalSec = h * 3600 + m * 60 + s;
+        const cutoff   = 20 * 3600; /* 8 مساءً */
+        const lang     = (state && state.lang) ? state.lang : 'ar';
+
+        if (totalSec < cutoff) {
+          const diff = cutoff - totalSec;
+          const dh   = Math.floor(diff / 3600);
+          const dm   = Math.floor((diff % 3600) / 60);
+          const ds   = diff % 60;
+          const pad  = n => String(n).padStart(2, '0');
+          const timer = `${pad(dh)}:${pad(dm)}:${pad(ds)}`;
+          el.textContent = (MSGS_ACTIVE[lang] || MSGS_ACTIVE.ar)(timer);
+        } else {
+          el.textContent = MSGS_NIGHT[lang] || MSGS_NIGHT.ar;
+        }
+      }
+
+      tick();
+      setInterval(tick, 1000);
+    })();
+
   </script>
 
   <!-- ================= PRODUCT MODAL ================= -->
@@ -6982,6 +7155,7 @@
         <!-- صورة -->
         <div class="sm:w-2/5 flex-shrink-0 pm-img-outer">
           <div class="pm-img-wrap"></div>
+          <div class="pm-thumbs" style="display:none"></div>
         </div>
         <!-- تفاصيل -->
         <div class="pm-info p-5 flex-1 overflow-y-auto"></div>
