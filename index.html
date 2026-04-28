@@ -236,7 +236,7 @@
     }
 
     /* tooltip اسم اللون */
-    .color-dot::after {
+    .color-dot[title]::after {
       content: attr(title);
       position: absolute;
       bottom: calc(100% + 6px);
@@ -254,7 +254,7 @@
       transition: opacity .15s, transform .15s;
     }
 
-    .color-dot:hover::after {
+    .color-dot[title]:hover::after {
       opacity: 1;
       transform: translateX(-50%) scale(1);
     }
@@ -2925,12 +2925,10 @@
       background: #fff;
       width: 100%;
       max-width: 860px;
-      max-height: 92dvh;
-      overflow: hidden;
-      /* ← منع scroll على الـ sheet نفسه */
+      max-height: 90dvh;
+      overflow-y: auto;                    /* ← الحاوية الأب تسمح بالتمرير */
       display: flex;
-      flex-direction: column;
-      /* ← pm-info + pm-action-bar عمودياً */
+      flex-direction: column;              /* ← pm-info + pm-action-bar عمودياً */
       border-radius: 0;
       animation: pm-slide-up .38s var(--spring) both;
     }
@@ -3188,13 +3186,11 @@
       }
     }
 
-    /* ── pm-info: يتمدد ليملأ المساحة المتبقية ويقبل scroll ── */
+    /* ── pm-info: يتمدد ليملأ المساحة المتبقية ── */
     #productModal .pm-info {
       flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      /* padding-bottom تكفي حتى لا يتداخل آخر المحتوى مع الحاوية الثابتة */
-      padding-bottom: 0.5rem;
+      /* padding-bottom كافٍ لضمان عدم تغطية الزر المثبت لآخر معلومة */
+      padding-bottom: 5rem;
     }
 
     /* ── pm-action-bar: الحاوية الثابتة لزر إضافة إلى السلة ── */
@@ -3203,6 +3199,7 @@
       position: sticky;
       bottom: 0;
       z-index: 10;
+      margin-top: auto;
       /* خلفية زجاجية مموهة */
       background: rgba(255, 255, 255, 0.82);
       backdrop-filter: blur(14px) saturate(180%);
@@ -5438,6 +5435,7 @@
         sortBestSeller: 'الأكثر طلباً', sortNewArrivals: 'وصل حديثاً',
         sizeCalcBtn: 'احسب مقاسك', sizeCalcTitle: 'احسب مقاسك',
         scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scCalcBtn: 'احسب',
+        colors: { 'Black': 'أسود', 'White': 'أبيض', 'Dark Navy': 'نيلي', 'Royal Blue': 'أزرق ملكي', 'Brown': 'جوزي', 'Burgundy': 'ماروني', 'Charcoal': 'رصاصي فاحم', 'Taupe': 'توبي', 'Olive': 'زيتوني' },
         legalWarning: 'تحذير قانوني', legalTerms: 'شروط الاستخدام', legalPrivacy: 'سياسة الخصوصية',
         legalClose: 'إغلاق'
       },
@@ -5512,6 +5510,7 @@
         sortBestSeller: 'Best Seller', sortNewArrivals: 'New Arrivals',
         sizeCalcBtn: 'Size Guide', sizeCalcTitle: 'Find Your Size',
         scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scCalcBtn: 'Calculate',
+        colors: { 'Black': 'Black', 'White': 'White', 'Dark Navy': 'Dark Navy', 'Royal Blue': 'Royal Blue', 'Brown': 'Brown', 'Burgundy': 'Burgundy', 'Charcoal': 'Charcoal', 'Taupe': 'Taupe', 'Olive': 'Olive' },
         legalWarning: 'Legal Notice', legalTerms: 'Terms of Use', legalPrivacy: 'Privacy Policy',
         legalClose: 'Close'
       },
@@ -5586,6 +5585,7 @@
         sortBestSeller: 'زۆرترین داواکاری', sortNewArrivals: 'تازە گەیشتوو',
         sizeCalcBtn: 'قەبارەکەت بزانە', sizeCalcTitle: 'قەبارەکەت بزانە',
         scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scCalcBtn: 'حیساب بکە',
+        colors: { 'Black': 'ڕەش', 'White': 'سپی', 'Dark Navy': 'نيللی', 'Royal Blue': 'شینی شاهانە', 'Brown': 'قاوەیی', 'Burgundy': 'مارۆنی', 'Charcoal': 'خۆڵەمێشی تۆخ', 'Taupe': 'تۆپی', 'Olive': 'زەیتوونی' },
         legalWarning: 'ئاگاداری یاسایی', legalTerms: 'مەرج و مرادەکان', legalPrivacy: 'پۆلیسی تایبەتمەندی',
         legalClose: 'داخستن'
       }
@@ -7411,9 +7411,9 @@
     </div>
     ${p.desc ? `<p class="text-xs leading-relaxed mt-2" style="color:var(--mute)">${p.desc}</p>` : ''}
     <div class="mt-4">
-      <p class="kicker mb-2">${t.selectColor}</p>
+      <p class="kicker mb-2" id="pm-color-title">${t.selectColor}</p>
       <div class="flex gap-2.5 flex-wrap pm-colors">
-        ${p.colors.map(c => `<span class="color-dot" data-color="${c.n}" style="background:${c.h};color:${c.h}" title="${c.n}"></span>`).join('')}
+        ${p.colors.map(c => `<span class="color-dot" data-color="${c.n}" style="background:${c.h};color:${c.h}"></span>`).join('')}
       </div>
       <p class="pm-color-hint" style="opacity:0"></p>
     </div>
@@ -7436,10 +7436,17 @@
       if (addBtn) addBtn.textContent = t.addBag;
 
       /* أحداث الألوان والمقاسات والإضافة */
+      const colorTitle = info.querySelector('#pm-color-title');
       info.querySelectorAll('.pm-colors .color-dot').forEach(dot => {
         dot.addEventListener('click', () => {
           info.querySelectorAll('.pm-colors .color-dot').forEach(d => d.classList.remove('active'));
           dot.classList.add('active');
+          /* تحديث اسم اللون في العنوان */
+          const colorKey = dot.dataset.color;
+          const locName = t.colors ? (t.colors[colorKey] || colorKey) : colorKey;
+          if (colorTitle) {
+            colorTitle.innerHTML = `${t.selectColor}: <span class="text-[color:var(--mute)] font-normal ms-1" style="text-transform:capitalize">${locName}</span>`;
+          }
         });
       });
       info.querySelectorAll('.pm-sizes .size-card').forEach(sc => {
@@ -8080,7 +8087,7 @@
     <div class="pm-sheet">
       <button class="pm-close" onclick="closeProductModal()" aria-label="close">✕</button>
       <!-- المحتوى القابل للتمرير: صورة + تفاصيل -->
-      <div class="flex flex-col sm:flex-row" style="min-height:0;flex:1;overflow:hidden">
+      <div class="flex flex-col sm:flex-row">
         <!-- صورة -->
         <div class="sm:w-2/5 flex-shrink-0 pm-img-outer">
           <div class="pm-img-zone">

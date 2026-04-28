@@ -68,7 +68,8 @@ export const I18N = {
     mbarLabel: 'السلة', mbarPcs: 'قطعة', mbarTotalLbl: 'المجموع', mbarBtn: 'عرض السلة',
     newBadge: 'جديد',
     sizeCalcBtn: 'احسب مقاسك', sizeCalcTitle: 'احسب مقاسك',
-    scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scCalcBtn: 'احسب'
+    scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scCalcBtn: 'احسب',
+    colors: { 'Black': 'أسود', 'White': 'أبيض', 'Dark Navy': 'كحلي غامق', 'Royal Blue': 'أزرق ملكي', 'Brown': 'بني', 'Burgundy': 'عنابي', 'Charcoal': 'رصاصي داكن', 'Taupe': 'بيج غامق', 'Olive': 'زيتي' }
   },
   en: {
     dir: 'ltr',
@@ -139,7 +140,8 @@ export const I18N = {
     mbarLabel: 'Cart', mbarPcs: 'pcs', mbarTotalLbl: 'Total', mbarBtn: 'View Bag',
     newBadge: 'NEW',
     sizeCalcBtn: 'Size Guide', sizeCalcTitle: 'Find Your Size',
-    scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scCalcBtn: 'Calculate'
+    scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scCalcBtn: 'Calculate',
+    colors: { 'Black': 'Black', 'White': 'White', 'Dark Navy': 'Dark Navy', 'Royal Blue': 'Royal Blue', 'Brown': 'Brown', 'Burgundy': 'Burgundy', 'Charcoal': 'Charcoal', 'Taupe': 'Taupe', 'Olive': 'Olive' }
   },
   ku: {
     dir: 'rtl',
@@ -210,7 +212,8 @@ export const I18N = {
     mbarLabel: 'سەبەتە', mbarPcs: 'دانە', mbarTotalLbl: 'کۆی گشتی', mbarBtn: 'سەبەتەکەت ببینە',
     newBadge: 'نوێ',
     sizeCalcBtn: 'قەبارەکەت بزانە', sizeCalcTitle: 'قەبارەکەت بزانە',
-    scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scCalcBtn: 'حیساب بکە'
+    scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scCalcBtn: 'حیساب بکە',
+    colors: { 'Black': 'ڕەش', 'White': 'سپی', 'Dark Navy': 'شینی تۆخ', 'Royal Blue': 'شینی کاڵ', 'Brown': 'قاوەیی', 'Burgundy': 'سووری تۆخ', 'Charcoal': 'ڕەساسی تۆخ', 'Taupe': 'بێجی تۆخ', 'Olive': 'زەیتونی' }
   }
 };
 
