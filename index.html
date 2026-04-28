@@ -4419,7 +4419,7 @@
         <p class="kicker mb-3" data-i18n="footInteract">تفاعل معنا</p>
         <div class="space-y-3">
           <button id="suggBtn"
-            class="w-full border hairline px-4 py-2.5 text-sm text-start hover:bg-[color:var(--paper)] transition flex items-center gap-2"
+            class="group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200 w-full text-start"
             data-i18n="footSuggBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
@@ -4427,7 +4427,7 @@
             شاركنا اقتراحك
           </button>
           <button id="reviewsBtn"
-            class="w-full border hairline px-4 py-2.5 text-sm text-start hover:bg-[color:var(--paper)] transition flex items-center gap-2"
+            class="group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200 w-full text-start"
             data-i18n="footReviewsBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -4436,7 +4436,7 @@
           </button>
 
           <!-- ══════ أداة التقييم — في الفوتر ══════ -->
-          <div id="footRatingWidget" class="mt-5 pt-4 border-t hairline">
+          <div id="footRatingWidget" class="mt-4">
             <!-- الواجهة الرئيسية -->
             <div id="frwFace" class="transition-opacity duration-300">
               <p class="text-sm font-medium mb-4 text-center">كيف كانت تجربتك؟</p>
@@ -4481,7 +4481,7 @@
             </button>
           </li>
           <li>
-            <button onclick="openSizeCalc()"
+            <button onclick="openLegalModal('faq', 'footFaq')"
               class="foot-service-link group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200"
               data-i18n="footFaq">
               <span class="foot-service-arrow opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs">→</span>
@@ -4492,12 +4492,12 @@
       </div>
 
       <!-- ── Newsletter ── -->
-      <div>
+      <div class="md:col-span-3 flex flex-col items-center text-center mt-4 md:mt-8">
         <p class="serif text-base mb-1" data-i18n="footNewsletter">انضم إلى عائلة Sizeme</p>
-        <p class="text-xs text-[color:var(--mute)] mb-5 leading-relaxed" data-i18n="footNewsletterSub">لتصلك المجموعات الحصرية والمقاسات الخاصة قبل الجميع</p>
-        <div class="foot-newsletter-wrap flex items-end gap-3">
+        <p class="text-xs text-[color:var(--mute)] mb-5 leading-relaxed max-w-sm" data-i18n="footNewsletterSub">لتصلك المجموعات الحصرية والمقاسات الخاصة قبل الجميع</p>
+        <div class="foot-newsletter-wrap flex items-end gap-3 w-full max-w-md">
           <input id="footEmailInput" type="text" autocomplete="on"
-            class="foot-email-input flex-1 min-w-0"
+            class="foot-email-input flex-1 min-w-0 text-center"
             data-i18n-placeholder="footNewsletterInput"
             placeholder="بريدك الإلكتروني أو رقم الهاتف" />
           <button id="footNewsletterBtn" onclick="handleNewsletterSubscribe()"
@@ -7442,7 +7442,76 @@
 
 ### 6. التغييرات في سياسة الخصوصية
 
-قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم إخطاركم بأي تغيير جوهري عبر الموقع الرسمي.`
+قد نقوم بتحديث هذه السياسة من وقت لآخر. سيتم إخطاركم بأي تغيير جوهري عبر الموقع الرسمي.`,
+
+        'faq': `### الأسئلة الشائعة
+------------------------
+
+### أولاً: المنتجات والقياسات
+
+**01. ما الذي يشمله السعر؟** جميع الأسعار المعروضة على الموقع تشمل الضرائب والرسوم المحلية، ولا تشمل رسوم التوصيل التي تظهر بشكل منفصل عند إتمام الطلب.
+
+**02. كيف أختار قياسي الصحيح (دليل القياسات)؟** بما أننا متخصصون في المقاسات الخاصة (**2XL وحتى 7XL**)، وفرنا لك "حاسبة قياس ذكية" تعتمد على وزنك وطولك، بالإضافة إلى دليل قياسات دقيق لكل فئة منتجات لضمان أن القطعة ستناسبك تماماً من المرة الأولى.
+
+**03. أرغب في شراء منتج غير متوفر؟** عادةً لا يظهر خيار الشراء للمنتجات غير المتوفرة. يمكنك التواصل معنا عبر الواتساب للاستفسار عن موعد توفر الموديلات الجديدة.
+
+* * *
+
+### ثانياً: الحساب والتسجيل
+
+**04. كيفية التسجيل في Sizeme؟** انقر على رابط "تسجيل" في الركن العلوي للموقع. التسجيل يتيح لك حفظ بيانات الشحن، تتبع طلباتك، والحصول على عروض حصرية لمشتركي القائمة البريدية.
+
+**05. نسيت كلمة المرور، ماذا أفعل؟** انقر على "نسيت كلمة المرور" في صفحة تسجيل الدخول، أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيينها فوراً.
+
+* * *
+
+### ثالثاً: الطلب والتسوق
+
+**06. كيف أطلب من المتجر الإلكتروني؟** تصفح الفئات، اختر المنتج، ثم حدد القياس واللون واضغط "إضافة إلى السلة". بعد الانتهاء، اضغط "إتمام الشراء" وأدخل عنوانك ورقم هاتفك.
+
+**07. ما هي طرق الدفع المقبولة؟** نقبل الدفع عند الاستلام (COD) في كافة محافظات العراق، بالإضافة إلى الدفع عبر البطاقات الائتمانية (فيزا/ماستر كارد) قريباً.
+
+**08. هل الطلب عبر الإنترنت آمن؟** نعم، نستخدم تقنية تشفير SSL العالمية لحماية بياناتك وخصوصيتك. موقعنا مؤمن بالكامل لضمان تجربة تسوق آمنة.
+
+**09**. ماذا يحدث إذا تم اكتشاف عمليةاحتيالية باستخدام العروض؟
+
+في حال اكتشاف أي محاولات احتيالية  
+لاستخدام العروض الترويجية أو الخصومات، سيتم إلغاء الطلب تلقائيًا وقد يتم حظر  
+الحساب من إجراء أي طلبات مستقبلية و يتم استرداد المبلغ.
+
+* * *
+
+### رابعاً: الشحن والتوصيل
+
+**10. ما هي كلفة الشحن؟** رسوم الشحن ثابتة لجميع محافظات العراق، وتظهر لك بوضوح في صفحة الدفع قبل تأكيد الطلب.
+
+**11. متى سأستلم طلبي؟** نحرص على توصيل الطلبات في أسرع وقت. يستغرق التوصيل عادةً من **1 إلى 2 يوم عمل** (قد تزيد قليلاً في فترات العروض والزخم).
+
+**12. هل يشحن Sizeme لجميع المدن؟** نعم، نغطي كافة محافظات العراق من الشمال إلى الجنوب، بما في ذلك المناطق البعيدة.
+
+* * *
+
+### خامساً: التبديل والإرجاع
+
+**13. هل يمكنني إرجاع المنتجات؟** نعم، يهمنا رضاك التام. يمكنك طلب الإرجاع للمنتجات القابلة لذلك خلال المدة المحددة، بشرط أن تكون القطعة بحالتها الأصلية وعليها ملصقات البراند.
+
+**14. المنتجات غير القابلة للإرجاع؟** لأسباب صحية، لا يمكن إرجاع أو تبديل الملابس الداخلية، الجوارب، والإكسسوارات، إلا في حال وجود عيب مصنعي.
+
+**15. ماذا أفعل إذا وصلني طرد متضرر؟** ننصح بفحص الطرد عند الاستلام. في حال وجود تلف واضح، يمكنك رفض الاستلام أو التواصل معنا فوراً عبر خدمة العملاء.
+
+* * *
+
+### سادساً: الدعم والمساعدة
+
+**16. كيف أتواصل مع فريق الدعم؟** نحن نسعد بمساعدتك دائماً عبر:
+
+* **رقم الهاتف/واتساب:** 07739334545
+
+* **البريد الإلكتروني:** mumuqaqa@gmail.com 
+
+**17. لماذا قد يتم إلغاء طلبي؟** قد يتم إلغاء الطلب تلقائياً في حالات نادرة مثل: عدم توفر القطعة في المخزن، وجود معلومات شحن غير كاملة.
+
+**18. كيف أطلب "هدية"؟** يمكنك اختيار خيار "أرسل كهدية" عند الدفع بالخيارات المتوفرة لدينا ، وسنقوم بتغليف الطلب بشكل فاخر وإرساله لمن تحب مع رسالة خاصة.`
       };
 
       /* تحويل Markdown بسيط → HTML */
@@ -7507,29 +7576,24 @@
       /* ── تأثير الإرسال ── */
       if (btn) { btn.disabled = true; btn.style.opacity = '.4'; }
 
+      /* ── تحديث الواجهة فوراً لتجنب انتظار المستخدم ── */
+      input.value = '';
+      msg.textContent = '✓ شكراً! تم التسجيل.';
+      msg.classList.remove('hidden');
+      setTimeout(() => { msg.classList.add('hidden'); }, 4000);
+
       /* ══════ رابط Google Apps Script ══════ */
       const SHEET_URL = 'https://script.google.com/macros/s/AKfycbweL-G7U2S682ENM-He19rpbSjRgyJWRzwHjFrOZ1LQPFRcAeQ6504XR1jF-P_F8w6uBA/exec';
       /* ══════════════════════════════════════════════════════ */
 
+      /* ── إرسال الطلب في الخلفية بصمت ── */
       fetch(SHEET_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ email: contact })
       })
-      .then(() => {
-        input.value = '';
-        msg.textContent = '✓ شكراً! تم التسجيل.';
-        msg.classList.remove('hidden');
-        setTimeout(() => { msg.classList.add('hidden'); }, 4000);
-      })
-      .catch((err) => {
-        console.error('Newsletter error:', err);
-        input.value = '';
-        msg.textContent = '✓ شكراً! تم التسجيل.';
-        msg.classList.remove('hidden');
-        setTimeout(() => { msg.classList.add('hidden'); }, 4000);
-      })
+      .catch((err) => console.error('Newsletter error:', err))
       .finally(() => {
         if (btn) { btn.disabled = false; btn.style.opacity = ''; }
       });
