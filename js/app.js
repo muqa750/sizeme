@@ -802,6 +802,10 @@ if (I18N.ku) {
       const scBtn2 = document.getElementById('scBtn');
       if (scBtn2) scBtn2.textContent = t.scCalcBtn || 'احسب';
 
+      /* تحديث placeholder قسم البريد الإلكتروني في الفوتر */
+      const footEmail = document.getElementById('footEmailInput');
+      if (footEmail && t.footNewsletterInput) footEmail.placeholder = t.footNewsletterInput;
+
       renderFilters();
       renderProducts();
       updateCart();
