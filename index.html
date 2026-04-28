@@ -198,11 +198,12 @@
       position: relative;
       flex-shrink: 0;
       /* ── حلقة تكيّفية: تُظهر الألوان الفاتحة على الخلفية الفاتحة ── */
-      box-shadow: 0 0 0 1px rgba(0,0,0,.14);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .14);
     }
+
     /* الوضع الليلي: حلقة فاتحة لإظهار الألوان الداكنة */
     [data-theme="dark"] .color-dot {
-      box-shadow: 0 0 0 1px rgba(255,255,255,.22);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .22);
     }
 
     .color-dot:active {
@@ -214,21 +215,23 @@
       box-shadow:
         inset 0 0 0 2.5px var(--paper),
         0 0 0 2px currentColor,
-        0 0 0 3.5px rgba(0,0,0,.14);
+        0 0 0 3.5px rgba(0, 0, 0, .14);
     }
+
     [data-theme="dark"] .color-dot.active {
       box-shadow:
         inset 0 0 0 2.5px var(--paper),
         0 0 0 2px currentColor,
-        0 0 0 3.5px rgba(255,255,255,.22);
+        0 0 0 3.5px rgba(255, 255, 255, .22);
     }
 
     .color-dot:not(.active):hover {
-      box-shadow: 0 0 0 1px rgba(0,0,0,.14), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(0,0,0,.22);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, .14), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(0, 0, 0, .22);
       transform: scale(1.1);
     }
+
     [data-theme="dark"] .color-dot:not(.active):hover {
-      box-shadow: 0 0 0 1px rgba(255,255,255,.22), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(255,255,255,.35);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .22), inset 0 0 0 2px var(--paper), 0 0 0 2.5px rgba(255, 255, 255, .35);
       transform: scale(1.1);
     }
 
@@ -266,13 +269,14 @@
       box-shadow:
         inset 0 0 0 3px var(--paper),
         0 0 0 2.5px currentColor,
-        0 0 0 4px rgba(0,0,0,.14);
+        0 0 0 4px rgba(0, 0, 0, .14);
     }
+
     [data-theme="dark"] .pm-colors .color-dot.active {
       box-shadow:
         inset 0 0 0 3px var(--paper),
         0 0 0 2.5px currentColor,
-        0 0 0 4px rgba(255,255,255,.22);
+        0 0 0 4px rgba(255, 255, 255, .22);
     }
 
     .product-card {
@@ -395,11 +399,27 @@
       transition: color .2s;
       white-space: nowrap;
     }
-    .cart-continue-btn:hover { color: var(--ink); }
-    .cart-continue-btn svg { flex-shrink: 0; transition: transform .2s; }
-    [dir="rtl"] .cart-continue-btn svg { transform: scaleX(-1); }
-    .cart-continue-btn:hover svg { transform: translateX(-2px); }
-    [dir="rtl"] .cart-continue-btn:hover svg { transform: scaleX(-1) translateX(-2px); }
+
+    .cart-continue-btn:hover {
+      color: var(--ink);
+    }
+
+    .cart-continue-btn svg {
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+
+    [dir="rtl"] .cart-continue-btn svg {
+      transform: scaleX(-1);
+    }
+
+    .cart-continue-btn:hover svg {
+      transform: translateX(-2px);
+    }
+
+    [dir="rtl"] .cart-continue-btn:hover svg {
+      transform: scaleX(-1) translateX(-2px);
+    }
 
     /* ── زر "العودة للمتجر" فوق إتمام الطلب ── */
     .cart-back-btn {
@@ -419,7 +439,11 @@
       cursor: pointer;
       transition: color .18s, border-color .18s;
     }
-    .cart-back-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+    .cart-back-btn:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
 
     .overlay {
       background: rgba(10, 10, 10, .45);
@@ -572,7 +596,8 @@
     .play-btn {
       position: absolute;
       inset: 0;
-      display: none; /* مخفي افتراضياً — يظهر فقط إذا فشل تحميل الفيديو */
+      display: none;
+      /* مخفي افتراضياً — يظهر فقط إذا فشل تحميل الفيديو */
       align-items: center;
       justify-content: center;
     }
@@ -607,8 +632,10 @@
 
     .slider-track {
       display: flex;
-      flex-direction: row; /* يمنع RTL من عكس ترتيب الصور */
-      direction: rtl;      /* RTL: سحب يمين = التالي من اليسار */
+      flex-direction: row;
+      /* يمنع RTL من عكس ترتيب الصور */
+      direction: rtl;
+      /* RTL: سحب يمين = التالي من اليسار */
       height: 100%;
       overflow-x: auto;
       overflow-y: hidden;
@@ -645,6 +672,7 @@
       transition: filter .4s ease, transform .4s ease, opacity .25s ease;
       will-change: filter, transform;
     }
+
     .img-lazy.loaded {
       filter: blur(0);
       transform: scale(1);
@@ -688,24 +716,34 @@
 
     .slider-dots {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
       gap: 2px;
       padding: 0 6px 6px;
       z-index: 3;
       pointer-events: none;
     }
+
     .sdot {
-      flex: 1; height: 2px;
+      flex: 1;
+      height: 2px;
       border-radius: 1px;
-      background: rgba(255,255,255,.35);
-      cursor: pointer; pointer-events: auto;
+      background: rgba(255, 255, 255, .35);
+      cursor: pointer;
+      pointer-events: auto;
       transition: background .25s;
     }
-    .sdot.active { background: #fff; }
+
+    .sdot.active {
+      background: #fff;
+    }
 
     /* ── Fade transition للتقليب التلقائي في البطاقات ── */
-    .slider-track { transition: opacity .28s ease; }
+    .slider-track {
+      transition: opacity .28s ease;
+    }
 
     /* ══════════════════════════════════════════════════
        Card Nav Strips — شريط جانبي مع سهم (الخيار 2)
@@ -713,7 +751,8 @@
     ══════════════════════════════════════════════════ */
     .card-nav {
       position: absolute;
-      top: 0; bottom: 0;
+      top: 0;
+      bottom: 0;
       z-index: 4;
       width: 38px;
       display: flex;
@@ -726,52 +765,92 @@
       pointer-events: none;
       transition: opacity .25s ease;
     }
-    .card-nav-prev { inset-inline-start: 0; }
-    .card-nav-next { inset-inline-end: 0; }
+
+    .card-nav-prev {
+      inset-inline-start: 0;
+    }
+
+    .card-nav-next {
+      inset-inline-end: 0;
+    }
 
     /* تدرج يبدأ من الحافة ويتلاشى نحو المركز */
     [dir="ltr"] .card-nav-prev,
     [dir="rtl"] .card-nav-next {
-      background: linear-gradient(to right, rgba(255,255,255,.52) 0%, transparent 100%);
+      background: linear-gradient(to right, rgba(255, 255, 255, .52) 0%, transparent 100%);
     }
+
     [dir="ltr"] .card-nav-next,
     [dir="rtl"] .card-nav-prev {
-      background: linear-gradient(to left, rgba(255,255,255,.52) 0%, transparent 100%);
+      background: linear-gradient(to left, rgba(255, 255, 255, .52) 0%, transparent 100%);
     }
+
     .card-nav svg {
-      width: 13px; height: 13px;
-      stroke: rgba(20,20,20,.65);
+      width: 13px;
+      height: 13px;
+      stroke: rgba(20, 20, 20, .65);
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
       fill: none;
       pointer-events: none;
-      filter: drop-shadow(0 0 2px rgba(255,255,255,.9));
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, .9));
     }
+
     /* عكس اتجاه الأيقونة في RTL */
-    [dir="rtl"] .card-nav svg { transform: scaleX(-1); }
+    [dir="rtl"] .card-nav svg {
+      transform: scaleX(-1);
+    }
 
     /* ظاهر عند وجود صور متعددة */
-    .card-nav.has-images { opacity: .5; pointer-events: auto; }
+    .card-nav.has-images {
+      opacity: .5;
+      pointer-events: auto;
+    }
 
     /* الموبايل: ظاهر دائماً عند وجود صور */
     @media (max-width: 768px) {
-      .card-nav.has-images { opacity: .55 !important; }
+      .card-nav.has-images {
+        opacity: .55 !important;
+      }
     }
+
     /* الحاسوب: أوضح عند hover */
     @media (hover: hover) and (pointer: fine) {
-      .slider-wrap:hover .card-nav.has-images { opacity: .9; }
+      .slider-wrap:hover .card-nav.has-images {
+        opacity: .9;
+      }
     }
 
     /* ── Shake animation لتحقق اللون في المودال ── */
     @keyframes shake-colors {
-      0%, 100% { transform: translateX(0); }
-      20%       { transform: translateX(-7px); }
-      40%       { transform: translateX(7px); }
-      60%       { transform: translateX(-4px); }
-      80%       { transform: translateX(4px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-7px);
+      }
+
+      40% {
+        transform: translateX(7px);
+      }
+
+      60% {
+        transform: translateX(-4px);
+      }
+
+      80% {
+        transform: translateX(4px);
+      }
     }
-    .pm-colors.shake { animation: shake-colors .42s var(--smooth); }
+
+    .pm-colors.shake {
+      animation: shake-colors .42s var(--smooth);
+    }
+
     .pm-color-hint {
       font-size: var(--fs-xs);
       color: var(--error);
@@ -861,7 +940,8 @@
         letter-spacing: 0 !important;
       }
 
-      .badge-new, .badge-bestseller {
+      .badge-new,
+      .badge-bestseller {
         letter-spacing: 0 !important;
         font-size: var(--fs-2xs) !important;
         padding: 3px 9px !important;
@@ -1338,19 +1418,38 @@
     }
 
     /* ── حل شامل: منع الفراغات بين الأحرف العربية والكردية ── */
-    :lang(ar) *, :lang(ku) * { letter-spacing: 0 !important; }
+    :lang(ar) *,
+    :lang(ku) * {
+      letter-spacing: 0 !important;
+    }
 
     /* ── زر "احسب مقاسك" — pill فحمي ذهبي ── */
     .btn-size-guide {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #2D2D2D; color: #c9a84c !important;
-      border: none; border-radius: 999px;
-      padding: 5px 13px; font-size: .62rem; font-weight: 600;
-      white-space: nowrap; cursor: pointer; letter-spacing: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #2D2D2D;
+      color: #c9a84c !important;
+      border: none;
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-size: .62rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      letter-spacing: 0;
       transition: background .2s, transform .15s;
     }
-    .btn-size-guide:hover { background: #1a1a1a; transform: scale(1.03); }
-    .btn-size-guide svg { stroke: #c9a84c; flex-shrink: 0; }
+
+    .btn-size-guide:hover {
+      background: #1a1a1a;
+      transform: scale(1.03);
+    }
+
+    .btn-size-guide svg {
+      stroke: #c9a84c;
+      flex-shrink: 0;
+    }
 
     /* ── Legal Links Bar ── */
     .legal-bar {
@@ -1362,6 +1461,7 @@
       flex-wrap: wrap;
       border-bottom: 1px solid var(--line);
     }
+
     .legal-link {
       font-size: .72rem;
       font-weight: 500;
@@ -1377,7 +1477,10 @@
       transition: opacity .15s;
       font-family: inherit;
     }
-    .legal-link:hover { opacity: .55; }
+
+    .legal-link:hover {
+      opacity: .55;
+    }
 
     /* ── Footer Service Links ── */
     .foot-service-link {
@@ -1390,8 +1493,14 @@
       align-items: center;
       gap: .5rem;
     }
-    [dir="rtl"] .foot-service-link { flex-direction: row-reverse; }
-    [dir="rtl"] .foot-service-arrow { transform: scaleX(-1); }
+
+    [dir="rtl"] .foot-service-link {
+      flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .foot-service-arrow {
+      transform: scaleX(-1);
+    }
 
     /* ── Footer Newsletter ── */
     .foot-email-input {
@@ -1406,11 +1515,27 @@
       transition: border-color .2s;
       width: 100%;
     }
-    .foot-email-input::placeholder { color: var(--mute); }
-    .foot-email-input:focus { border-bottom-color: var(--ink); }
-    [data-theme="dark"] .foot-email-input { border-bottom-color: rgba(255,255,255,.25); color: #fff; }
-    [data-theme="dark"] .foot-email-input:focus { border-bottom-color: #fff; }
-    [data-theme="dark"] .foot-email-input::placeholder { color: rgba(255,255,255,.35); }
+
+    .foot-email-input::placeholder {
+      color: var(--mute);
+    }
+
+    .foot-email-input:focus {
+      border-bottom-color: var(--ink);
+    }
+
+    [data-theme="dark"] .foot-email-input {
+      border-bottom-color: rgba(255, 255, 255, .25);
+      color: #fff;
+    }
+
+    [data-theme="dark"] .foot-email-input:focus {
+      border-bottom-color: #fff;
+    }
+
+    [data-theme="dark"] .foot-email-input::placeholder {
+      color: rgba(255, 255, 255, .35);
+    }
 
     .foot-newsletter-btn {
       background: none;
@@ -1427,69 +1552,115 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .foot-newsletter-btn:hover { border-bottom-color: var(--ink); opacity: .7; }
-    [data-theme="dark"] .foot-newsletter-btn { color: #fff; }
-    [data-theme="dark"] .foot-newsletter-btn:hover { border-bottom-color: #fff; }
+
+    .foot-newsletter-btn:hover {
+      border-bottom-color: var(--ink);
+      opacity: .7;
+    }
+
+    [data-theme="dark"] .foot-newsletter-btn {
+      color: #fff;
+    }
+
+    [data-theme="dark"] .foot-newsletter-btn:hover {
+      border-bottom-color: #fff;
+    }
 
 
     #legalModal {
-      position: fixed; inset: 0; z-index: 180;
-      display: flex; align-items: flex-end;
+      position: fixed;
+      inset: 0;
+      z-index: 180;
+      display: flex;
+      align-items: flex-end;
       justify-content: center;
-      opacity: 0; pointer-events: none;
+      opacity: 0;
+      pointer-events: none;
       transition: opacity .22s ease;
     }
-    #legalModal.open { opacity: 1; pointer-events: auto; }
+
+    #legalModal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .legal-backdrop {
-      position: absolute; inset: 0;
-      background: rgba(10,10,10,.48);
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 10, .48);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
+
     .legal-sheet {
-      position: relative; z-index: 1;
+      position: relative;
+      z-index: 1;
       background: var(--paper);
-      width: 100%; max-width: 560px;
+      width: 100%;
+      max-width: 560px;
       max-height: 82vh;
       border-radius: 20px 20px 0 0;
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       transform: translateY(100%);
-      transition: transform .3s cubic-bezier(.32,1.01,.46,1);
+      transition: transform .3s cubic-bezier(.32, 1.01, .46, 1);
       overflow: hidden;
     }
+
     @media (min-width: 640px) {
-      #legalModal { align-items: center; }
+      #legalModal {
+        align-items: center;
+      }
+
       .legal-sheet {
         border-radius: 16px;
         max-height: 80vh;
         margin: 1rem;
       }
     }
-    #legalModal.open .legal-sheet { transform: translateY(0); }
+
+    #legalModal.open .legal-sheet {
+      transform: translateY(0);
+    }
+
     .legal-header {
-      display: flex; align-items: center;
+      display: flex;
+      align-items: center;
       justify-content: space-between;
       padding: 1rem 1.25rem .75rem;
       border-bottom: 1px solid var(--line);
       flex-shrink: 0;
     }
+
     .legal-title {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
-      font-size: .88rem; font-weight: 700;
-      color: var(--ink); margin: 0;
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
     }
+
     .legal-close-btn {
-      width: 32px; height: 32px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--line);
-      border: none; cursor: pointer;
-      display: flex; align-items: center;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      font-size: .85rem; color: var(--ink);
+      font-size: .85rem;
+      color: var(--ink);
       transition: background .15s;
       flex-shrink: 0;
     }
-    .legal-close-btn:hover { background: var(--mute); color: #fff; }
+
+    .legal-close-btn:hover {
+      background: var(--mute);
+      color: #fff;
+    }
+
     .legal-body {
       padding: 1.25rem;
       overflow-y: auto;
@@ -1499,24 +1670,53 @@
       line-height: 1.8;
       color: var(--ink);
     }
-    .legal-body h1,.legal-body h2,.legal-body h3 {
+
+    .legal-body h1,
+    .legal-body h2,
+    .legal-body h3 {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
-      font-weight: 700; margin: 1rem 0 .4rem;
+      font-weight: 700;
+      margin: 1rem 0 .4rem;
       font-size: .88rem;
     }
-    .legal-body h1 { font-size: 1rem; }
-    .legal-body p { margin: .4rem 0; }
-    .legal-body strong { font-weight: 700; }
-    .legal-body ul { padding-inline-start: 1.2rem; margin: .4rem 0; }
-    .legal-body li { margin: .25rem 0; }
-    .legal-body hr { border: none; border-top: 1px solid var(--line); margin: .8rem 0; }
-    [data-theme="dark"] .legal-sheet { background: var(--paper); }
+
+    .legal-body h1 {
+      font-size: 1rem;
+    }
+
+    .legal-body p {
+      margin: .4rem 0;
+    }
+
+    .legal-body strong {
+      font-weight: 700;
+    }
+
+    .legal-body ul {
+      padding-inline-start: 1.2rem;
+      margin: .4rem 0;
+    }
+
+    .legal-body li {
+      margin: .25rem 0;
+    }
+
+    .legal-body hr {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: .8rem 0;
+    }
+
+    [data-theme="dark"] .legal-sheet {
+      background: var(--paper);
+    }
 
     /* ── Sort Floating Label Select ── */
     .sort-wrap {
       position: relative;
       display: inline-block;
     }
+
     .sort-wrap select {
       -webkit-appearance: none;
       appearance: none;
@@ -1532,10 +1732,15 @@
       transition: border-color .18s;
       outline: none;
     }
+
     [dir="rtl"] .sort-wrap select {
       padding: 1.15rem 1.1rem .45rem 2.4rem;
     }
-    .sort-wrap select:focus { border-color: var(--ink); }
+
+    .sort-wrap select:focus {
+      border-color: var(--ink);
+    }
+
     .sort-label {
       position: absolute;
       top: .38rem;
@@ -1548,6 +1753,7 @@
       pointer-events: none;
       white-space: nowrap;
     }
+
     .sort-chevron {
       position: absolute;
       top: 50%;
@@ -1567,9 +1773,20 @@
       padding: .65rem 1rem;
       text-align: center;
     }
-    [data-theme="dark"] #deliveryCountdown { background: #3a3a3a; border-color: #4a4a4a; }
-    [data-theme="dark"] #deliveryCountdown .delivery-inner { color: #ffffff; }
-    [data-theme="dark"] #deliveryCountdown .delivery-inner svg { color: #ffffff; }
+
+    [data-theme="dark"] #deliveryCountdown {
+      background: #3a3a3a;
+      border-color: #4a4a4a;
+    }
+
+    [data-theme="dark"] #deliveryCountdown .delivery-inner {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] #deliveryCountdown .delivery-inner svg {
+      color: #ffffff;
+    }
+
     .delivery-inner {
       display: inline-flex;
       align-items: center;
@@ -1577,9 +1794,19 @@
       font-size: .8rem;
       color: var(--ink);
     }
-    .delivery-inner svg { flex-shrink: 0; color: var(--ink); }
-    #deliveryMsg { font-weight: 500; }
-    #deliveryMsg strong { font-variant-numeric: tabular-nums; }
+
+    .delivery-inner svg {
+      flex-shrink: 0;
+      color: var(--ink);
+    }
+
+    #deliveryMsg {
+      font-weight: 500;
+    }
+
+    #deliveryMsg strong {
+      font-variant-numeric: tabular-nums;
+    }
 
     /* ── Product card — spring transition (hover only on real pointer, see @media hover below) ── */
     .product-card {
@@ -2791,15 +3018,19 @@
       z-index: 3;
       pointer-events: none;
     }
+
     .pm-dot {
-      width: 7px; height: 7px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: transparent;
-      border: 1.5px solid rgba(90,90,90,.55);
-      cursor: pointer; pointer-events: auto;
+      border: 1.5px solid rgba(90, 90, 90, .55);
+      cursor: pointer;
+      pointer-events: auto;
       transition: background .22s, border-color .22s;
       flex-shrink: 0;
     }
+
     .pm-dot.active {
       background: #555;
       border-color: #555;
@@ -2813,9 +3044,14 @@
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .pm-thumbs::-webkit-scrollbar { display: none; }
+
+    .pm-thumbs::-webkit-scrollbar {
+      display: none;
+    }
+
     .pm-thumb {
-      width: 60px; height: 60px;
+      width: 60px;
+      height: 60px;
       object-fit: cover;
       flex-shrink: 0;
       border: 1.5px solid transparent;
@@ -2824,24 +3060,47 @@
       opacity: .72;
       transition: border-color .18s, opacity .18s;
     }
+
     .pm-thumb.active {
       border-color: #333;
       opacity: 1;
     }
-    .pm-thumb:hover { opacity: .9; }
-    [data-theme="dark"] .pm-dot { border-color: rgba(200,200,200,.45); }
-    [data-theme="dark"] .pm-dot.active { background: #ccc; border-color: #ccc; }
-    [data-theme="dark"] .pm-thumb.active { border-color: #ddd; }
+
+    .pm-thumb:hover {
+      opacity: .9;
+    }
+
+    [data-theme="dark"] .pm-dot {
+      border-color: rgba(200, 200, 200, .45);
+    }
+
+    [data-theme="dark"] .pm-dot.active {
+      background: #ccc;
+      border-color: #ccc;
+    }
+
+    [data-theme="dark"] .pm-thumb.active {
+      border-color: #ddd;
+    }
 
     /* ── Modal nav strips — أسهم المودال ── */
-    .pm-img-outer { position: relative; }
-    .pm-img-zone  { position: relative; } /* حاوية الصورة — dots ترتبط بها وليس بـ scroll container */
+    .pm-img-outer {
+      position: relative;
+    }
+
+    .pm-img-zone {
+      position: relative;
+    }
+
+    /* حاوية الصورة — dots ترتبط بها وليس بـ scroll container */
     .pm-nav {
       position: absolute;
-      top: 0; bottom: 0;
+      top: 0;
+      bottom: 0;
       z-index: 5;
       width: 42px;
-      display: none; /* تظهر عبر JS عند تحميل صور متعددة */
+      display: none;
+      /* تظهر عبر JS عند تحميل صور متعددة */
       align-items: center;
       justify-content: center;
       border: none;
@@ -2850,30 +3109,50 @@
       opacity: .55;
       transition: opacity .2s ease;
     }
-    .pm-nav:hover { opacity: .95; }
-    .pm-nav-prev { inset-inline-start: 0; }
-    .pm-nav-next { inset-inline-end: 0; }
+
+    .pm-nav:hover {
+      opacity: .95;
+    }
+
+    .pm-nav-prev {
+      inset-inline-start: 0;
+    }
+
+    .pm-nav-next {
+      inset-inline-end: 0;
+    }
+
     [dir="ltr"] .pm-nav-prev,
     [dir="rtl"] .pm-nav-next {
-      background: linear-gradient(to right, rgba(255,255,255,.55) 0%, transparent 100%);
+      background: linear-gradient(to right, rgba(255, 255, 255, .55) 0%, transparent 100%);
     }
+
     [dir="ltr"] .pm-nav-next,
     [dir="rtl"] .pm-nav-prev {
-      background: linear-gradient(to left, rgba(255,255,255,.55) 0%, transparent 100%);
+      background: linear-gradient(to left, rgba(255, 255, 255, .55) 0%, transparent 100%);
     }
+
     .pm-nav svg {
-      width: 15px; height: 15px;
-      stroke: rgba(20,20,20,.7);
+      width: 15px;
+      height: 15px;
+      stroke: rgba(20, 20, 20, .7);
       stroke-width: 2.5;
       stroke-linecap: round;
       stroke-linejoin: round;
       fill: none;
       pointer-events: none;
-      filter: drop-shadow(0 0 2px rgba(255,255,255,.9));
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, .9));
     }
-    [dir="rtl"] .pm-nav svg { transform: scaleX(-1); }
+
+    [dir="rtl"] .pm-nav svg {
+      transform: scaleX(-1);
+    }
+
     @media (max-width: 768px) {
-      .pm-nav { width: 36px; opacity: .6; }
+      .pm-nav {
+        width: 36px;
+        opacity: .6;
+      }
     }
 
     #productModal .pm-close {
@@ -3111,7 +3390,7 @@
      ===================================================== */
     .header-inner {
       display: grid;
-      grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
       padding: 0 .75rem;
       height: 56px;
@@ -3123,7 +3402,8 @@
     .header-end {
       display: flex;
       align-items: center;
-      justify-content: flex-start; /* يدفع للحافة الخارجية في RTL=يمين / LTR=يسار */
+      justify-content: flex-start;
+      /* يدفع للحافة الخارجية في RTL=يمين / LTR=يسار */
       gap: 0;
     }
 
@@ -3138,7 +3418,8 @@
     .header-start {
       display: flex;
       align-items: center;
-      justify-content: flex-end; /* يدفع للحافة الخارجية في RTL=يسار / LTR=يمين */
+      justify-content: flex-end;
+      /* يدفع للحافة الخارجية في RTL=يسار / LTR=يمين */
       gap: 0;
     }
 
@@ -3158,20 +3439,42 @@
       position: relative;
       flex-shrink: 0;
     }
-    .hdr-btn:hover { background: rgba(0,0,0,.05); }
-    [data-theme="dark"] .hdr-btn:hover { background: rgba(255,255,255,.08); }
-    .hdr-btn svg { pointer-events: none; }
+
+    .hdr-btn:hover {
+      background: rgba(0, 0, 0, .05);
+    }
+
+    [data-theme="dark"] .hdr-btn:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .hdr-btn svg {
+      pointer-events: none;
+    }
 
     /* زر Hamburger و Cart — أكبر قليلاً ليبرزا */
-    #menuBtn, #cartBtn {
+    #menuBtn,
+    #cartBtn {
       width: 46px;
       height: 46px;
     }
+
     /* على الديسكتوب حجم مريح */
     @media (min-width: 640px) {
-      .header-inner { padding: 0 1.25rem; height: 60px; }
-      .hdr-btn { width: 42px; }
-      #menuBtn, #cartBtn { width: 48px; height: 48px; }
+      .header-inner {
+        padding: 0 1.25rem;
+        height: 60px;
+      }
+
+      .hdr-btn {
+        width: 42px;
+      }
+
+      #menuBtn,
+      #cartBtn {
+        width: 48px;
+        height: 48px;
+      }
     }
 
     /* اللوجو */
@@ -3184,14 +3487,23 @@
       line-height: 1;
       gap: 1px;
     }
-    .logo-link img { height: 36px; width: auto; object-fit: contain; }
+
+    .logo-link img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
     .logo-text {
       font-size: 1.5rem;
       letter-spacing: .22em;
       line-height: 1;
       display: none;
     }
-    .logo-link:hover { opacity: .8; }
+
+    .logo-link:hover {
+      opacity: .8;
+    }
 
     /* =====================================================
      LANGUAGE MODAL
@@ -3208,17 +3520,20 @@
       pointer-events: none;
       transition: opacity .22s ease;
     }
+
     #langModal.open {
       opacity: 1;
       pointer-events: auto;
     }
+
     .lang-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(10,10,10,.45);
+      background: rgba(10, 10, 10, .45);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
+
     .lang-modal-sheet {
       position: relative;
       z-index: 1;
@@ -3227,14 +3542,16 @@
       width: 100%;
       max-width: 320px;
       overflow: hidden;
-      box-shadow: 0 24px 64px -12px rgba(0,0,0,.32);
+      box-shadow: 0 24px 64px -12px rgba(0, 0, 0, .32);
       transform: scale(.94) translateY(8px);
       transition: transform .26s var(--spring);
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
+
     #langModal.open .lang-modal-sheet {
       transform: scale(1) translateY(0);
     }
+
     .lang-modal-title {
       padding: 1.15rem 1.25rem .7rem;
       font-size: .65rem;
@@ -3244,6 +3561,7 @@
       text-transform: uppercase;
       border-bottom: 1px solid var(--line);
     }
+
     .lang-option {
       display: flex;
       align-items: center;
@@ -3258,10 +3576,23 @@
       border-bottom: 1px solid var(--line);
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-    .lang-option:last-child { border-bottom: none; }
-    .lang-option:hover { background: rgba(0,0,0,.04); }
-    [data-theme="dark"] .lang-option:hover { background: rgba(255,255,255,.06); }
-    .lang-option.active { background: rgba(201,168,76,.08); }
+
+    .lang-option:last-child {
+      border-bottom: none;
+    }
+
+    .lang-option:hover {
+      background: rgba(0, 0, 0, .04);
+    }
+
+    [data-theme="dark"] .lang-option:hover {
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .lang-option.active {
+      background: rgba(201, 168, 76, .08);
+    }
+
     .lang-flag {
       width: 32px;
       height: 22px;
@@ -3272,6 +3603,7 @@
       line-height: 22px;
       text-align: center;
     }
+
     .lang-flag-svg {
       width: 32px;
       height: 22px;
@@ -3280,17 +3612,20 @@
       flex-shrink: 0;
       display: block;
     }
+
     .lang-label {
       flex: 1;
       font-size: .95rem;
       font-weight: 500;
       color: var(--ink);
     }
+
     .lang-sublabel {
       font-size: .72rem;
       color: var(--mute);
       margin-top: .08rem;
     }
+
     .lang-check {
       width: 18px;
       height: 18px;
@@ -3303,7 +3638,10 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .lang-option.active .lang-check { display: flex; }
+
+    .lang-option.active .lang-check {
+      display: flex;
+    }
 
     /* =====================================================
      MOBILE NAV — إضافات اللغة والمود في أسفل القائمة
@@ -3316,12 +3654,14 @@
       font-weight: 600;
       padding: .9rem 1.25rem .45rem;
     }
+
     .mnav-lang-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: .5rem;
       padding: 0 1.25rem .85rem;
     }
+
     .mnav-lang-pill {
       display: flex;
       flex-direction: column;
@@ -3340,13 +3680,19 @@
       transition: all .18s;
       min-height: 48px;
     }
+
     .mnav-lang-pill.active {
       border-color: var(--accent);
       color: var(--accent);
-      background: rgba(201,168,76,.08);
+      background: rgba(201, 168, 76, .08);
       font-weight: 600;
     }
-    .mnav-lang-pill:hover { border-color: var(--ink); color: var(--ink); }
+
+    .mnav-lang-pill:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
     .mnav-theme-row {
       display: flex;
       align-items: center;
@@ -3361,7 +3707,11 @@
       width: 100%;
       font-family: 'IBM Plex Sans Arabic', sans-serif;
     }
-    .mnav-theme-row:hover { background: rgba(0,0,0,.03); }
+
+    .mnav-theme-row:hover {
+      background: rgba(0, 0, 0, .03);
+    }
+
     .mnav-theme-label {
       display: flex;
       align-items: center;
@@ -3369,6 +3719,7 @@
       font-size: .82rem;
       color: var(--ink);
     }
+
     /* Theme toggle mini inside nav */
     .mnav-theme-toggle {
       width: 40px;
@@ -3379,7 +3730,11 @@
       transition: background .25s;
       flex-shrink: 0;
     }
-    [data-theme="dark"] .mnav-theme-toggle { background: var(--accent); }
+
+    [data-theme="dark"] .mnav-theme-toggle {
+      background: var(--accent);
+    }
+
     .mnav-theme-toggle::after {
       content: '';
       position: absolute;
@@ -3391,7 +3746,10 @@
       background: #fff;
       transition: inset-inline-start .25s;
     }
-    [data-theme="dark"] .mnav-theme-toggle::after { inset-inline-start: 21px; }
+
+    [data-theme="dark"] .mnav-theme-toggle::after {
+      inset-inline-start: 21px;
+    }
 
     /* =====================================================
      LUXURY PREMIUM ENHANCEMENTS
@@ -3416,19 +3774,28 @@
 
     /* ── Best-seller: إطار ذهبي سميك + Glow ── */
     .product-card.card-bestseller {
-      border: 2px solid rgba(201,168,76,0.65) !important;
-      box-shadow: 0 0 0 1px rgba(201,168,76,0.15), 0 8px 32px -8px rgba(201,168,76,0.28) !important;
+      border: 2px solid rgba(201, 168, 76, 0.65) !important;
+      box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.15), 0 8px 32px -8px rgba(201, 168, 76, 0.28) !important;
     }
+
     .product-card.card-bestseller:hover {
-      border-color: rgba(201,168,76,0.9) !important;
-      box-shadow: 0 0 0 1px rgba(201,168,76,0.25), 0 20px 50px -12px rgba(201,168,76,0.35) !important;
+      border-color: rgba(201, 168, 76, 0.9) !important;
+      box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.25), 0 20px 50px -12px rgba(201, 168, 76, 0.35) !important;
     }
 
     /* ── بادج "الأكثر طلباً" — كبسولة ذهبية نابضة ── */
     @keyframes bestseller-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(184,137,46,.52); }
-      55%       { box-shadow: 0 0 0 5px rgba(184,137,46,0); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(184, 137, 46, .52);
+      }
+
+      55% {
+        box-shadow: 0 0 0 5px rgba(184, 137, 46, 0);
+      }
     }
+
     .badge-bestseller {
       display: inline-flex;
       align-items: center;
@@ -3442,7 +3809,7 @@
       border-radius: 50px;
       white-space: nowrap;
       line-height: 1.45;
-      text-shadow: 0 1px 2px rgba(0,0,0,.22);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .22);
       animation: bestseller-pulse 2.4s ease-in-out infinite;
     }
 
@@ -3460,11 +3827,13 @@
       border-radius: 50px;
       white-space: nowrap;
       line-height: 1.45;
-      text-shadow: 0 1px 2px rgba(0,0,0,.22);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, .22);
     }
 
     @media(max-width:768px) {
-      .badge-bestseller, .badge-new {
+
+      .badge-bestseller,
+      .badge-new {
         font-size: .52rem;
         padding: 3px 9px;
       }
@@ -3953,20 +4322,22 @@
       <!-- ── يمين: Hamburger + Globe ── -->
       <div class="header-end">
         <button id="menuBtn" class="hdr-btn" aria-label="Menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <line x1="4" y1="7" x2="20" y2="7"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="17" x2="20" y2="17"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round">
+            <line x1="4" y1="7" x2="20" y2="7" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="17" x2="20" y2="17" />
           </svg>
         </button>
         <button id="langBtn" class="hdr-btn" aria-label="Language">
           <!-- Globe — Wireframe/Grid حديث -->
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="9.5"/>
-            <line x1="2.5" y1="12" x2="21.5" y2="12"/>
-            <path d="M12 2.5C9.5 5.4 8 8.5 8 12s1.5 6.6 4 9.5"/>
-            <path d="M12 2.5C14.5 5.4 16 8.5 16 12s-1.5 6.6-4 9.5"/>
-            <path d="M4.5 7.5h15M4.5 16.5h15"/>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5" />
+            <line x1="2.5" y1="12" x2="21.5" y2="12" />
+            <path d="M12 2.5C9.5 5.4 8 8.5 8 12s1.5 6.6 4 9.5" />
+            <path d="M12 2.5C14.5 5.4 16 8.5 16 12s-1.5 6.6-4 9.5" />
+            <path d="M4.5 7.5h15M4.5 16.5h15" />
           </svg>
         </button>
       </div>
@@ -3977,7 +4348,8 @@
           <img src="images/logo.jpg" alt="SizeMe"
             onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
           <span class="logo-text serif">SIZEME</span>
-          <span style="font-size:.55rem;letter-spacing:.38em;color:var(--mute);margin-top:1px" data-i18n="tagline">PREMIUM · PLUS SIZES</span>
+          <span style="font-size:.55rem;letter-spacing:.38em;color:var(--mute);margin-top:1px"
+            data-i18n="tagline">PREMIUM · PLUS SIZES</span>
         </a>
       </div>
 
@@ -3985,15 +4357,17 @@
       <!-- مود بجانب السلة → السلة أقصى اليسار -->
       <div class="header-start">
         <button id="themeToggle" class="hdr-btn theme-toggle" aria-label="Toggle theme" style="border:none">
-          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.7">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
           </svg>
         </button>
         <button id="cartBtn" class="hdr-btn" aria-label="Cart" style="position:relative">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 6h2l2 12h10l2-9H7"/>
-            <circle cx="9" cy="21" r="1"/>
-            <circle cx="17" cy="21" r="1"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h2l2 12h10l2-9H7" />
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="17" cy="21" r="1" />
           </svg>
           <span id="cartCount"
             class="absolute -top-0.5 -end-0.5 bg-[color:var(--accent)] text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-medium">0</span>
@@ -4061,7 +4435,7 @@
     <button class="mnav-theme-row" onclick="toggleTheme()">
       <span class="mnav-theme-label">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
         <span data-i18n="darkMode">الوضع الليلي</span>
       </span>
@@ -4174,11 +4548,12 @@
     <!-- ================= DELIVERY COUNTDOWN ================= -->
     <div id="deliveryCountdown">
       <div class="delivery-inner">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="3" width="15" height="13" rx="1"/>
-          <path d="M16 8h4l3 5v4h-7V8z"/>
-          <circle cx="5.5" cy="18.5" r="1.5"/>
-          <circle cx="18.5" cy="18.5" r="1.5"/>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="1" />
+          <path d="M16 8h4l3 5v4h-7V8z" />
+          <circle cx="5.5" cy="18.5" r="1.5" />
+          <circle cx="18.5" cy="18.5" r="1.5" />
         </svg>
         <span id="deliveryMsg"></span>
       </div>
@@ -4249,7 +4624,10 @@
             </select>
             <span class="sort-label" data-i18n="filterSort">فرز حسب</span>
             <span class="sort-chevron">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </span>
           </div>
         </div>
@@ -4413,7 +4791,8 @@
     <div class="max-w-7xl mx-auto px-5 py-10 grid md:grid-cols-3 gap-8 text-sm">
       <div>
         <div class="serif text-2xl tracking-[.25em]">SIZEME</div>
-        <p class="text-[color:var(--mute)] mt-4 max-w-md whitespace-pre-line leading-relaxed text-[13px] md:text-sm" data-i18n="footAbout"></p>
+        <p class="text-[color:var(--mute)] mt-4 max-w-md whitespace-pre-line leading-relaxed text-[13px] md:text-sm"
+          data-i18n="footAbout"></p>
       </div>
       <div>
         <p class="kicker mb-3" data-i18n="footInteract">تفاعل معنا</p>
@@ -4476,7 +4855,8 @@
             <button onclick="openSizeCalc()"
               class="foot-service-link group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200"
               data-i18n="footSizeGuide">
-              <span class="foot-service-arrow opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs">→</span>
+              <span
+                class="foot-service-arrow opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs">→</span>
               دليل المقاسات
             </button>
           </li>
@@ -4484,7 +4864,8 @@
             <button onclick="openLegalModal('faq', 'footFaq')"
               class="foot-service-link group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200"
               data-i18n="footFaq">
-              <span class="foot-service-arrow opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs">→</span>
+              <span
+                class="foot-service-arrow opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs">→</span>
               الأسئلة الشائعة
             </button>
           </li>
@@ -4494,27 +4875,26 @@
       <!-- ── Newsletter ── -->
       <div class="md:col-span-3 flex flex-col items-center text-center mt-4 md:mt-8">
         <p class="serif text-base mb-1" data-i18n="footNewsletter">انضم إلى عائلة Sizeme</p>
-        <p class="text-xs text-[color:var(--mute)] mb-5 leading-relaxed max-w-sm" data-i18n="footNewsletterSub">لتصلك المجموعات الحصرية والمقاسات الخاصة قبل الجميع</p>
+        <p class="text-xs text-[color:var(--mute)] mb-5 leading-relaxed max-w-sm" data-i18n="footNewsletterSub">لتصلك
+          المجموعات الحصرية والمقاسات الخاصة قبل الجميع</p>
         <div class="foot-newsletter-wrap flex items-end gap-3 w-full max-w-md">
-          <input id="footEmailInput" type="text" autocomplete="on"
-            class="foot-email-input flex-1 min-w-0 text-center"
-            data-i18n-placeholder="footNewsletterInput"
-            placeholder="بريدك الإلكتروني أو رقم الهاتف" />
+          <input id="footEmailInput" type="text" autocomplete="on" class="foot-email-input flex-1 min-w-0 text-center"
+            data-i18n-placeholder="footNewsletterInput" placeholder="بريدك الإلكتروني أو رقم الهاتف" />
           <button id="footNewsletterBtn" onclick="handleNewsletterSubscribe()"
-            class="foot-newsletter-btn font-bold text-sm whitespace-nowrap"
-            data-i18n="footNewsletterBtn">انضم</button>
+            class="foot-newsletter-btn font-bold text-sm whitespace-nowrap" data-i18n="footNewsletterBtn">انضم</button>
         </div>
-        <p id="footNewsletterMsg" class="hidden text-xs mt-3 text-[color:var(--accent)]">✓ شكراً! سنتواصل معك قريباً.</p>
+        <p id="footNewsletterMsg" class="hidden text-xs mt-3 text-[color:var(--accent)]">✓ شكراً! سنتواصل معك قريباً.
+        </p>
       </div>
     </div>
     <!-- ── Legal Links Bar ── -->
     <div class="legal-bar">
-      <button class="legal-link" data-i18n="legalWarning"
-        onclick="openLegalModal('warning', 'legalWarning')">تحذير قانوني</button>
-      <button class="legal-link" data-i18n="legalTerms"
-        onclick="openLegalModal('terms', 'legalTerms')">شروط الاستخدام</button>
-      <button class="legal-link" data-i18n="legalPrivacy"
-        onclick="openLegalModal('privacy', 'legalPrivacy')">سياسة الخصوصية</button>
+      <button class="legal-link" data-i18n="legalWarning" onclick="openLegalModal('warning', 'legalWarning')">تحذير
+        قانوني</button>
+      <button class="legal-link" data-i18n="legalTerms" onclick="openLegalModal('terms', 'legalTerms')">شروط
+        الاستخدام</button>
+      <button class="legal-link" data-i18n="legalPrivacy" onclick="openLegalModal('privacy', 'legalPrivacy')">سياسة
+        الخصوصية</button>
     </div>
     <div class="border-t hairline">
       <div class="max-w-7xl mx-auto px-5 py-5 text-xs text-[color:var(--mute)] flex items-center justify-between">
@@ -4599,8 +4979,9 @@
     <div class="flex items-center justify-between px-4 py-3 border-b hairline">
       <h3 class="serif text-xl" data-i18n="cartTitle">سلة المشتريات</h3>
       <button id="cartClose" class="cart-continue-btn" aria-label="تابع التسوق">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6" />
         </svg>
         <span data-i18n="continueShopping">تابع التسوق</span>
       </button>
@@ -4671,9 +5052,10 @@
       <p id="bulkHint" class="text-xs text-[color:var(--mute)]" data-i18n="bulkHint">Add 10+ pieces to unlock 20% off +
         free shipping.</p>
       <button onclick="closeCart()" class="cart-back-btn" data-i18n="backToStore">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
         العودة للمتجر
       </button>
@@ -4824,10 +5206,11 @@
       <!-- العربية — علم العراق SVG -->
       <button class="lang-option lang-btn active" data-lang="ar" onclick="applyLang('ar');closeLangModal()">
         <svg class="lang-flag-svg" viewBox="0 0 60 36" style="border-radius:5px;box-shadow:0 0 0 1px rgba(0,0,0,.08)">
-          <rect width="60" height="12" fill="#CE1126"/>
-          <rect y="12" width="60" height="12" fill="#fff"/>
-          <rect y="24" width="60" height="12" fill="#000"/>
-          <text x="30" y="21.5" text-anchor="middle" font-size="6.5" fill="#007A3D" font-family="serif" font-weight="bold">الله اكبر</text>
+          <rect width="60" height="12" fill="#CE1126" />
+          <rect y="12" width="60" height="12" fill="#fff" />
+          <rect y="24" width="60" height="12" fill="#000" />
+          <text x="30" y="21.5" text-anchor="middle" font-size="6.5" fill="#007A3D" font-family="serif"
+            font-weight="bold">الله اكبر</text>
         </svg>
         <span>
           <div class="lang-label">العربية</div>
@@ -4838,16 +5221,17 @@
 
       <!-- English — علم بريطانيا SVG (Union Jack) -->
       <button class="lang-option lang-btn" data-lang="en" onclick="applyLang('en');closeLangModal()">
-        <svg class="lang-flag-svg" viewBox="0 0 60 36" style="border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)">
-          <rect width="60" height="36" fill="#012169"/>
-          <line x1="0" y1="0" x2="60" y2="36" stroke="#fff" stroke-width="7.2"/>
-          <line x1="60" y1="0" x2="0" y2="36" stroke="#fff" stroke-width="7.2"/>
-          <line x1="0" y1="0" x2="60" y2="36" stroke="#C8102E" stroke-width="4.8"/>
-          <line x1="60" y1="0" x2="0" y2="36" stroke="#C8102E" stroke-width="4.8"/>
-          <rect x="24" y="0" width="12" height="36" fill="#fff"/>
-          <rect x="0" y="12" width="60" height="12" fill="#fff"/>
-          <rect x="26.4" y="0" width="7.2" height="36" fill="#C8102E"/>
-          <rect x="0" y="14.4" width="60" height="7.2" fill="#C8102E"/>
+        <svg class="lang-flag-svg" viewBox="0 0 60 36"
+          style="border-radius:5px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08)">
+          <rect width="60" height="36" fill="#012169" />
+          <line x1="0" y1="0" x2="60" y2="36" stroke="#fff" stroke-width="7.2" />
+          <line x1="60" y1="0" x2="0" y2="36" stroke="#fff" stroke-width="7.2" />
+          <line x1="0" y1="0" x2="60" y2="36" stroke="#C8102E" stroke-width="4.8" />
+          <line x1="60" y1="0" x2="0" y2="36" stroke="#C8102E" stroke-width="4.8" />
+          <rect x="24" y="0" width="12" height="36" fill="#fff" />
+          <rect x="0" y="12" width="60" height="12" fill="#fff" />
+          <rect x="26.4" y="0" width="7.2" height="36" fill="#C8102E" />
+          <rect x="0" y="14.4" width="60" height="7.2" fill="#C8102E" />
         </svg>
         <span>
           <div class="lang-label">English</div>
@@ -4859,20 +5243,20 @@
       <!-- کوردی — علم كردستان SVG -->
       <button class="lang-option lang-btn" data-lang="ku" onclick="applyLang('ku');closeLangModal()">
         <svg class="lang-flag-svg" viewBox="0 0 60 36" style="border-radius:5px;box-shadow:0 0 0 1px rgba(0,0,0,.08)">
-          <rect width="60" height="12" fill="#D21034"/>
-          <rect y="12" width="60" height="12" fill="#fff"/>
-          <rect y="24" width="60" height="12" fill="#009144"/>
+          <rect width="60" height="12" fill="#D21034" />
+          <rect y="12" width="60" height="12" fill="#fff" />
+          <rect y="24" width="60" height="12" fill="#009144" />
           <!-- شمس ذهبية مع 8 أشعة -->
-          <circle cx="30" cy="18" r="5.5" fill="#F7D000"/>
+          <circle cx="30" cy="18" r="5.5" fill="#F7D000" />
           <g stroke="#F7D000" stroke-width="1.5" stroke-linecap="round" transform="translate(30,18)">
-            <line x1="0" y1="7.2" x2="0" y2="10"/>
-            <line x1="0" y1="-7.2" x2="0" y2="-10"/>
-            <line x1="7.2" y1="0" x2="10" y2="0"/>
-            <line x1="-7.2" y1="0" x2="-10" y2="0"/>
-            <line x1="5.09" y1="5.09" x2="7.07" y2="7.07"/>
-            <line x1="-5.09" y1="5.09" x2="-7.07" y2="7.07"/>
-            <line x1="5.09" y1="-5.09" x2="7.07" y2="-7.07"/>
-            <line x1="-5.09" y1="-5.09" x2="-7.07" y2="-7.07"/>
+            <line x1="0" y1="7.2" x2="0" y2="10" />
+            <line x1="0" y1="-7.2" x2="0" y2="-10" />
+            <line x1="7.2" y1="0" x2="10" y2="0" />
+            <line x1="-7.2" y1="0" x2="-10" y2="0" />
+            <line x1="5.09" y1="5.09" x2="7.07" y2="7.07" />
+            <line x1="-5.09" y1="5.09" x2="-7.07" y2="7.07" />
+            <line x1="5.09" y1="-5.09" x2="7.07" y2="-7.07" />
+            <line x1="-5.09" y1="-5.09" x2="-7.07" y2="-7.07" />
           </g>
         </svg>
         <span>
@@ -5280,15 +5664,15 @@
 
     // ── أوصاف المنتجات — عدّل النص هنا لكتابة الوصف الحقيقي لكل منتج ──
     const PRODUCTS_DESC = {
-      1:  'تيشيرت Lacoste E33 Flag بشعار العلم الأيقوني — خامة قطنية فاخرة ومريحة',
-      2:  'U.S. Polo Assn Classic بقصة كلاسيكية — أناقة رياضية مميزة بأعلى جودة',
-      3:  'تيشيرت Givenchy Paris بشعار الماركة المميز — خامة فاخرة من باريس',
-      4:  'Off-White Hand Logo بتصميم عصري — شعار اليد الأيقوني بأسلوب ستريت مميز',
-      5:  'Hugo Bold Logo بشعار مضخم مميز — خامة متميزة وتصميم رجالي حديث',
-      6:  'Lacoste 1927 Heritage — إرث عريق منذ 1927 بتصميم كلاسيكي أصيل',
-      7:  'Balmain Paris بتصميم باريسي فاخر — خامة راقية وأسلوب موضة عالية',
-      8:  'ALO Basic بخامة مريحة جداً — مثالي للاستخدام اليومي والرياضة',
-      9:  'Prada Milano بلمسة ميلانية عصرية — أيقونة الأناقة الإيطالية الراقية',
+      1: 'تيشيرت Lacoste E33 Flag بشعار العلم الأيقوني — خامة قطنية فاخرة ومريحة',
+      2: 'U.S. Polo Assn Classic بقصة كلاسيكية — أناقة رياضية مميزة بأعلى جودة',
+      3: 'تيشيرت Givenchy Paris بشعار الماركة المميز — خامة فاخرة من باريس',
+      4: 'Off-White Hand Logo بتصميم عصري — شعار اليد الأيقوني بأسلوب ستريت مميز',
+      5: 'Hugo Bold Logo بشعار مضخم مميز — خامة متميزة وتصميم رجالي حديث',
+      6: 'Lacoste 1927 Heritage — إرث عريق منذ 1927 بتصميم كلاسيكي أصيل',
+      7: 'Balmain Paris بتصميم باريسي فاخر — خامة راقية وأسلوب موضة عالية',
+      8: 'ALO Basic بخامة مريحة جداً — مثالي للاستخدام اليومي والرياضة',
+      9: 'Prada Milano بلمسة ميلانية عصرية — أيقونة الأناقة الإيطالية الراقية',
       10: 'Burberry Knight بشعار الفارس الأيقوني — تراث بريطاني بخامة استثنائية',
       11: 'Tommy Jeans Graffiti بتصميم غرافيتي مميز — أسلوب شبابي عصري وجريء',
       12: 'Calvin Klein CK Monogram — مونوغرام CK الكلاسيكي بأسلوب بسيط وأنيق',
@@ -5552,8 +5936,8 @@
         <div class="slider-track" style="cursor:pointer">
           <div class="slide">
             <img ${i === 0
-                ? `src="${imgPath(p, 1)}"`
-                : `data-src="${imgPath(p, 1)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="`}
+          ? `src="${imgPath(p, 1)}"`
+          : `data-src="${imgPath(p, 1)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="`}
                  alt="${p.brand}"
                  class="img-lazy"
                  style="opacity:0;transition:opacity .25s"
@@ -5888,7 +6272,7 @@
 
         /* ── Probe extra images بترتيب صحيح ── */
         for (let seq = 2; seq <= MAX_EXTRA_IMAGES + 1; seq++) {
-          (function(s) {
+          (function (s) {
             const probe = new Image();
             probe.onload = () => {
               const slide = document.createElement('div');
@@ -6595,16 +6979,16 @@
       let started = false;
       const doPlay = () => {
         if (started) return;
-        vid.play().then(() => { started = true; }).catch(() => {});
+        vid.play().then(() => { started = true; }).catch(() => { });
       };
 
       /* 2. أعد تحميل الفيديو لتفعيل خاصية muted على iOS Safari */
       vid.load();
 
       /* 3. استمع لأحداث التحميل */
-      vid.addEventListener('loadedmetadata',  doPlay, { once: true });
-      vid.addEventListener('canplay',         doPlay, { once: true });
-      vid.addEventListener('canplaythrough',  doPlay, { once: true });
+      vid.addEventListener('loadedmetadata', doPlay, { once: true });
+      vid.addEventListener('canplay', doPlay, { once: true });
+      vid.addEventListener('canplaythrough', doPlay, { once: true });
 
       /* 4. شغّل فور ظهور الفيديو في الشاشة (IntersectionObserver) */
       if ('IntersectionObserver' in window) {
@@ -6837,7 +7221,7 @@
       imgWrap.setAttribute('dir', 'rtl'); /* RTL: سحب يمين = التالي من اليسار، scrollLeft سالب في Chrome */
 
       /* imgZone — حاوية الصورة الرئيسية (لا تسكرول) */
-      const imgZone  = imgWrap.parentElement;         /* .pm-img-zone */
+      const imgZone = imgWrap.parentElement;         /* .pm-img-zone */
       const imgOuter = imgZone.parentElement;          /* .pm-img-outer */
 
       /* dotsWrap داخل imgZone وليس imgWrap حتى لا تسكرول مع الصور */
@@ -6997,7 +7381,7 @@
         <p class="kicker">${t.selectSize}</p>
         <button class="btn-size-guide" onclick="openSizeCalc()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><line x1="8" y1="7" x2="8" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="16" y1="7" x2="16" y2="17"/></svg>
-          ${ state.lang === 'en' ? 'Size guide' : state.lang === 'ku' ? 'قەبارەکەت بزانە' : 'احسب مقاسك'}
+          ${state.lang === 'en' ? 'Size guide' : state.lang === 'ku' ? 'قەبارەکەت بزانە' : 'احسب مقاسك'}
         </button>
       </div>
       <div class="grid grid-cols-3 gap-1.5 pm-sizes">
@@ -7021,10 +7405,10 @@
         });
       });
       info.querySelector('.pm-add-btn').addEventListener('click', () => {
-        const colorDot  = info.querySelector('.pm-colors .active');
-        const sizeSc    = info.querySelector('.pm-sizes .active');
+        const colorDot = info.querySelector('.pm-colors .active');
+        const sizeSc = info.querySelector('.pm-sizes .active');
         const colorsWrap = info.querySelector('.pm-colors');
-        const colorHint  = info.querySelector('.pm-color-hint');
+        const colorHint = info.querySelector('.pm-color-hint');
 
         /* ── تحقق اللون أولاً ── */
         if (!colorDot) {
@@ -7328,10 +7712,10 @@
     })();
 
     /* =================== LEGAL MODAL =================== */
-    (function() {
+    (function () {
       const modal = document.getElementById('legalModal');
       const titleEl = document.getElementById('legalModalTitle');
-      const bodyEl  = document.getElementById('legalModalBody');
+      const bodyEl = document.getElementById('legalModalBody');
 
       /* ── المحتوى مضمّن مباشرة — لا حاجة لـ fetch ── */
       const LEGAL_MD = {
@@ -7519,8 +7903,8 @@
         return md
           .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
           .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-          .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
-          .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
+          .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+          .replace(/^# (.+)$/gm, '<h1>$1</h1>')
           .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
           .replace(/^---+$/gm, '<hr>')
           .split(/\n{2,}/)
@@ -7537,7 +7921,7 @@
           }).join('');
       }
 
-      window.openLegalModal = function(key, i18nKey) {
+      window.openLegalModal = function (key, i18nKey) {
         const t = I18N[state.lang] || I18N.ar;
         titleEl.textContent = t[i18nKey] || key;
         bodyEl.innerHTML = mdToHtml(LEGAL_MD[key] || '');
@@ -7546,7 +7930,7 @@
         bodyEl.scrollTop = 0;
       };
 
-      window.closeLegalModal = function() {
+      window.closeLegalModal = function () {
         modal.classList.remove('open');
         document.body.style.overflow = '';
       };
@@ -7557,10 +7941,10 @@
     })();
 
     /* =================== NEWSLETTER SUBSCRIBE =================== */
-    window.handleNewsletterSubscribe = function() {
+    window.handleNewsletterSubscribe = function () {
       const input = document.getElementById('footEmailInput');
-      const msg   = document.getElementById('footNewsletterMsg');
-      const btn   = document.getElementById('footNewsletterBtn');
+      const msg = document.getElementById('footNewsletterMsg');
+      const btn = document.getElementById('footNewsletterBtn');
       if (!input || !msg) return;
 
       const contact = (input.value || '').trim();
@@ -7593,10 +7977,10 @@
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ email: contact })
       })
-      .catch((err) => console.error('Newsletter error:', err))
-      .finally(() => {
-        if (btn) { btn.disabled = false; btn.style.opacity = ''; }
-      });
+        .catch((err) => console.error('Newsletter error:', err))
+        .finally(() => {
+          if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+        });
     };
 
     /* =================== DELIVERY COUNTDOWN =================== */
@@ -7623,15 +8007,15 @@
         const m = iraq.getUTCMinutes();
         const s = iraq.getUTCSeconds();
         const totalSec = h * 3600 + m * 60 + s;
-        const cutoff   = 20 * 3600; /* 8 مساءً */
-        const lang     = (state && state.lang) ? state.lang : 'ar';
+        const cutoff = 20 * 3600; /* 8 مساءً */
+        const lang = (state && state.lang) ? state.lang : 'ar';
 
         if (totalSec < cutoff) {
           const diff = cutoff - totalSec;
-          const dh   = Math.floor(diff / 3600);
-          const dm   = Math.floor((diff % 3600) / 60);
-          const ds   = diff % 60;
-          const pad  = n => String(n).padStart(2, '0');
+          const dh = Math.floor(diff / 3600);
+          const dm = Math.floor((diff % 3600) / 60);
+          const ds = diff % 60;
+          const pad = n => String(n).padStart(2, '0');
           const timer = `${pad(dh)}:${pad(dm)}:${pad(ds)}`;
           el.textContent = (MSGS_ACTIVE[lang] || MSGS_ACTIVE.ar)(timer);
         } else {
