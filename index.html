@@ -2926,7 +2926,11 @@
       width: 100%;
       max-width: 860px;
       max-height: 92dvh;
-      overflow-y: auto;
+      overflow: hidden;
+      /* ← منع scroll على الـ sheet نفسه */
+      display: flex;
+      flex-direction: column;
+      /* ← pm-info + pm-action-bar عمودياً */
       border-radius: 0;
       animation: pm-slide-up .38s var(--spring) both;
     }
@@ -3182,6 +3186,43 @@
       #productModal .pm-info {
         padding-inline-end: calc(.85rem + 34px + .6rem);
       }
+    }
+
+    /* ── pm-info: يتمدد ليملأ المساحة المتبقية ويقبل scroll ── */
+    #productModal .pm-info {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      /* padding-bottom تكفي حتى لا يتداخل آخر المحتوى مع الحاوية الثابتة */
+      padding-bottom: 0.5rem;
+    }
+
+    /* ── pm-action-bar: الحاوية الثابتة لزر إضافة إلى السلة ── */
+    #productModal .pm-action-bar {
+      flex-shrink: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      /* خلفية زجاجية مموهة */
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      /* ظل علوي لإظهار الطبقية */
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.07), 0 -1px 0 rgba(0, 0, 0, 0.06);
+      padding: 0.85rem 1.25rem;
+      padding-bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* dark mode */
+    [data-theme="dark"] #productModal .pm-action-bar {
+      background: rgba(28, 28, 28, 0.85);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35), 0 -1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* الزر داخل الحاوية الثابتة — عرض كامل */
+    #productModal .pm-action-bar .pm-add-btn {
+      width: 100%;
+      display: block;
     }
 
     /* =====================================================
@@ -7376,7 +7417,7 @@
       </div>
       <p class="pm-color-hint" style="opacity:0"></p>
     </div>
-    <div class="mt-4">
+      <div class="mt-4">
       <div class="flex items-center justify-between mb-2">
         <p class="kicker">${t.selectSize}</p>
         <button class="btn-size-guide" onclick="openSizeCalc()">
@@ -7388,8 +7429,11 @@
         ${sizes.map(s => `<div class="size-card" data-size="${s}"><div class="lbl">${s}</div><div class="wt">${wgMap[s] || ''}</div></div>`).join('')}
       </div>
     </div>
-    <button class="btn-ink w-full py-3.5 mt-5 text-xs tracking-[.2em] pm-add-btn">${t.addBag}</button>
   `;
+
+      /* تحديث نص زر السلة الثابت — موجود في pm-action-bar */
+      const addBtn = modal.querySelector('.pm-action-bar .pm-add-btn');
+      if (addBtn) addBtn.textContent = t.addBag;
 
       /* أحداث الألوان والمقاسات والإضافة */
       info.querySelectorAll('.pm-colors .color-dot').forEach(dot => {
@@ -7404,7 +7448,8 @@
           sc.classList.add('active');
         });
       });
-      info.querySelector('.pm-add-btn').addEventListener('click', () => {
+      /* ── حدث زر السلة الثابت (pm-action-bar) ── */
+      if (addBtn) addBtn.addEventListener('click', () => {
         const colorDot = info.querySelector('.pm-colors .active');
         const sizeSc = info.querySelector('.pm-sizes .active');
         const colorsWrap = info.querySelector('.pm-colors');
@@ -8034,7 +8079,8 @@
     <div class="pm-backdrop" onclick="closeProductModal()"></div>
     <div class="pm-sheet">
       <button class="pm-close" onclick="closeProductModal()" aria-label="close">✕</button>
-      <div class="flex flex-col sm:flex-row" style="min-height:0">
+      <!-- المحتوى القابل للتمرير: صورة + تفاصيل -->
+      <div class="flex flex-col sm:flex-row" style="min-height:0;flex:1;overflow:hidden">
         <!-- صورة -->
         <div class="sm:w-2/5 flex-shrink-0 pm-img-outer">
           <div class="pm-img-zone">
@@ -8043,8 +8089,13 @@
           </div>
           <div class="pm-thumbs" style="display:none"></div>
         </div>
-        <!-- تفاصيل -->
-        <div class="pm-info p-5 flex-1 overflow-y-auto"></div>
+        <!-- تفاصيل المنتج (قابل للتمرير) — بدون زر السلة -->
+        <div class="pm-info p-5"></div>
+      </div>
+      <!-- ── حاوية زر السلة الثابتة (Sticky) ── -->
+      <div class="pm-action-bar">
+        <button class="btn-ink pm-add-btn text-xs tracking-[.2em]"
+          style="padding-top:0.85rem;padding-bottom:0.85rem;"></button>
       </div>
     </div>
   </div>
