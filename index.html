@@ -6752,42 +6752,83 @@
       const t = I18N[state.lang];
       const tot = computeTotals();
 
-      /* ---- Build WhatsApp message ---- */
-      const nl = '%0A';   // URL-encoded newline
+      /* ---- Generate Order ID ---- */
+      const _now      = new Date();
+      const _pad      = n => String(n).padStart(2, '0');
+      const _datePart = String(_now.getFullYear()).slice(-2) + _pad(_now.getMonth() + 1) + _pad(_now.getDate());
+      const _randPart = Math.random().toString(36).slice(-4).toUpperCase();
+      const orderId   = `SZ-${_datePart}-${_randPart}`;
+
+      /* ---- Save full order to Google Sheets (fire-and-forget) ---- */
+      const ORDERS_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwoupZDxuM9-tM37cXimD5GuI3zaG-I6rt2AfvaG85O0YWYaP3vLkMRI55KwO7CINku/exec';
+      const orderPayload = {
+        orderId,
+        timestamp:      _now.toLocaleString('ar-IQ', { timeZone: 'Asia/Baghdad' }),
+        name:           fd.get('name')     || '',
+        phone:          fd.get('phone')    || '',
+        province:       fd.get('province') || '',
+        area:           fd.get('area')     || '',
+        address:        fd.get('address')  || '',
+        notes:          fd.get('notes')    || '',
+        items: state.cart.map(i => ({
+          brand:     i.brand,
+          sub:       i.sub       || '',
+          sku:       i.sku       || '',
+          color:     i.color     || '',
+          size:      i.size      || '',
+          qty:       i.qty,
+          unitPrice: i.price     || UNIT_PRICE,
+          lineTotal: fmt((i.price || UNIT_PRICE) * i.qty)
+        })),
+        subtotal:       tot.sub,
+        bulkDiscount:   tot.bulkDiscount,
+        couponCode:     state.coupon ? state.coupon.code : '',
+        couponDiscount: tot.couponDiscount,
+        shipping:       tot.shipping,
+        total:          tot.total,
+        payment:        I18N[state.lang].payWhatsApp || 'Cash on Delivery',
+        lang:           state.lang
+      };
+      fetch(ORDERS_SHEETS_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    JSON.stringify(orderPayload)
+      }).catch(() => {});
+
+      /* ---- Build WhatsApp message (مبسّط — التفاصيل في Sheets) ---- */
+      const nl = '%0A';
       const bold = s => `*${s}*`;
 
-      const itemLines = state.cart
-        .map(i => `  • ${i.brand} [${i.sku || ''}] — ${i.color || ''} / ${i.size} × ${i.qty} = ${fmt((i.price || UNIT_PRICE) * i.qty)}`)
-        .join(nl);
+      const _totalQty = state.cart.reduce((s, i) => s + i.qty, 0);
+      const payLabel  = I18N[state.lang].payWhatsApp || 'Cash on Delivery';
 
       const discLine = tot.bulkDiscount > 0
-        ? `${nl}🎁 Bulk discount (30,000/piece): -${fmt(tot.bulkDiscount)}`
+        ? `🎁 ${bold('خصم الكمية')}: -${fmt(tot.bulkDiscount)}${nl}`
         : '';
 
       const couponLine = (state.coupon && tot.couponDiscount > 0)
-        ? `${nl}🏷️ Coupon (${state.coupon.code}): -${fmt(tot.couponDiscount)}`
+        ? `🏷️ ${bold('كوبون')} (${state.coupon.code}): -${fmt(tot.couponDiscount)}${nl}`
         : '';
 
       const shippingLine = tot.shipping === 0
-        ? `🚚 Delivery: Free`
-        : `🚚 Delivery: ${fmt(tot.shipping)}`;
-
-      const payLabel = I18N[state.lang].payWhatsApp || 'Cash on Delivery';
+        ? `🚚 ${bold('التوصيل')}: مجاني${nl}`
+        : `🚚 ${bold('التوصيل')}: ${fmt(tot.shipping)}${nl}`;
 
       const msg =
-        `🛍️ ${bold('New SizeMe Order')}${nl}${nl}` +
-        `👤 ${bold('Name')}: ${fd.get('name')}${nl}` +
-        `📞 ${bold('Phone')}: ${fd.get('phone')}${nl}` +
-        `📍 ${bold('Province')}: ${fd.get('province')}${nl}` +
-        `🏘️ ${bold('Area')}: ${fd.get('area')}${nl}` +
-        `🏠 ${bold('Address')}: ${fd.get('address')}${nl}` +
-        (fd.get('notes') ? `📝 ${bold('Notes')}: ${fd.get('notes')}${nl}` : '') +
-        `💳 ${bold('Payment')}: ${payLabel}${nl}` +
-        `${nl}${bold('Items')}:${nl}${itemLines}${nl}` +
-        `${nl}💵 Subtotal: ${fmt(tot.sub)}` +
-        `${discLine}${couponLine}${nl}` +
-        `${shippingLine}${nl}` +
-        `${bold('💰 Total: ')}${fmt(tot.total)}`;
+        `🛍️ ${bold('طلب جديد — SizeMe')}${nl}` +
+        `🔖 ${bold('رقم الطلب')}: ${bold(orderId)}${nl}${nl}` +
+        `👤 ${bold('الاسم')}: ${fd.get('name')}${nl}` +
+        `📞 ${bold('الهاتف')}: ${fd.get('phone')}${nl}` +
+        `📍 ${bold('المحافظة')}: ${fd.get('province')}${nl}` +
+        `🏘️ ${bold('المدينة')}: ${fd.get('area')}${nl}` +
+        `🏠 ${bold('العنوان')}: ${fd.get('address')}${nl}` +
+        (fd.get('notes') ? `📝 ${bold('ملاحظات')}: ${fd.get('notes')}${nl}` : '') +
+        `💳 ${bold('الدفع')}: ${payLabel}${nl}` +
+        `${nl}🛒 ${bold('عدد القطع')}: ${_totalQty} قطعة${nl}` +
+        `${discLine}${couponLine}${shippingLine}` +
+        `${bold('💰 الإجمالي')}: ${bold(fmt(tot.total))}${nl}` +
+        `${nl}📋 ${bold('تفاصيل المنتجات محفوظة في السجل برقم الطلب')}`;
 
       /* ---- Show confirmation first, then open WhatsApp ---- */
       $('#cfMsg').textContent = t.cfBody(name);
@@ -7472,8 +7513,8 @@
           sc.classList.add('active');
         });
       });
-      /* ── حدث زر السلة الثابت (pm-action-bar) ── */
-      if (addBtn) addBtn.addEventListener('click', () => {
+      /* ── حدث زر السلة الثابت (pm-action-bar) — onclick لمنع تراكم الـ listeners ── */
+      if (addBtn) addBtn.onclick = () => {
         const colorDot = info.querySelector('.pm-colors .active');
         const sizeSc = info.querySelector('.pm-sizes .active');
         const colorsWrap = info.querySelector('.pm-colors');
@@ -7504,7 +7545,7 @@
         addToCart({ pid: p.id, brand: p.brand, sub: p.sub, sku: p.sku, img: imgPath(p, 1), color: colorDot.dataset.color, size: sizeSc.dataset.size, qty: 1, price: getPrice(p) });
         closeProductModal();
         openCart();
-      });
+      };
 
       modal.classList.add('is-open');
       document.body.style.overflow = 'hidden';
