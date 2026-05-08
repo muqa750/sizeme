@@ -3309,6 +3309,49 @@
     }
 
     /* =====================================================
+       OFFLINE TOAST
+       ===================================================== */
+    #offlineToast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 9999;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 13px 20px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .875rem;
+      letter-spacing: .01em;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22);
+      transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .38s;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      max-width: calc(100vw - 32px);
+    }
+    #offlineToast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #offlineToast .ot-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #e74c3c;
+      flex-shrink: 0;
+      animation: ot-pulse 1.6s ease-in-out infinite;
+    }
+    #offlineToast.online .ot-dot { background: #2ecc71; animation: none; }
+    @keyframes ot-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .3; }
+    }
+
+    /* =====================================================
      NEW ARRIVALS SECTION
      ===================================================== */
     .new-arrivals-section {
@@ -4342,13 +4385,13 @@
     <div class="marquee-track">
       <div class="flex gap-12 px-6 min-w-full justify-around">
         <span>اطلب وتونس.. التوصيل يجيك وين ما تكون بالعراق</span>
-        <span>وفر فلوسك واطلب 10 قطع.. الشحن يصير علينا والسعر ينزل</span>
+        <span>وفر فلوسك واطلب 4 قطع.. الشحن يصير علينا والسعر ينزل</span>
         <span>القياس ما ناسبك؟ لتشيل هم.. الاستبدال عدنا سهل وبسيط</span>
         <span>كشختك بـ سايزمي غير.. اطلب بسرعة قبل ما تخلص الوجبة</span>
       </div>
       <div class="flex gap-12 px-6 min-w-full justify-around" aria-hidden="true">
         <span>اطلب وتونس.. التوصيل يجيك وين ما تكون بالعراق</span>
-        <span>وفر فلوسك واطلب 10 قطع.. الشحن يصير علينا والسعر ينزل</span>
+        <span>وفر فلوسك واطلب 4 قطع.. الشحن يصير علينا والسعر ينزل</span>
         <span>القياس ما ناسبك؟ لتشيل هم.. الاستبدال عدنا سهل وبسيط</span>
         <span>كشختك بـ سايزمي غير.. اطلب بسرعة قبل ما تخلص الوجبة</span>
       </div>
@@ -5455,7 +5498,7 @@
         aboutKicker: 'حرفتنا',
         aboutTitle: 'متخصصون بملابس الماركات الحصرية الأنماط الفاخرة والألوان المميزة',
         aboutPt1: 'قماش فاخر', aboutPt2: 'مقاسات مريحة', aboutPt3: 'سعر عادل',
-        trust1: 'ضمان استبدال القياس', trust1sub: 'اطلب باطمئنان', trust2: 'مدى المقاسات', trust3: '10+ قطع', trust4: 'على الطلبات الكبيرة', trust4v: 'شحن مجاني + خصم',
+        trust1: 'ضمان استبدال القياس', trust1sub: 'اطلب باطمئنان', trust2: 'مدى المقاسات', trust3: '4+ قطع', trust4: 'على الطلبات الكبيرة', trust4v: 'شحن مجاني + خصم',
         shopKicker: 'المجموعة', shopTitle: 'كل المنتجات', shopNote: 'تيشيرت 35K · بنطرون 30K · قميص 25K · تراكسوت 70K دينار',
         gKicker: 'وعدنا', gTitle: 'ضمان الاستبدال في حال عدم مناسبة المقاس',
         gSub: 'اطلب باطمئنان — فريقنا يتواصل شخصيًا لتأكيد الطلب قبل الشحن',
@@ -5464,7 +5507,7 @@
         footHelp: 'مساعدة', footHelp1: 'الأسعار: 25,000–70,000 د.ع حسب الفئة', footHelp2: 'التوصيل: 5,000 د.ع (العراق)', footHelp3: 'شحن مجاني عند 10 قطع فأكثر',
         footFollow: 'تابعنا',
         cartTitle: 'سلة المشتريات', sum: 'المجموع الكلي', disc: 'خصم الكمية (5,000/قطعة)', ship: 'كلفة التوصيل', total: 'الإجمالي',
-        bulkHint: 'أضف 10 قطع أو أكثر للحصول على سعر 30,000 للقطعة + شحن مجاني.',
+        bulkHint: 'أضف 4 قطع أو أكثر للحصول على سعر 30,000 للقطعة. شحن مجاني عند 10 قطع فأكثر.',
         continueShopping: 'تابع التسوق', backToStore: 'العودة للمتجر',
         langLabel: 'اللغة', darkMode: 'الوضع الليلي',
         checkout: 'إتمام الطلب',
@@ -5495,8 +5538,8 @@
         pageNext: 'التالي', pagePrev: 'السابق',
         noResults: 'لا توجد منتجات تطابق الفلتر المختار.',
         shopCountFn: (s, t) => `${s} من ${t} منتج`,
-        bulkProgressFn: (n) => n >= 10 ? '🎉 سعر 30,000 للقطعة + شحن مجاني مفعّل!' : `أضف ${10 - n} قطعة للحصول على سعر 30,000 للقطعة وشحن مجاني`,
-        bulkActiveBadge: 'مفعّل ✓', bulkPendingBadge: '10 قطع',
+        bulkProgressFn: (n) => n >= 10 ? '🎉 سعر 30,000 للقطعة + شحن مجاني مفعّل!' : n >= 4 ? `🎁 سعر 30,000 مفعّل! أضف ${10 - n} قطعة للشحن المجاني` : `أضف ${4 - n} قطعة للحصول على سعر 30,000 للقطعة`,
+        bulkActiveBadge: 'مفعّل ✓', bulkPendingBadge: '4 قطع',
         footInteract: 'تفاعل معنا', footSuggBtn: 'شاركنا اقتراحك', footReviewsBtn: 'آراء الزبائن',
         suggTitle: 'شاركنا اقتراحك', suggSub: 'اقتراحك يهمنا، سيتم حفظه ومراجعته بكل اهتمام',
         suggPlaceholder: 'اكتب اقتراحك هنا...', suggSend: 'إرسال',
@@ -5519,7 +5562,7 @@
       },
       en: {
         dir: 'ltr',
-        bar1: 'Free shipping on orders of 10+ pieces · Special bulk discount · Sizes 2XL–7XL',
+        bar1: 'Free shipping on orders of 4+ pieces · Special bulk discount · Sizes 2XL–7XL',
         bar2: 'Replacement guarantee if the size doesn\'t fit',
         navShop: 'Shop', navAbout: 'About', navContact: 'Contact',
         tagline: 'PREMIUM · PLUS SIZES',
@@ -5530,7 +5573,7 @@
         aboutKicker: 'Our Craft',
         aboutTitle: 'Premium Brand Clothing - Exclusive Patterns & Distinctive Sizes.',
         aboutPt1: 'FINE COTTON', aboutPt2: '2XL — 7XL', aboutPt3: 'FAIR PRICE',
-        trust1: 'Size Guarantee', trust1sub: 'Order Confidently', trust2: 'Size Range', trust3: '10+ Pieces', trust4: 'On bulk orders', trust4v: 'Free Shipping',
+        trust1: 'Size Guarantee', trust1sub: 'Order Confidently', trust2: 'Size Range', trust3: '4+ Pieces', trust4: 'On bulk orders', trust4v: 'Free Shipping',
         shopKicker: 'The Collection', shopTitle: 'All Products', shopNote: 'T-Shirt 35K · Jeans 30K · Shirt 25K · Tracksuit 70K IQD',
         gKicker: 'Promise', gTitle: "Replacement guarantee if the size doesn't fit.",
         gSub: 'Order with confidence — our team follows up on every order personally before dispatch.',
@@ -5539,7 +5582,7 @@
         footHelp: 'Help', footHelp1: 'Prices: 25,000–70,000 IQD by category', footHelp2: 'Delivery: 5,000 IQD (Iraq)', footHelp3: 'Free shipping on 10+ pieces',
         footFollow: 'Follow',
         cartTitle: 'Your Bag', sum: 'Subtotal', disc: 'Bulk Discount (5K/piece)', ship: 'Delivery', total: 'Total',
-        bulkHint: 'Add 10+ pieces to get 30,000 IQD/piece + free shipping.',
+        bulkHint: 'Add 4+ pieces to get 30,000 IQD/piece. Free shipping on 10+ pieces.',
         continueShopping: 'Continue Shopping', backToStore: 'Back to Store',
         langLabel: 'Language', darkMode: 'Dark Mode',
         checkout: 'CHECKOUT',
@@ -5570,8 +5613,8 @@
         pageNext: 'Next', pagePrev: 'Prev',
         noResults: 'No products match the selected filters.',
         shopCountFn: (s, t) => `${s} of ${t} products`,
-        bulkProgressFn: (n) => n >= 10 ? '🎉 30,000 IQD/piece + free shipping unlocked!' : `Add ${10 - n} more pieces for 30,000/piece & free shipping`,
-        bulkActiveBadge: 'Active ✓', bulkPendingBadge: '10 pcs',
+        bulkProgressFn: (n) => n >= 10 ? '🎉 30,000 IQD/piece + free shipping unlocked!' : n >= 4 ? `🎁 30,000/piece active! Add ${10 - n} more for free shipping` : `Add ${4 - n} more pieces for 30,000 IQD/piece`,
+        bulkActiveBadge: 'Active ✓', bulkPendingBadge: '4 pcs',
         footInteract: 'Interact', footSuggBtn: 'Share a Suggestion', footReviewsBtn: 'Customer Reviews',
         suggTitle: 'Share Your Suggestion', suggSub: 'Your message will be sent via WhatsApp.',
         suggPlaceholder: 'Write your suggestion here...', suggSend: 'Send',
@@ -5614,7 +5657,7 @@
         footHelp: 'یارمەتی', footHelp1: 'نرخەکان: ٢٥،٠٠٠–٧٠،٠٠٠ د.ع بەپێی جۆر', footHelp2: 'گەیاندن: ٥،٠٠٠ د.ع (عێراق)', footHelp3: 'گەیاندن بێبەرامبەر لەگەڵ ١٠ پارچە بۆ سەرەوە',
         footFollow: 'شوێنمان بکەوە',
         cartTitle: 'سەبەتەی تۆ', sum: 'کۆی بچووک', disc: 'داشکاندنی کۆمەڵ (٥٠٠٠/پارچە)', ship: 'گەیاندن', total: 'کۆی گشتی',
-        bulkHint: '١٠ پارچە یان زیاتر زیاد بکە بۆ نرخی ٣٠،٠٠٠ بۆ هەر پارچەیەک + گەیاندن بێبەرامبەر.',
+        bulkHint: '٤ پارچە یان زیاتر زیاد بکە بۆ نرخی ٣٠،٠٠٠. گەیاندن بێبەرامبەر لە ١٠ پارچەدا.',
         continueShopping: 'بەردەوام بە کڕین', backToStore: 'گەڕانەوە بۆ فرۆشگا',
         langLabel: 'زمان', darkMode: 'دەمی شەو',
         checkout: 'تەواوکردن',
@@ -5645,8 +5688,8 @@
         pageNext: 'دواتر', pagePrev: 'پێشتر',
         noResults: 'هیچ بەرهەمێک نەدۆزرایەوە.',
         shopCountFn: (s, t) => `${s} لە ${t} بەرهەم`,
-        bulkProgressFn: (n) => n >= 10 ? '🎉 نرخی ٣٠،٠٠٠ بۆ هەر پارچەیەک + گەیاندن بێبەرامبەر چالاکە!' : `${10 - n} پارچەی تر زیاد بکە بۆ نرخی ٣٠،٠٠٠`,
-        bulkActiveBadge: 'چالاکە ✓', bulkPendingBadge: '١٠ پارچە',
+        bulkProgressFn: (n) => n >= 10 ? '🎉 نرخی ٣٠،٠٠٠ + گەیاندن بێبەرامبەر چالاکە!' : n >= 4 ? `🎁 نرخی ٣٠،٠٠٠ چالاکە! ${10 - n} پارچەی تر بۆ گەیاندنی بێبەرامبەر` : `${4 - n} پارچەی تر زیاد بکە بۆ نرخی ٣٠،٠٠٠`,
+        bulkActiveBadge: 'چالاکە ✓', bulkPendingBadge: '٤ پارچە',
         footInteract: 'پەیوەندی', footSuggBtn: 'پێشنیازت بنێرە', footReviewsBtn: 'بۆچوونی کڕیار',
         suggTitle: 'پێشنیازت بنێرە', suggSub: 'پێشنیازەکەت ڕاستەوخۆ بە واتساپ دەنێردرێت.',
         suggPlaceholder: 'پێشنیازەکەت لێرە بنووسە...', suggSend: 'ناردن',
@@ -5918,7 +5961,8 @@
     const BULK_UNIT_PRICE = 30000;
     const BULK_DISC_PER_PCS = 5000;       // خصم ثابت 5,000 لكل قطعة عند 10+
     const SHIPPING = 5000;
-    const BULK_THRESHOLD = 10;
+    const BULK_THRESHOLD = 4;          // 4+ قطع → سعر 30,000
+    const SHIPPING_FREE_THRESHOLD = 10; // 10+ قطع → شحن مجاني
     const BULK_DISCOUNT = (UNIT_PRICE - BULK_UNIT_PRICE) / UNIT_PRICE;
 
     /* =================== STATE =================== */
@@ -6495,7 +6539,7 @@
       }
 
       const discount = bulkDiscount + couponDiscount;
-      const shipping = qty === 0 ? 0 : (bulk ? 0 : SHIPPING);
+      const shipping = qty === 0 ? 0 : (qty >= SHIPPING_FREE_THRESHOLD ? 0 : SHIPPING);
       const total = sub - discount + shipping;
       return { qty, sub, bulk, bulkDiscount, couponDiscount, discount, shipping, total };
     }
@@ -6852,12 +6896,40 @@
         payment:        I18N[state.lang].payWhatsApp || 'Cash on Delivery',
         lang:           state.lang
       };
+      /* ---- إرسال الطلب مع كشف فشل الاتصال ---- */
+      if (!navigator.onLine) {
+        /* مقطوع تماماً — أظهر رسالة وأوقف الإرسال */
+        const ot = document.getElementById('offlineToast');
+        const om = document.getElementById('offlineToastMsg');
+        if (ot && om) {
+          ot.classList.remove('online');
+          om.textContent = 'لا يوجد اتصال — تأكد من النت وأعد المحاولة';
+          ot.classList.add('show');
+        }
+        return;
+      }
+      const _fetchCtrl    = new AbortController();
+      const _fetchTimeout = setTimeout(() => _fetchCtrl.abort(), 10000);
       fetch(ORDERS_SHEETS_URL, {
         method:  'POST',
         mode:    'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body:    JSON.stringify(orderPayload)
-      }).catch(() => {});
+        body:    JSON.stringify(orderPayload),
+        signal:  _fetchCtrl.signal
+      })
+      .then(() => clearTimeout(_fetchTimeout))
+      .catch(() => {
+        clearTimeout(_fetchTimeout);
+        /* فشل الإرسال — نُعلم الزبون لكن لا نوقف الواتساب */
+        const ot = document.getElementById('offlineToast');
+        const om = document.getElementById('offlineToastMsg');
+        if (ot && om) {
+          ot.classList.remove('online');
+          om.textContent = '⚠️ لم يُحفظ الطلب في السجل — طلبك عبر الواتساب وصل بنجاح';
+          ot.classList.add('show');
+          setTimeout(() => ot.classList.remove('show'), 5000);
+        }
+      });
 
       /* ---- Build WhatsApp message (مبسّط — التفاصيل في Sheets) ---- */
       const nl = '%0A';
@@ -8311,6 +8383,12 @@
     </div>
   </div>
 
+  <!-- ================= OFFLINE TOAST ================= -->
+  <div id="offlineToast" role="status" aria-live="polite">
+    <span class="ot-dot"></span>
+    <span id="offlineToastMsg">لا يوجد اتصال بالإنترنت</span>
+  </div>
+
   <!-- ================= DRAGGABLE WHATSAPP BUTTON ================= -->
   <script>
     (function () {
@@ -8388,6 +8466,38 @@
       document.addEventListener('mouseup', onEnd);
       /* منع فتح الرابط عند السحب */
       fab.addEventListener('click', function (e) { if (wasMoved) { e.preventDefault(); wasMoved = false; } });
+    })();
+  </script>
+
+  <!-- ================= OFFLINE DETECTION ================= -->
+  <script>
+    (function () {
+      const toast   = document.getElementById('offlineToast');
+      const toastMsg = document.getElementById('offlineToastMsg');
+      if (!toast) return;
+
+      let hideTimer = null;
+
+      function showOffline() {
+        clearTimeout(hideTimer);
+        toast.classList.remove('online');
+        toastMsg.textContent = 'لا يوجد اتصال بالإنترنت';
+        toast.classList.add('show');
+      }
+
+      function showOnline() {
+        clearTimeout(hideTimer);
+        toast.classList.add('online');
+        toastMsg.textContent = 'عاد الاتصال بالإنترنت ✓';
+        toast.classList.add('show');
+        hideTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+      }
+
+      window.addEventListener('offline', showOffline);
+      window.addEventListener('online',  showOnline);
+
+      /* فحص عند التحميل */
+      if (!navigator.onLine) showOffline();
     })();
   </script>
 
