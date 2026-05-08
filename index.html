@@ -4844,10 +4844,10 @@
           <p class="text-base md:text-lg font-bold mb-4 text-[color:var(--ink)]" data-i18n="footLinks">المساعدة</p>
           <ul class="flex flex-col items-center gap-y-3">
             <li>
-              <button onclick="openSizeCalc()"
+              <button onclick="openLegalModal('exchange', 'footExchange')"
                 class="foot-service-link group flex items-center gap-2 text-sm text-[color:var(--mute)] hover:text-[color:var(--ink)] transition-colors duration-200"
-                data-i18n="footSizeGuide">
-                دليل المقاسات
+                data-i18n="footExchange">
+                سياسة الاستبدال
               </button>
             </li>
             <li>
@@ -5324,6 +5324,67 @@
     </div>
   </div>
 
+  <!-- ================= SIZE CALCULATOR MODAL ================= -->
+  <div id="sizeCalcModal" role="dialog" aria-modal="true" aria-labelledby="scTitle">
+    <div class="sc-backdrop" onclick="closeSizeCalc()"></div>
+    <div class="sc-sheet">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-5">
+        <h2 id="scTitle" class="serif text-xl">احسب مقاسك</h2>
+        <button onclick="closeSizeCalc()" aria-label="إغلاق"
+          style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;cursor:pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Weight -->
+      <div class="mb-3">
+        <label id="scWeightLbl" for="scWeight" class="block text-sm mb-1" style="color:var(--mute);">
+          الوزن (كغ)
+          <span title="أدخل وزنك الحالي بالكيلوغرام"
+            style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--mute);font-size:10px;cursor:help;margin-inline-start:4px;vertical-align:middle;color:var(--mute);">?</span>
+        </label>
+        <input id="scWeight" type="number" min="40" max="300" inputmode="numeric"
+          placeholder="مثال: 110" onkeydown="if(event.key==='Enter')calcSize()">
+      </div>
+
+      <!-- Height (optional) -->
+      <div class="mb-3">
+        <label id="scHeightLbl" for="scHeight" class="block text-sm mb-1" style="color:var(--mute);">
+          الطول (سم) — اختياري
+          <span title="طولك بالسنتيمتر — يساعد في تحسين النتيجة لكن ليس إلزامياً"
+            style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--mute);font-size:10px;cursor:help;margin-inline-start:4px;vertical-align:middle;color:var(--mute);">?</span>
+        </label>
+        <input id="scHeight" type="number" min="140" max="230" inputmode="numeric"
+          placeholder="مثال: 175" onkeydown="if(event.key==='Enter')calcSize()">
+      </div>
+
+      <!-- Chest Width (optional — NEW) -->
+      <div class="mb-4">
+        <label id="scChestLbl" for="scChest" class="block text-sm mb-1" style="color:var(--mute);">
+          عرض الصدر (اختياري)
+          <span id="scChestTooltip" title="قس تيشيرت مريحاً عندك من الإبط للإبط وضعه هنا"
+            style="display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--mute);font-size:10px;cursor:help;margin-inline-start:4px;vertical-align:middle;color:var(--mute);">?</span>
+        </label>
+        <input id="scChest" type="number" min="80" max="200" inputmode="numeric"
+          placeholder="قس تيشيرت مريحاً من الإبط للإبط — مثال: 70"
+          style="font-size:max(13px, .8rem)!important;"
+          onkeydown="if(event.key==='Enter')calcSize()">
+      </div>
+
+      <!-- Calc Button -->
+      <button id="scCalcBtn" onclick="calcSize()"
+        style="width:100%;background:var(--ink);color:#fff;padding:.85rem 1rem;font-size:.95rem;letter-spacing:.05em;border:none;cursor:pointer;">
+        احسب
+      </button>
+
+      <!-- Result -->
+      <div id="scResult" style="display:none;"></div>
+    </div>
+  </div>
+
   <!-- ================= CONFIRMATION MODAL ================= -->
   <div id="confirmOverlay" class="fixed inset-0 overlay z-[70] hidden"></div>
   <div id="confirmModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
@@ -5451,9 +5512,9 @@
         newBadge: 'جديد',
         sortBestSeller: 'الأكثر طلباً', sortNewArrivals: 'وصل حديثاً',
         sizeCalcBtn: 'احسب مقاسك', sizeCalcTitle: 'احسب مقاسك',
-        scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scCalcBtn: 'احسب',
+        scWeightLbl: 'الوزن (كغ)', scHeightLbl: 'الطول (سم) — اختياري', scChestLbl: 'عرض الصدر (اختياري)', scCalcBtn: 'احسب',
         colors: { 'Black': 'أسود', 'White': 'أبيض', 'Dark Navy': 'نيلي', 'Royal Blue': 'أزرق ملكي', 'Brown': 'جوزي', 'Burgundy': 'ماروني', 'Charcoal': 'رصاصي فاحم', 'Taupe': 'توبي', 'Olive': 'زيتوني' },
-        legalWarning: 'تحذير قانوني', legalTerms: 'شروط الاستخدام', legalPrivacy: 'سياسة الخصوصية',
+        legalWarning: 'تحذير قانوني', legalTerms: 'شروط الاستخدام', legalPrivacy: 'سياسة الخصوصية', footExchange: 'سياسة الاستبدال والضمان',
         legalClose: 'إغلاق'
       },
       en: {
@@ -5526,9 +5587,9 @@
         newBadge: 'NEW',
         sortBestSeller: 'Best Seller', sortNewArrivals: 'New Arrivals',
         sizeCalcBtn: 'Size Guide', sizeCalcTitle: 'Find Your Size',
-        scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scCalcBtn: 'Calculate',
+        scWeightLbl: 'Weight (kg)', scHeightLbl: 'Height (cm) — optional', scChestLbl: 'Chest width (optional)', scCalcBtn: 'Calculate',
         colors: { 'Black': 'Black', 'White': 'White', 'Dark Navy': 'Dark Navy', 'Royal Blue': 'Royal Blue', 'Brown': 'Brown', 'Burgundy': 'Burgundy', 'Charcoal': 'Charcoal', 'Taupe': 'Taupe', 'Olive': 'Olive' },
-        legalWarning: 'Legal Notice', legalTerms: 'Terms of Use', legalPrivacy: 'Privacy Policy',
+        legalWarning: 'Legal Notice', legalTerms: 'Terms of Use', legalPrivacy: 'Privacy Policy', footExchange: 'Exchange & Warranty Policy',
         legalClose: 'Close'
       },
       ku: {
@@ -5601,9 +5662,9 @@
         newBadge: 'نوێ',
         sortBestSeller: 'زۆرترین داواکاری', sortNewArrivals: 'تازە گەیشتوو',
         sizeCalcBtn: 'قەبارەکەت بزانە', sizeCalcTitle: 'قەبارەکەت بزانە',
-        scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scCalcBtn: 'حیساب بکە',
+        scWeightLbl: 'کێشە (کیلۆ)', scHeightLbl: 'بەرزی (سم) — ئارەزوومەندانە', scChestLbl: 'پانی سینە (ئارەزوومەندانە)', scCalcBtn: 'حیساب بکە',
         colors: { 'Black': 'ڕەش', 'White': 'سپی', 'Dark Navy': 'نيللی', 'Royal Blue': 'شینی شاهانە', 'Brown': 'قاوەیی', 'Burgundy': 'مارۆنی', 'Charcoal': 'خۆڵەمێشی تۆخ', 'Taupe': 'تۆپی', 'Olive': 'زەیتوونی' },
-        legalWarning: 'ئاگاداری یاسایی', legalTerms: 'مەرج و مرادەکان', legalPrivacy: 'پۆلیسی تایبەتمەندی',
+        legalWarning: 'ئاگاداری یاسایی', legalTerms: 'مەرج و مرادەکان', legalPrivacy: 'پۆلیسی تایبەتمەندی', footExchange: 'پۆلیسی گۆڕینەوە و گەرەنتی',
         legalClose: 'داخستن'
       }
     };
@@ -6639,9 +6700,11 @@
       const scTitle = document.getElementById('scTitle');
       if (scTitle) scTitle.textContent = t.sizeCalcTitle || 'احسب مقاسك';
       const scWL = document.getElementById('scWeightLbl');
-      if (scWL) scWL.textContent = t.scWeightLbl || 'الوزن (كغ)';
+      if (scWL) scWL.childNodes[0].textContent = '\n          ' + (t.scWeightLbl || 'الوزن (كغ)') + '\n          ';
       const scHL = document.getElementById('scHeightLbl');
-      if (scHL) scHL.textContent = t.scHeightLbl || 'الطول (سم) — اختياري';
+      if (scHL) scHL.childNodes[0].textContent = '\n          ' + (t.scHeightLbl || 'الطول (سم) — اختياري') + '\n          ';
+      const scCL = document.getElementById('scChestLbl');
+      if (scCL) { const sp = scCL.querySelector('#scChestTooltip'); scCL.childNodes[0].textContent = (t.scChestLbl || 'عرض الصدر (اختياري)') + ' '; }
       const scBtn2 = document.getElementById('scBtn');
       if (scBtn2) scBtn2.textContent = t.scCalcBtn || 'احسب';
 
@@ -6760,7 +6823,7 @@
       const orderId   = `SZ-${_datePart}-${_randPart}`;
 
       /* ---- Save full order to Google Sheets (fire-and-forget) ---- */
-      const ORDERS_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwoupZDxuM9-tM37cXimD5GuI3zaG-I6rt2AfvaG85O0YWYaP3vLkMRI55KwO7CINku/exec';
+      const ORDERS_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyOAn2W6w-62mmYDtuFwfhuqC1x9FhaROFC6Dzt6Fg6hZPJzW_aXsvWUhwVrD3N6nQZIg/exec';
       const orderPayload = {
         orderId,
         timestamp:      _now.toLocaleString('ar-IQ', { timeZone: 'Asia/Baghdad' }),
@@ -7577,10 +7640,13 @@
       if (res) res.style.display = 'none';
       const sw = document.getElementById('scWeight'); if (sw) sw.value = '';
       const sh = document.getElementById('scHeight'); if (sh) sh.value = '';
+      const sc = document.getElementById('scChest');  if (sc) sc.value = '';
     }
     function calcSize() {
       const w = parseFloat(document.getElementById('scWeight').value);
+      const chest = parseFloat(document.getElementById('scChest').value);
       if (!w || w < 40 || w > 300) { return; }
+
       /* ── جداول الأوزان ── */
       const xlMap = [
         { size: '2XL', min: 95, max: 106 },
@@ -7590,6 +7656,15 @@
         { size: '6XL', min: 141, max: 156 },
         { size: '7XL', min: 156, max: 220 },
       ];
+      /* ── جدول عرض الصدر (cm من الإبط للإبط × 2) — الأولوية إذا أُدخل ── */
+      const chestMap = [
+        { size: '2XL', min: 58,  max: 63  },
+        { size: '3XL', min: 63,  max: 68  },
+        { size: '4XL', min: 68,  max: 73  },
+        { size: '5XL', min: 73,  max: 78  },
+        { size: '6XL', min: 78,  max: 83  },
+        { size: '7XL', min: 83,  max: 120 },
+      ];
       const jeansMap = [
         { size: '38', min: 40, max: 86 },
         { size: '40', min: 86, max: 96 },
@@ -7598,7 +7673,14 @@
         { size: '46', min: 126, max: 141 },
         { size: '48', min: 141, max: 220 },
       ];
-      const xl = xlMap.find(r => w >= r.min && w < r.max) || xlMap[xlMap.length - 1];
+
+      /* ── اختيار المقاس: الصدر أولاً إذا أُدخل، وإلا الوزن ── */
+      let xl;
+      if (chest && chest >= 50 && chest <= 120) {
+        xl = chestMap.find(r => chest >= r.min && chest < r.max) || chestMap[chestMap.length - 1];
+      } else {
+        xl = xlMap.find(r => w >= r.min && w < r.max) || xlMap[xlMap.length - 1];
+      }
       const jeans = jeansMap.find(r => w >= r.min && w < r.max) || jeansMap[jeansMap.length - 1];
       const lang = state.lang;
       const res = document.getElementById('scResult');
@@ -8005,7 +8087,46 @@
 
 **17. لماذا قد يتم إلغاء طلبي؟** قد يتم إلغاء الطلب تلقائياً في حالات نادرة مثل: عدم توفر القطعة في المخزن، وجود معلومات شحن غير كاملة.
 
-**18. كيف أطلب "هدية"؟** يمكنك اختيار خيار "أرسل كهدية" عند الدفع بالخيارات المتوفرة لدينا ، وسنقوم بتغليف الطلب بشكل فاخر وإرساله لمن تحب مع رسالة خاصة.`
+**18. كيف أطلب "هدية"؟** يمكنك اختيار خيار "أرسل كهدية" عند الدفع بالخيارات المتوفرة لدينا ، وسنقوم بتغليف الطلب بشكل فاخر وإرساله لمن تحب مع رسالة خاصة.`,
+
+        'exchange': `### سياسة الاستبدال والضمان
+
+راحتك ومقاسك الصحيح هي أولويتنا. في سايزمي، نضمن لك تجربة شراء خالية من القلق.
+
+* * *
+
+### 1. شروط الاستبدال
+
+**المدة:** يمكنك طلب استبدال القطعة خلال **48 ساعة فقط** من تاريخ استلام الطلب.
+
+**الحالة:** يجب أن تكون القطعة بحالتها الأصلية — غير ملبوسة، غير مغسولة، وبغلافها الأصلي مع التاغ/الليبل.
+
+**المعاينة:** يُسمح للزبون بـ فحص القطعة مظهرياً عند الاستلام بوجود المندوب، أما القياس (اللبس) فيكون بعد الاستلام، وفي حال عدم الملاءمة يتم التبديل حسب الشروط.
+
+**الأسباب المقبولة:** خطأ في المقاس — وجود عيب مصنعي — استلام قطعة مختلفة عن الطلب.
+
+**ملاحظة الأمان:** نعتذر عن تبديل أي قطعة تظهر عليها آثار عطر، مساحيق تجميل، أو روائح خارجية، حفاظاً على معايير النظافة لكل زبائننا.
+
+* * *
+
+### 2. طريقة التبديل (خطوات سهلة)
+
+**التواصل:** راسلنا على الواتساب المخصص للطلبات مع إرسال رقم الطلب وصورة القطعة.
+
+**التأكيد:** سيقوم فريقنا بمراجعة طلبك خلال ساعات قليلة وتأكيد توفر المقاس البديل.
+
+**التوصيل:** سيصلك المندوب بالقطعة الجديدة ويستلم منك القطعة السابقة.
+
+- في حال كان الخطأ **من طرفنا** (عيب مصنعي أو قطعة خطأ)، يتحمل **Sizeme** أجور التوصيل بالكامل.
+- في حال كان التبديل بسبب **اختيارك لمقاس خاطئ** (رغم وجود الحاسبة)، يتحمل الزبون أجور التوصيل فقط.
+
+* * *
+
+### 3. ملاحظات هامة
+
+**الاسترجاع:** نعتذر عن استرجاع المبالغ نقدياً، ولكن نوفر لك خيار الاستبدال بقطعة أخرى أو الحصول على **رصيد شراء** صالح لمدة 6 أشهر.
+
+**القياس:** ننصح دائماً باستخدام **حاسبة المقاسات** المتوفرة في الموقع قبل الطلب لتقليل احتمالية الخطأ.`
       };
 
       /* تحويل Markdown بسيط → HTML */
