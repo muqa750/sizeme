@@ -7,7 +7,7 @@ import { readFileSync, readdirSync } from 'fs'
 import { join, extname } from 'path'
 
 const SUPABASE_URL      = 'https://dhjnlgwsyfsgzmyxnxxr.supabase.co'
-const SERVICE_ROLE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoam5sZ3dzeWZzZ3pteXhueHhyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODI0MTQxMSwiZXhwIjoyMDkzODE3NDExfQ.JjMXGZ0gZocLqZLECsV0evLz1i1RgyymnBeeFQ3sR_o'
+const SERVICE_ROLE_KEY  =
 
 const BUCKET = 'products'
 
