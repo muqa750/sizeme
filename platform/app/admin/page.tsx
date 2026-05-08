@@ -1,11 +1,11 @@
 import { getDashboardStats, getAdminOrders } from '@/lib/admin-api'
-import { fmt } from '@/lib/utils'
+import { fmtEn, dateEn } from '@/lib/utils'
 
 const STATUS_AR: Record<string, string> = {
   new:       'جديد',
   confirmed: 'مؤكد',
-  shipped:   'في الطريق',
-  delivered: 'مُسلّم',
+  shipped:   'شُحن',
+  delivered: 'سُلّم',
   cancelled: 'ملغي',
 }
 
@@ -24,11 +24,11 @@ export default async function AdminDashboard() {
   ])
 
   const STATS = [
-    { label: 'إجمالي الطلبات',  value: stats.totalOrders.toString() },
-    { label: 'طلبات جديدة',     value: stats.pendingOrders.toString() },
-    { label: 'إيرادات اليوم',   value: fmt(stats.todayRevenue) },
-    { label: 'إجمالي الإيرادات', value: fmt(stats.totalRevenue) },
-    { label: 'عدد المنتجات',    value: stats.totalProducts.toString() },
+    { label: 'طلبات اليوم',      value: stats.todayCount.toString() },
+    { label: 'إجمالي الطلبات',   value: stats.totalOrders.toString() },
+    { label: 'طلبات جديدة',      value: stats.pendingOrders.toString() },
+    { label: 'إيرادات اليوم',    value: fmtEn(stats.todayRevenue) },
+    { label: 'إجمالي الإيرادات', value: fmtEn(stats.totalRevenue) },
   ]
 
   return (
@@ -50,10 +50,12 @@ export default async function AdminDashboard() {
             border: '1px solid #e5e5e5',
             padding: '1.25rem',
           }}>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.1em', color: '#888', marginBottom: 8 }}>
-              {s.label.toUpperCase()}
+            <p style={{ fontSize: '0.68rem', letterSpacing: '0.08em', color: '#aaa', marginBottom: 8, textTransform: 'uppercase' }}>
+              {s.label}
             </p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, color: '#1a1a1a' }}>{s.value}</p>
+            <p style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1a1a1a' }}>
+              {s.value}
+            </p>
           </div>
         ))}
       </div>
@@ -75,7 +77,7 @@ export default async function AdminDashboard() {
 
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #f0f0f0' }}>
+            <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fafafa' }}>
               {['رقم الطلب', 'الزبون', 'المحافظة', 'المبلغ', 'الحالة', 'التاريخ'].map(h => (
                 <th key={h} style={{
                   textAlign: 'right',
@@ -83,7 +85,7 @@ export default async function AdminDashboard() {
                   fontWeight: 500,
                   color: '#888',
                   fontSize: '0.7rem',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                 }}>
                   {h}
                 </th>
@@ -91,29 +93,33 @@ export default async function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
-              <tr key={order.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
-                <td style={{ padding: '0.875rem 1.5rem', fontFamily: 'monospace', color: '#555' }}>
+            {orders.map((order, i) => (
+              <tr key={order.id} style={{
+                borderBottom: '1px solid #f5f5f5',
+                background: i % 2 === 0 ? '#fff' : '#fafafa',
+              }}>
+                <td style={{ padding: '0.875rem 1.5rem', fontFamily: 'monospace', color: '#555', fontSize: '0.75rem' }}>
                   {order.order_id}
                 </td>
                 <td style={{ padding: '0.875rem 1.5rem', fontWeight: 500 }}>{order.name}</td>
                 <td style={{ padding: '0.875rem 1.5rem', color: '#888' }}>{order.province ?? '—'}</td>
-                <td style={{ padding: '0.875rem 1.5rem', fontWeight: 500 }}>{fmt(order.total)}</td>
+                <td style={{ padding: '0.875rem 1.5rem', fontWeight: 500, direction: 'ltr', textAlign: 'right' }}>
+                  {fmtEn(order.total)}
+                </td>
                 <td style={{ padding: '0.875rem 1.5rem' }}>
                   <span style={{
                     display: 'inline-block',
                     padding: '2px 10px',
                     fontSize: '0.7rem',
-                    letterSpacing: '0.05em',
                     color: STATUS_COLOR[order.status] ?? '#888',
-                    background: (STATUS_COLOR[order.status] ?? '#888') + '15',
+                    background: (STATUS_COLOR[order.status] ?? '#888') + '18',
                     borderRadius: 2,
                   }}>
                     {STATUS_AR[order.status] ?? order.status}
                   </span>
                 </td>
-                <td style={{ padding: '0.875rem 1.5rem', color: '#aaa', fontSize: '0.75rem' }}>
-                  {new Date(order.created_at).toLocaleDateString('ar-IQ')}
+                <td style={{ padding: '0.875rem 1.5rem', color: '#aaa', fontSize: '0.72rem', direction: 'ltr', textAlign: 'right' }}>
+                  {dateEn(order.created_at)}
                 </td>
               </tr>
             ))}

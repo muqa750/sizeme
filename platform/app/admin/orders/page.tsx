@@ -1,18 +1,17 @@
 import { getAdminOrders } from '@/lib/admin-api'
-import { fmt } from '@/lib/utils'
-import StatusSelect from './StatusSelect'
+import OrderRow from './OrderRow'
 
 interface Props {
   searchParams: { status?: string }
 }
 
 const FILTERS = [
-  { value: 'all',       label: 'الكل'      },
-  { value: 'new',       label: 'جديد'      },
-  { value: 'confirmed', label: 'مؤكد'      },
-  { value: 'shipped',   label: 'في الطريق' },
-  { value: 'delivered', label: 'مُسلّم'    },
-  { value: 'cancelled', label: 'ملغي'      },
+  { value: 'all', label: 'الكل' },
+  { value: 'new', label: 'جديد' },
+  { value: 'confirmed', label: 'مؤكد' },
+  { value: 'shipped', label: 'شُحن' },
+  { value: 'delivered', label: 'سُلّم' },
+  { value: 'cancelled', label: 'ملغي' },
 ]
 
 export default async function OrdersPage({ searchParams }: Props) {
@@ -21,6 +20,7 @@ export default async function OrdersPage({ searchParams }: Props) {
 
   return (
     <div style={{ padding: '2rem 2.5rem', direction: 'rtl' }}>
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1a1a1a' }}>
           الطلبات
@@ -28,6 +28,7 @@ export default async function OrdersPage({ searchParams }: Props) {
             ({count})
           </span>
         </h1>
+        <p style={{ fontSize: '0.72rem', color: '#bbb' }}>اضغط على الطلب لعرض التفاصيل</p>
       </div>
 
       {/* Filter Tabs */}
@@ -42,10 +43,9 @@ export default async function OrdersPage({ searchParams }: Props) {
               letterSpacing: '0.05em',
               textDecoration: 'none',
               background: statusFilter === f.value ? '#1a1a1a' : '#fff',
-              color:  statusFilter === f.value ? '#fff' : '#888',
+              color: statusFilter === f.value ? '#fff' : '#888',
               border: '1px solid',
               borderColor: statusFilter === f.value ? '#1a1a1a' : '#e5e5e5',
-              transition: 'all 0.15s',
             }}
           >
             {f.label}
@@ -55,13 +55,14 @@ export default async function OrdersPage({ searchParams }: Props) {
 
       {/* Table */}
       <div style={{ background: '#fff', border: '1px solid #e5e5e5', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: 700 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: 750 }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fafafa' }}>
-              {['رقم الطلب', 'الزبون', 'الهاتف', 'المحافظة', 'المنتجات', 'المبلغ', 'الحالة', 'التاريخ'].map(h => (
+              <th style={{ width: 24 }} />
+              {['رقم الطلب', 'الزبون', 'الهاتف', 'المحافظة', 'الكمية', 'المبلغ', 'الحالة', 'التاريخ'].map(h => (
                 <th key={h} style={{
                   textAlign: 'right',
-                  padding: '0.75rem 1rem',
+                  padding: '0.75rem 0.5rem',
                   fontWeight: 500,
                   color: '#888',
                   fontSize: '0.7rem',
@@ -74,40 +75,12 @@ export default async function OrdersPage({ searchParams }: Props) {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
-              <tr
-                key={order.id}
-                style={{ borderBottom: '1px solid #f5f5f5' }}
-              >
-                <td style={{ padding: '0.875rem 1rem', fontFamily: 'monospace', color: '#555', whiteSpace: 'nowrap' }}>
-                  {order.order_id}
-                </td>
-                <td style={{ padding: '0.875rem 1rem', fontWeight: 500 }}>{order.name}</td>
-                <td style={{ padding: '0.875rem 1rem', color: '#888', direction: 'ltr', textAlign: 'right' }}>
-                  {order.phone}
-                </td>
-                <td style={{ padding: '0.875rem 1rem', color: '#888' }}>{order.province ?? '—'}</td>
-                <td style={{ padding: '0.875rem 1rem', color: '#888' }}>
-                  {order.order_items?.length ?? 0} قطعة
-                </td>
-                <td style={{ padding: '0.875rem 1rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
-                  {fmt(order.total)}
-                </td>
-                <td style={{ padding: '0.875rem 1rem' }}>
-                  <StatusSelect orderId={order.order_id} current={order.status} />
-                </td>
-                <td style={{ padding: '0.875rem 1rem', color: '#aaa', fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
-                  {new Date(order.created_at).toLocaleDateString('ar-IQ')}
-                  <br />
-                  <span style={{ fontSize: '0.68rem' }}>
-                    {new Date(order.created_at).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </td>
-              </tr>
+            {orders.map((order, i) => (
+              <OrderRow key={order.id} order={order as any} index={i} />
             ))}
             {orders.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ padding: '4rem', textAlign: 'center', color: '#aaa' }}>
+                <td colSpan={9} style={{ padding: '4rem', textAlign: 'center', color: '#aaa' }}>
                   لا توجد طلبات
                 </td>
               </tr>
@@ -115,8 +88,6 @@ export default async function OrdersPage({ searchParams }: Props) {
           </tbody>
         </table>
       </div>
-
-      {/* Order items detail (expandable) - coming soon */}
     </div>
   )
 }

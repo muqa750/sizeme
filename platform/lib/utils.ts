@@ -2,12 +2,31 @@
  * دوال مساعدة عامة
  */
 
-// تنسيق السعر بالدينار العراقي
+// تنسيق السعر بالدينار العراقي — أرقام إنجليزية
 export function fmt(amount: number): string {
-  return amount.toLocaleString('ar-IQ') + ' د.ع'
+  return amount.toLocaleString('en-US') + ' د.ع'
 }
 
-// مسار صورة المنتج
+// تنسيق السعر بالدينار العراقي — أرقام إنجليزية (للأدمن)
+export function fmtEn(amount: number): string {
+  return amount.toLocaleString('en-US') + ' IQD'
+}
+
+// تنسيق التاريخ بالأرقام الإنجليزية
+export function dateEn(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  })
+}
+export function timeEn(iso: string): string {
+  return new Date(iso).toLocaleTimeString('en-GB', {
+    hour: '2-digit', minute: '2-digit',
+  })
+}
+
+// مسار صورة المنتج — Supabase Storage
+const STORAGE_BASE = 'https://dhjnlgwsyfsgzmyxnxxr.supabase.co/storage/v1/object/public/products'
+
 const IMG_FOLDERS: Record<string, string> = {
   tshirt:    'imagestshirts',
   polo:      'imagespolo',
@@ -23,7 +42,7 @@ export function imgPath(
   seq: number = 1
 ): string {
   const folder = IMG_FOLDERS[categoryId] || 'imagestshirts'
-  return `${folder}/${catSeq}-${seq}-${imgKey}.jpg`
+  return `${STORAGE_BASE}/${folder}/${catSeq}-${seq}-${imgKey}.jpg`
 }
 
 // توليد Order ID
