@@ -10,13 +10,8 @@ import { config } from 'dotenv'
 // قراءة المفاتيح من .env.local
 config({ path: join(process.cwd(), '.env.local') })
 
-const SUPABASE_URL     = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error('خطأ: تأكد من وجود NEXT_PUBLIC_SUPABASE_URL و SUPABASE_SERVICE_ROLE_KEY في .env.local')
-  process.exit(1)
-}
+const SUPABASE_URL = 'https://dhjnlgwsyfsgzmyxnxxr.supabase.co'
+const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoam5sZ3dzeWZzZ3pteXhueHhyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODI0MTQxMSwiZXhwIjoyMDkzODE3NDExfQ.JjMXGZ0gZocLqZLECsV0evLz1i1RgyymnBeeFQ3sR_o'
 
 const BUCKET = 'products'
 
@@ -51,7 +46,7 @@ async function uploadFolder(folder) {
   const dir = join(IMAGES_ROOT, folder)
   let files
   try {
-    files = readdirSync(dir).filter(f => ['.jpg','.jpeg','.png','.webp'].includes(extname(f).toLowerCase()))
+    files = readdirSync(dir).filter(f => ['.jpg', '.jpeg', '.png', '.webp'].includes(extname(f).toLowerCase()))
   } catch {
     console.log(`⚠ Folder not found: ${dir}`)
     return { ok: 0, skip: 0, fail: 0 }
@@ -61,7 +56,7 @@ async function uploadFolder(folder) {
 
   for (const file of files) {
     const storagePath = `${folder}/${file}`
-    const localPath   = join(dir, file)
+    const localPath = join(dir, file)
 
     // تحقق إذا الملف موجود مسبقاً
     const { data: existing } = await supabase.storage.from(BUCKET).list(folder, {
@@ -72,10 +67,10 @@ async function uploadFolder(folder) {
       continue
     }
 
-    const buffer      = readFileSync(localPath)
+    const buffer = readFileSync(localPath)
     const contentType = file.endsWith('.png') ? 'image/png'
-                      : file.endsWith('.webp') ? 'image/webp'
-                      : 'image/jpeg'
+      : file.endsWith('.webp') ? 'image/webp'
+        : 'image/jpeg'
 
     const { error } = await supabase.storage
       .from(BUCKET)
@@ -102,7 +97,7 @@ async function main() {
   let total = { ok: 0, skip: 0, fail: 0 }
   for (const folder of FOLDERS) {
     const r = await uploadFolder(folder)
-    total.ok   += r.ok
+    total.ok += r.ok
     total.skip += r.skip
     total.fail += r.fail
   }
