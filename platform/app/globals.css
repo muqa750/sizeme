@@ -2,18 +2,371 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── CSS Variables — نفس الموقع القديم ── */
 :root {
-  --ink:   #1a1a1a;
-  --paper: #ffffff;
-  --mute:  #888888;
-  --line:  #e5e5e5;
+  --ink:          #1a1a1a;
+  --paper:        #ffffff;
+  --accent:       #c9a84c;
+  --accent-light: #d4b968;
+  --accent-glow:  rgba(201, 168, 76, 0.25);
+  --error:        #b8312e;
+  --line:         #e8e3da;
+  --mute:         #8a8578;
+  --gold-gradient: linear-gradient(135deg, #c9a84c 0%, #e8d48b 50%, #c9a84c 100%);
+
+  /* ── Glass variables ── */
+  --glass-bg:     rgba(255, 255, 255, 0.38);
+  --glass-border: rgba(232, 227, 218, 0.55);
+  --footer-glass: rgba(255, 255, 255, 0.65);
+  --countdown-bg:     rgba(201, 168, 76, 0.07);
+  --countdown-border: rgba(201, 168, 76, 0.20);
+  /* ── أقسام الكونتراست (تبقى داكنة في كلا الوضعين) ── */
+  --section-contrast:      #1a1a1a;
+  --section-contrast-text: rgba(255, 255, 255, 0.65);
+
+  /* ── Easing curves (نفس القديم) ── */
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --decel:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease:   cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Dark Mode ── */
+html[data-theme="dark"] {
+  --ink:          #f0f0f0;
+  --paper:        #0d0d0d;
+  --line:         #2a2a2a;
+  --mute:         #666666;
+  --accent:       #c9a84c;
+  --accent-light: #d4b968;
+  --accent-glow:  rgba(201, 168, 76, 0.3);
+  --glass-bg:     rgba(10, 10, 10, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --footer-glass: rgba(13, 13, 13, 0.82);
+  --countdown-bg:     rgba(201, 168, 76, 0.10);
+  --countdown-border: rgba(201, 168, 76, 0.28);
+  --section-contrast:      #111111;
+  --section-contrast-text: rgba(255, 255, 255, 0.55);
+  background: #0d0d0d;
+}
+
+
+/* ── Hero entrance animations ── */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.hero-rise   { animation: hero-rise 0.9s var(--decel) both; }
+.hero-rise-1 { animation: hero-rise 0.9s var(--decel) 0.12s both; }
+.hero-rise-2 { animation: hero-rise 0.9s var(--decel) 0.26s both; }
+.hero-rise-3 { animation: hero-rise 0.9s var(--decel) 0.40s both; }
+
+/* ── Scroll Reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s var(--decel), transform 0.65s var(--decel);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal[data-d="1"] { transition-delay: 60ms; }
+.reveal[data-d="2"] { transition-delay: 120ms; }
+.reveal[data-d="3"] { transition-delay: 180ms; }
+.reveal[data-d="4"] { transition-delay: 240ms; }
+.reveal[data-d="5"] { transition-delay: 300ms; }
+.reveal[data-d="6"] { transition-delay: 360ms; }
+
+/* ── Marquee ── */
+.marquee { overflow: hidden; white-space: nowrap; display: flex; }
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee-scroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ── Loading Splash ── */
+#sizeLoader {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s var(--decel), visibility 0.7s;
+}
+#sizeLoader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#sizeLoader .ld-logo {
+  font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 10vw, 4.4rem);
+  letter-spacing: 0.4em;
+  color: var(--ink);
+  animation: ld-breathe 2.4s ease-in-out infinite;
+}
+@keyframes ld-breathe {
+  0%   { opacity: 0.15; transform: scale(0.97); letter-spacing: 0.4em; }
+  50%  { opacity: 1;    transform: scale(1);    letter-spacing: 0.48em; }
+  100% { opacity: 0.15; transform: scale(0.97); letter-spacing: 0.4em; }
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  /* gradient فاتح جداً يجعل backdrop-filter يشتغل */
+  background: linear-gradient(170deg, #ffffff 0%, #fdfcf9 50%, #f9f7f2 100%);
+  min-height: 100%;
+}
+
+html, body {
+  color: var(--ink);
+}
 
 body {
-  font-family: 'Inter', Arial, sans-serif;
-  color: var(--ink);
-  background: var(--paper);
+  background: transparent;
+  font-family: var(--font-ibm), 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── Serif utility ── */
+.serif {
+  font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ── Kicker (labels فوق العناوين) ── */
+.kicker {
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--mute);
+}
+
+/* ── Hairline borders ── */
+.hairline { border-color: var(--line); }
+
+/* ── Buttons ── */
+.btn-ink {
+  background: var(--ink);
+  color: #fff;
+  transition: opacity 0.2s;
+}
+.btn-ink:hover { opacity: 0.85; }
+
+.btn-outline {
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--ink); color: #fff; }
+
+/* ── Products grid ── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem 1rem;
+}
+@media (max-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 0.625rem;
+  }
+}
+
+/* ── Trust strip — 4 cols on desktop ── */
+@media (min-width: 768px) {
+  .trust-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ── Category preview — 4 cols on desktop ── */
+@media (min-width: 640px) {
+  .cat-preview-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ── Ratings bars grid — 4 cols on desktop ── */
+@media (min-width: 640px) {
+  .ratings-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* ── Slide-down animation for desktop nav ── */
+@keyframes slideDown {
+  from { transform: translateY(-6px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── Mobile Nav Drawer — يظهر دائماً من الجهة نفسها للزر ── */
+#mobileNavDrawer {
+  position: fixed;
+  /* الزر على اليمين → الدرج من اليمين */
+  inset: 0 0 0 auto;
+  width: min(300px, 88vw);
+  background: var(--paper);
+  z-index: 60;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  overscroll-behavior: contain;
+}
+
+#mobileNavDrawer.open {
+  transform: translateX(0) !important;
+}
+
+#mobileNavOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 59;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s;
+}
+
+#mobileNavOverlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Mobile Nav Category Links — بدون خطوط فاصلة ── */
+.mnav-cat {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.mnav-cat:active { background: rgba(201,168,76,0.07); }
+.mnav-cat:hover  { color: var(--accent); }
+
+/* ── Lang Pills in mobile nav ── */
+.mnav-lang-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--mute);
+  transition: all 0.18s;
+  min-height: 48px;
+}
+.mnav-lang-pill.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(201, 168, 76, 0.08);
+  font-weight: 600;
+}
+.mnav-lang-pill:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* ── Header Buttons ── */
+.hdr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  border-radius: 8px;
+  transition: background .18s;
+  position: relative;
+  flex-shrink: 0;
+}
+.hdr-btn:hover { background: rgba(128,128,128,.08); }
+.hdr-btn svg   { pointer-events: none; }
+@media (min-width: 640px) {
+  .hdr-btn { width: 42px; }
+}
+
+/* ── iOS-style Dark Mode Switch ── */
+.ios-switch {
+  position: relative;
+  width: 46px;
+  height: 27px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.ios-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(120, 120, 128, 0.22);
+  transition: background 0.25s;
+}
+.ios-track.on {
+  background: var(--accent);
+}
+.ios-track::after {
+  content: '';
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #fff;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+}
+.ios-track.on::after {
+  transform: translateX(19px);
+}
+
+/* ── Emoji Feedback ── */
+.emoji-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.emoji-btn:hover .emoji-icon { transform: scale(1.25); }
+.emoji-btn.selected .emoji-icon { transform: scale(1.3); }
+.emoji-icon {
+  display: block;
+  font-size: 1.75rem;
+  transition: transform 0.2s;
 }

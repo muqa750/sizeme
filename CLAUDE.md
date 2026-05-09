@@ -1,93 +1,261 @@
-# SizeMe — Project Context for Claude Code
-
-## نبذة عن المشروع
-منصة تجارة إلكترونية عراقية متخصصة في ملابس الرجال ذات المقاسات الخاصة (2XL → 7XL).
-الهوية البصرية: Quiet Luxury / Minimalism — تجنب أي عناصر مزدحمة.
-الأولوية: Mobile-First (معظم المستخدمين في العراق يتصفحون بالموبايل).
+# SizeMe — المرجع الشامل للمشروع
 
 ---
 
-## هيكل الملفات
+## 🎯 هوية البراند والرؤية
 
-| الملف | الوظيفة |
-|---|---|
-| `index.html` | **الملف الرئيسي الوحيد** — كل الـ JS والـ CSS والـ HTML داخله |
-| `orders-script.gs` | Google Apps Script — يُنسخ يدوياً في Apps Script Editor |
-| `newsletter-script.gs` | Google Apps Script للنشرة البريدية |
-| `google-apps-script.js` | Google Apps Script لتقييمات الموقع |
-| `js/app.js` | **غير مستخدم** — لا تعدّل هذا الملف أبداً |
+**SizeMe** منصة تجارة إلكترونية عراقية متخصصة في ملابس الرجال ذات المقاسات الخاصة (2XL → 7XL).
 
-> ⚠️ **مهم جداً:** الموقع يعتمد فقط على `index.html`. أي تعديل يجب أن يكون فيه مباشرة.
+- **الهوية البصرية:** Quiet Luxury / Luxury Minimalism — فخامة هادئة بدون ضجيج
+- **الجمهور:** رجال العراق الذين يجدون صعوبة في إيجاد مقاساتهم في المحلات العادية
+- **الهدف الأعمق:** بناء قاعدة عملاء مخلصين يقدرون جودة الأقمشة ودقة التفصيل — ليس مجرد بيع منتجات
+- **الأولوية الأولى دائماً:** Mobile-First — معظم المستخدمين في العراق يتصفحون بالموبايل
+- **اللغة الرئيسية:** العربية (RTL) — الواجهة كاملة بالعربية
 
 ---
 
-## التقنيات المستخدمة
+## 🏗️ هيكل المشروع
 
-- HTML/CSS/JS كلها inline في `index.html`
-- Tailwind CSS (CDN)
-- Google Apps Script (Web App) لحفظ الطلبات وإرسال الإيميلات
-- واتساب `wa.me` لاستقبال الطلبات
-- نظام I18N داخلي (عربي / إنجليزي / كردي)
-
----
-
-## ثوابت مهمة في index.html
-
-```js
-const UNIT_PRICE        = 35000;   // السعر الأساسي للقطعة
-const BULK_UNIT_PRICE   = 30000;   // سعر العرض (4+ قطع)
-const BULK_DISC_PER_PCS = 5000;    // الخصم لكل قطعة
-const BULK_THRESHOLD    = 4;       // حد تفعيل خصم السعر
-const SHIPPING_FREE_THRESHOLD = 10; // حد الشحن المجاني
-const SHIPPING          = 5000;    // كلفة التوصيل الافتراضية
+```
+E:\sizeme\
+├── CLAUDE.md                   ← هذا الملف
+├── index.html                  ← الموقع القديم (لا تعدّل)
+├── orders-script.gs            ← Google Apps Script القديم (لا تعدّل)
+└── platform\                   ← ✅ المشروع الجديد (Next.js)
+    ├── app\
+    │   ├── layout.tsx           ← Root layout (fonts, CartProvider, SplashLoader)
+    │   ├── page.tsx             ← الصفحة الرئيسية
+    │   ├── globals.css          ← كل CSS variables + dark mode + animations
+    │   ├── category\[slug]\    ← صفحة القسم (تي شيرت، بولو، الخ)
+    │   ├── product\[id]\       ← صفحة المنتج التفصيلية
+    │   ├── admin\              ← لوحة الإدارة (محمية بـ auth)
+    │   │   ├── layout.tsx       ← Sidebar + logout
+    │   │   ├── page.tsx         ← Dashboard الرئيسي
+    │   │   ├── orders\          ← إدارة الطلبات
+    │   │   ├── products\        ← إدارة المنتجات
+    │   │   └── login\           ← صفحة تسجيل الدخول
+    │   ├── reviews\             ← صفحة التقييمات العامة
+    │   ├── size-guide\          ← دليل المقاسات
+    │   └── legal\[slug]\       ← صفحات قانونية (warning/terms/privacy)
+    ├── components\
+    │   ├── Header.tsx           ← Header ثابت مع dark mode + mobile drawer
+    │   ├── Footer.tsx           ← Footer زجاجي مع روابط ونشرة بريدية
+    │   ├── CartDrawer.tsx       ← سلة التسوق (slide-in من اليسار)
+    │   ├── ProductCard.tsx      ← بطاقة المنتج
+    │   ├── SplashLoader.tsx     ← شاشة البداية
+    │   ├── AnnouncementBar.tsx  ← شريط الإعلانات المتحرك
+    │   ├── WhatsAppFloat.tsx    ← زر واتساب عائم
+    │   ├── SuggestionModal.tsx  ← مودال اقتراح المنتجات → Supabase
+    │   ├── FilterBar.tsx        ← شريط الفلتر (موجود لكن غير مستخدم حالياً)
+    │   ├── FilterDrawer.tsx     ← Drawer فلتر من الأسفل (موجود لكن غير مستخدم حالياً)
+    │   ├── FilteredCatalog.tsx  ← كتالوج الصفحة الرئيسية (بدون فلتر حالياً)
+    │   ├── CategoryFilteredGrid.tsx ← شبكة منتجات القسم (بدون فلتر حالياً)
+    │   └── home\
+    │       ├── HeroSection.tsx
+    │       ├── TrustStrip.tsx
+    │       ├── DeliveryCountdown.tsx  ← عداد تجهيز الطلب (توقيت العراق UTC+3)
+    │       ├── CategoryPreview.tsx
+    │       ├── GuaranteeSection.tsx
+    │       ├── RatingsSection.tsx
+    │       └── ContactSection.tsx
+    ├── context\
+    │   └── CartContext.tsx       ← إدارة السلة (useState)
+    ├── lib\
+    │   ├── api.ts               ← كل استدعاءات Supabase
+    │   ├── types.ts             ← TypeScript interfaces
+    │   └── utils.ts             ← دوال مساعدة + COLOR_HEX + COLOR_NAMES_AR
+    └── .env.local               ← ⚠️ لا تُرفع لـ GitHub أبداً
 ```
 
 ---
 
-## Google Apps Script
+## 🔧 التقنيات المستخدمة
 
-- **Orders URL (الحالي):**
-  `https://script.google.com/macros/s/AKfycbyOAn2W6w-62mmYDtuFwfhuqC1x9FhaROFC6Dzt6Fg6hZPJzW_aXsvWUhwVrD3N6nQZIg/exec`
-- **إيميلات الإشعار:** `mustafaqais750@gmail.com` و `waleed789054@gmail.com`
-- **اسم الشيت:** `الطلبات`
-- ⚠️ كل تعديل على الـ Script يحتاج **New Deployment** وليس Manage Deployments
-- بعد كل نشر جديد: حدّث `ORDERS_SHEETS_URL` في `index.html`
-
----
-
-## عروض المتجر الحالية
-
-| الشرط | المزية |
+| التقنية | الاستخدام |
 |---|---|
-| 1–3 قطع | السعر الأساسي (35,000) + توصيل 5,000 |
-| 4–9 قطع | سعر 30,000/قطعة + توصيل 5,000 |
-| 10+ قطع | سعر 30,000/قطعة + **شحن مجاني** |
+| **Next.js 14** | App Router — Server + Client Components |
+| **TypeScript** | كل الكود مكتوب بـ TypeScript |
+| **Supabase** | قاعدة البيانات + Storage للصور + Auth للأدمن |
+| **Tailwind CSS** | utility classes فقط — لا custom classes معقدة |
+| **Google Fonts** | Cormorant Garamond (serif) + IBM Plex Sans Arabic |
+| **واتساب wa.me** | استقبال الطلبات من العملاء |
 
 ---
 
-## ميزات مضافة مؤخراً
+## 🗄️ Supabase
 
-- ✅ حاسبة المقاس (`#sizeCalcModal`) — وزن + طول (اختياري) + عرض الصدر (اختياري)
-- ✅ سياسة الاستبدال في الفوتر (modal)
-- ✅ تنبيه انقطاع الاتصال (`#offlineToast`) — أسفل الشاشة
-- ✅ كشف فشل إرسال الطلب مع رسالة للزبون
-- ✅ Order ID تلقائي بصيغة `SZ-YYMMDD-XXXX`
-- ✅ إشعار إيميل عند كل طلب جديد
+```
+Project URL:  https://dhjnlgwsyfsgzmyxnxxr.supabase.co
+Anon Key:     eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoam5sZ3dzeWZzZ3pteXhueHhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNDE0MTEsImV4cCI6MjA5MzgxNzQxMX0.ZbA_Hx1JYsidOtO_BwLqY-Lfy513GXyrhaiYSxmYzTc
+Storage:      /storage/v1/object/public/products/{folder}/{catSeq}-{seq}-{imgKey}.jpg
+```
+
+**جداول Supabase الرئيسية:**
+- `categories` — أقسام المنتجات (id, name_ar, name_en, seq)
+- `products` — المنتجات (id, category_id, brand, colors[], sizes[], price, images[])
+- `orders` — الطلبات (id, customer_name, phone, city, items[], total, status)
+- `reviews` — تقييمات العملاء
+- `suggestions` — اقتراحات المنتجات عبر SuggestionModal
+
+**مجلدات Storage:**
+```
+imagestshirts  ← تي شيرت
+imagespolo     ← بولو
+imagesshirts   ← قمصان
+imagesjeans    ← جينز
+imagestracksuit ← تراكسوت
+```
 
 ---
 
-## أسلوب العمل المفضّل
+## 🎨 نظام CSS Variables (globals.css)
 
-- لا تعدّل `js/app.js` أبداً
-- قبل أي تعديل على JS داخل `index.html` تحقق من صحة الـ syntax
-- I18N موجود لـ 3 لغات — أي نص جديد يُضاف للغات الثلاث: `ar` / `en` / `ku`
-- تجنب الـ `addEventListener` المتكررة — استخدم `onclick =` لتجنب تراكم الـ listeners
-- أسلوب التصميم: minimalist — لا ألوان زاهية، لا عناصر مزدحمة
+```css
+/* Light mode (default) */
+--ink:       #1a1a1a    /* النصوص */
+--paper:     #ffffff    /* الخلفيات */
+--mute:      #999999    /* النصوص الثانوية */
+--line:      #e8e8e8    /* الحدود */
+--accent:    #c9a84c    /* الذهبي — اللون الرئيسي للبراند */
+
+/* Glass effects */
+--glass-bg:     rgba(255,255,255,0.38)
+--glass-border: rgba(255,255,255,0.55)
+--footer-glass: rgba(255,255,255,0.72)
+
+/* Dark mode — عبر html[data-theme="dark"] */
+--ink:       #f0f0f0
+--paper:     #0d0d0d
+--glass-bg:  rgba(10,10,10,0.78)
+
+/* ثابتة في كلا الوضعين */
+--section-contrast:      #1a1a1a   /* خلفية أقسام كـ Guarantee + Ratings */
+--section-contrast-text: #f5f5f5
+```
+
+**Dark Mode:**
+- يُخزَّن في `localStorage` بمفتاح `theme`
+- يُفعَّل بإضافة `data-theme="dark"` على `<html>`
+- script في `<head>` يمنع الوميض (FOUC) قبل أي render
+- `suppressHydrationWarning` على `<html>` ضروري في layout.tsx
 
 ---
 
-## واتساب
+## ⚠️ قواعد صارمة — لا استثناءات
 
-- رقم الواتساب: `9647739334545`
-- الطلبات تُرسل عبر `wa.me` مع رسالة مُنسّقة تحتوي تفاصيل الزبون والمنتجات
-- تفاصيل المنتجات الكاملة تُحفظ في Google Sheets فقط
+### 1. اسألني قبل أي تعديل
+لا تبدأ بالتعديل على ملفات موجودة مباشرة. اشرح ماذا ستفعل وانتظر موافقتي أولاً — خاصة في الملفات الكبيرة كـ `globals.css` و `layout.tsx` و `lib/api.ts`.
+
+### 2. الأمان أولاً قبل كتابة أي كود
+- لوحة الأدمن تحتاج auth بالضرورة — لا endpoints مكشوفة
+- أي Server Action يكتب بيانات → تحقق من الصلاحيات أولاً
+- `service_role` key → server-side فقط، لا تُعرض للـ client أبداً
+- راجع RLS policies في Supabase قبل النشر
+- ⚠️ **لا ترفع `.env.local` لـ GitHub أبداً**
+
+### 3. لا تعدّل الموقع القديم
+- `index.html` و `orders-script.gs` و `js/app.js` — لا تلمسها نهائياً
+- المشروع الجديد كله في `E:\sizeme\platform\`
+
+### 4. Hydration Rules (Next.js)
+- لا تضع `content: ''` أو أي CSS مع quotes داخل `<style>` في JSX — يسبب hydration mismatch
+- كل CSS من هذا النوع يذهب إلى `globals.css` مباشرة
+- `position: fixed` يتأثر بـ `backdrop-filter` في العناصر الأب — استخدم `createPortal` للـ modals والـ drawers
+- عناصر تعتمد على `window` أو `localStorage` → اعمل guard بـ `useEffect` + `mounted` state
+
+### 5. أسلوب التصميم — Luxury Minimalism
+- لا ألوان زاهية — اللون الوحيد المسموح هو الذهبي `--accent`
+- لا عناصر مزدحمة أو كثيرة الحركة
+- الـ Glass effect للـ Header والـ Footer والـ Countdown فقط
+- الخط الرئيسي للعناوين: `Cormorant Garamond` (serif)
+- الخط للنصوص العربية: `IBM Plex Sans Arabic`
+
+### 6. Mobile-First دائماً
+- ابدأ بتصميم الموبايل ثم Desktop
+- الشبكة الافتراضية للمنتجات: 2 أعمدة موبايل / 3 أو 4 desktop
+- الـ touch targets يجب أن تكون ≥ 44px
+
+---
+
+## 🛍️ منطق المتجر والأسعار
+
+| الشرط | السعر | التوصيل |
+|---|---|---|
+| 1–3 قطع | 35,000 د.ع / قطعة | 5,000 د.ع |
+| 4–9 قطع | 30,000 د.ع / قطعة | 5,000 د.ع |
+| 10+ قطع | 30,000 د.ع / قطعة | مجاني |
+
+**Order ID:** صيغة `SZ-YYMMDD-XXXX` — تتولد تلقائياً بـ `generateOrderId()` في `utils.ts`
+
+**واتساب:** رقم `9647739334545` — الطلبات تُرسل عبر `wa.me` برسالة منسّقة
+
+---
+
+## 🎨 الألوان والماركات
+
+**الألوان المدعومة (COLOR_HEX في utils.ts):**
+```
+Black, White, Dark Navy, Royal Blue, Brown, Burgundy, Charcoal, Taupe, Olive
+```
+أي لون جديد يُضاف في `COLOR_HEX` و `COLOR_NAMES_AR` في `lib/utils.ts`.
+
+**الماركات:** تُجلب ديناميكياً من بيانات المنتجات — لا قائمة ثابتة.
+
+**أقسام المنتجات:**
+```
+tshirt | polo | shirt | jeans | tracksuit
+```
+
+---
+
+## 🔄 ميزات مكتملة
+
+- ✅ SplashLoader — شاشة البداية مع لوغو
+- ✅ AnnouncementBar — شريط إعلانات متحرك
+- ✅ Header — glass effect + dark mode toggle + mobile drawer (يفتح من اليمين)
+- ✅ Dark Mode — iOS-style toggle داخل الدرج + زر في الهيدر
+- ✅ Footer — glass effect + نشرة بريدية + روابط الأقسام
+- ✅ CartDrawer — سلة تسوق كاملة مع حساب الأسعار والخصومات
+- ✅ DeliveryCountdown — عداد تجهيز الطلب بتوقيت العراق (UTC+3)
+- ✅ CategoryPreview — معاينة قسم مع رابط "عرض الكل"
+- ✅ ProductCard — بطاقة منتج مع صور متعددة وألوان
+- ✅ صفحة القسم — pagination بـ 18 منتج/صفحة
+- ✅ صفحة المنتج — تفاصيل كاملة + Add to Cart
+- ✅ SuggestionModal — نموذج اقتراح منتج يُحفظ في Supabase
+- ✅ لوحة الأدمن — عرض الطلبات، إدارة المنتجات، تغيير حالة الطلب
+- ✅ صفحات Legal — warning / terms / privacy
+- ✅ صفحة size-guide
+- ✅ صفحة reviews
+- ✅ WhatsApp Float Button
+
+---
+
+## 🚧 ميزات قيد التطوير / لم تُنجز بعد
+
+- ⏳ فلتر المنتجات (الماركة + اللون) — تم بناؤه لكن أُوقف مؤقتاً بسبب مشاكل في UX وانتظار قرار من مصطفى
+- ⏳ نظام البحث
+- ⏳ صفحة العروض
+
+---
+
+## 🐛 مشاكل معروفة وحلولها
+
+| المشكلة | السبب | الحل |
+|---|---|---|
+| Hydration mismatch مع `content: ''` | HTML entity encoding في JSX `<style>` | انقل الـ CSS إلى `globals.css` |
+| `position: fixed` لا يعمل خلف `backdrop-filter` | الأب يخلق stacking context جديد | استخدم `ReactDOM.createPortal` |
+| Dark mode وميض عند التحميل | React يهيدريت بعد أن يُرسم الـ HTML | script في `<head>` + `suppressHydrationWarning` على `<html>` |
+| Sections تصبح بيضاء في dark mode | استخدام `var(--ink)` كخلفية | استخدم `var(--section-contrast)` بدلاً منها |
+
+---
+
+## 📁 ملفات لا تُلمس
+
+```
+E:\sizeme\index.html
+E:\sizeme\orders-script.gs
+E:\sizeme\newsletter-script.gs
+E:\sizeme\google-apps-script.js
+E:\sizeme\platform\js\app.js
+E:\sizeme\platform\.env.local     ← لا تُرفع لـ GitHub
+```

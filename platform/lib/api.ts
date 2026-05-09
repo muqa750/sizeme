@@ -36,6 +36,28 @@ export async function getProducts(opts?: {
   return (data ?? []) as Product[]
 }
 
+/* ══ المنتجات مع pagination ══ */
+export async function getProductsPaged(opts: {
+  category: string
+  page: number
+  perPage: number
+}): Promise<{ products: Product[]; total: number }> {
+  const { page, perPage, category } = opts
+  const from = (page - 1) * perPage
+  const to   = from + perPage - 1
+
+  const { data, error, count } = await supabase
+    .from('products')
+    .select('*, category:categories(*)', { count: 'exact' })
+    .neq('status', 'hidden')
+    .eq('category_id', category)
+    .order('sort_order', { ascending: false })
+    .range(from, to)
+
+  if (error) throw error
+  return { products: (data ?? []) as Product[], total: count ?? 0 }
+}
+
 export async function getProductById(id: number): Promise<Product | null> {
   const { data, error } = await supabase
     .from('products')

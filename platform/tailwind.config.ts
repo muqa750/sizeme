@@ -9,14 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink:   '#1a1a1a',
-        paper: '#ffffff',
-        mute:  '#888888',
-        line:  '#e5e5e5',
+        ink:    '#1a1a1a',
+        paper:  '#ffffff',
+        accent: '#c9a84c',
+        'accent-light': '#d4b968',
+        mute:   '#8a8578',
+        line:   '#e8e3da',
       },
       fontFamily: {
-        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
-        sans:  ['Inter', 'Arial', 'sans-serif'],
+        serif:  ['var(--font-cormorant)', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans:   ['var(--font-ibm)', 'IBM Plex Sans Arabic', 'Inter', 'Arial', 'sans-serif'],
+        inter:  ['Inter', 'Arial', 'sans-serif'],
       },
     },
   },

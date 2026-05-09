@@ -1,93 +1,363 @@
+'use client'
+import { useState } from 'react'
+import Link from 'next/link'
+import SuggestionModal from '@/components/SuggestionModal'
+import { subscribeNewsletter } from '@/lib/actions/newsletter'
+import { submitRating } from '@/lib/actions/ratings'
+
+const EMOJIS = [
+  { value: 'غاضب', score: 1, icon: '😡' },
+  { value: 'حزين', score: 2, icon: '😞' },
+  { value: 'عادي', score: 3, icon: '😐' },
+  { value: 'راضي', score: 4, icon: '😊' },
+  { value: 'سعيد جداً', score: 5, icon: '😍' },
+]
+
+const colLink = {
+  color: 'var(--mute)',
+  textDecoration: 'none',
+  fontSize: '0.825rem',
+  lineHeight: 1,
+  transition: 'color 0.18s',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  padding: 0,
+  display: 'block',
+  textAlign: 'inherit',
+} as const
+
 export default function Footer() {
+  const [contact, setContact] = useState('')
+  const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
+  const [rated, setRated] = useState(false)
+  const [selectedRating, setSelected] = useState<string | null>(null)
+  const [suggOpen, setSuggOpen] = useState(false)
+
+  async function handleNewsletter(e: React.FormEvent) {
+    e.preventDefault()
+    if (!contact.trim() || subStatus === 'loading') return
+    setSubStatus('loading')
+    const res = await subscribeNewsletter(contact)
+    setSubStatus(res.ok ? 'done' : 'error')
+  }
+
+  async function handleRate(value: string, score: number) {
+    if (rated) return
+    setSelected(value)
+    setTimeout(() => setRated(true), 400)
+    await submitRating(value, score)
+  }
+
+  const hover = (ink = true) => (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.color = ink ? 'var(--ink)' : 'var(--mute)'
+  }
+
   return (
-    <footer style={{
-      borderTop: '1px solid #e5e5e5',
-      background: '#fff',
-      marginTop: 'auto',
-      padding: '2.5rem 1.5rem',
-      direction: 'rtl',
-    }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '2rem',
-          marginBottom: '2rem',
-        }}>
+    <>
+      <SuggestionModal open={suggOpen} onClose={() => setSuggOpen(false)} />
 
-          {/* Brand */}
-          <div>
-            <p style={{
-              fontFamily: 'Cormorant Garamond, serif',
-              fontSize: '1.25rem',
-              letterSpacing: '0.15em',
-              marginBottom: '0.75rem',
-            }}>
-              SIZEME
-            </p>
-            <p style={{ fontSize: '0.78rem', color: '#888', lineHeight: 1.7 }}>
-              وجهتك الأولى لملابس الرجال
-              <br />ذات المقاسات الخاصة في العراق.
-              <br />من 2XL إلى 7XL.
-            </p>
-          </div>
+      <footer style={{
+        borderTop: '1px solid var(--glass-border)',
+        background: 'var(--footer-glass)',
+        backdropFilter: 'blur(24px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(160%)',
+      }}>
 
-          {/* Info */}
-          <div>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#aaa', marginBottom: '0.875rem' }}>
-              معلومات
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {[
-                { label: 'سياسة الاستبدال والإرجاع' },
-                { label: 'حاسبة المقاس' },
-                { label: 'تواصل معنا' },
-              ].map(l => (
-                <span key={l.label} style={{ fontSize: '0.8rem', color: '#888', cursor: 'default' }}>
-                  {l.label}
-                </span>
-              ))}
+        {/* ══ ١ — أعمدة الروابط ══ */}
+        <div style={{ maxWidth: '64rem', margin: '0 auto', padding: '3rem 1.5rem 2.5rem' }}>
+          <div className="footer-cols">
+
+            {/* المساعدة */}
+            <div className="footer-col">
+              <p className="footer-col-title">المساعدة</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                {[
+                  { label: 'سياسة الاستبدال والإرجاع', href: '/legal/exchange' },
+                  { label: 'الأسئلة الشائعة', href: '/legal/faq' },
+                  { label: 'حاسبة المقاس', href: '/size-guide' },
+                ].map(({ label, href }) => (
+                  <li key={href}>
+                    <Link href={href} style={colLink}
+                      onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
 
-          {/* Contact */}
-          <div>
-            <p style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#aaa', marginBottom: '0.875rem' }}>
-              تواصل
-            </p>
-            <a
-              href="https://wa.me/9647739334545"
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: '0.8rem', color: '#888', textDecoration: 'none', display: 'block', marginBottom: 8 }}
-            >
-              📲 واتساب
-            </a>
-            <p style={{ fontSize: '0.78rem', color: '#aaa', lineHeight: 1.6 }}>
-              الدفع عند الاستلام
-              <br />التوصيل لجميع محافظات العراق
-            </p>
+            {/* سياساتنا */}
+            <div className="footer-col">
+              <p className="footer-col-title">سياساتنا</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                {[
+                  { label: 'تحذير قانوني', href: '/legal/warning' },
+                  { label: 'شروط الاستخدام', href: '/legal/terms' },
+                  { label: 'سياسة الخصوصية', href: '/legal/privacy' },
+                ].map(({ label, href }) => (
+                  <li key={href}>
+                    <Link href={href} style={colLink}
+                      onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* تفاعل معنا */}
+            <div className="footer-col">
+              <p className="footer-col-title">تفاعل معنا</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                <Link href="/reviews" style={colLink}
+                  onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+                  آراء الزبائن
+                </Link>
+                <button onClick={() => setSuggOpen(true)} style={colLink}
+                  onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+                  شاركنا اقتراحك
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {/* Bottom */}
-        <div style={{
-          borderTop: '1px solid #f0f0f0',
-          paddingTop: '1.25rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 8,
-        }}>
-          <p style={{ fontSize: '0.7rem', color: '#ccc' }}>
-            © {new Date().getFullYear()} SizeMe. جميع الحقوق محفوظة.
-          </p>
-          <p style={{ fontSize: '0.7rem', color: '#ccc', letterSpacing: '0.05em' }}>
-            العراق · بغداد
+        {/* ── فاصل ── */}
+        <div style={{ borderTop: '1px solid var(--line)' }} />
+
+        {/* ══ ٢ — النشرة البريدية + التقييم ══ */}
+        <div
+          style={{
+            maxWidth: '40rem',
+            margin: '0 auto',
+            padding: '2.5rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2.5rem',
+            textAlign: 'center',
+          }}
+        >
+          {/* Newsletter */}
+          <div style={{ width: '100%' }}>
+            <p className="serif" style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
+              انضم إلى عائلة Sizeme
+            </p>
+            <p style={{ fontSize: '0.78rem', color: 'var(--mute)', marginBottom: '1.25rem' }}>
+              لتصلك المجموعات الحصرية والعروض قبل الجميع
+            </p>
+
+            {subStatus === 'done' ? (
+              <p style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>
+                ✓ شكراً لاشتراكك! أنت الآن مشترك في النشرة البريدية.
+              </p>
+            ) : (
+              <>
+                <form
+                  onSubmit={handleNewsletter}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    maxWidth: '22rem',
+                    margin: '0 auto',
+                    border: '1px solid var(--line)',
+                    borderRadius: '9999px',
+                    padding: '0.2rem',
+                    background: 'var(--paper)',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={contact}
+                    onChange={e => setContact(e.target.value)}
+                    placeholder="بريدك الإلكتروني أو رقم الهاتف"
+                    disabled={subStatus === 'loading'}
+                    style={{
+                      flex: 1,
+                      border: 'none',
+                      outline: 'none',
+                      background: 'transparent',
+                      fontSize: '0.8rem',
+                      textAlign: 'center',
+                      padding: '0.5rem 0.75rem',
+                      fontFamily: 'inherit',
+                      color: 'var(--ink)',
+                      direction: 'rtl',
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    disabled={subStatus === 'loading'}
+                    style={{
+                      background: 'var(--ink)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '9999px',
+                      padding: '0.5rem 1.25rem',
+                      fontSize: '0.72rem',
+                      letterSpacing: '0.06em',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      fontFamily: 'inherit',
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#000')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'var(--ink)')}
+                  >
+                    {subStatus === 'loading' ? '...' : 'اشترك'}
+                  </button>
+                </form>
+                {subStatus === 'error' && (
+                  <p style={{ fontSize: '0.75rem', color: '#c0392b', marginTop: '0.5rem' }}>
+                    حدث خطأ، حاول مجدداً.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Emoji rating */}
+          <div style={{ width: '100%' }}>
+            {rated ? (
+              <div>
+                <div style={{ fontSize: '1.75rem', marginBottom: '0.4rem' }}>🌟</div>
+                <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>شكراً لتقييمك!</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--mute)', marginTop: '0.25rem' }}>رأيك يصنع الفرق.</p>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: '0.8rem', color: 'var(--mute)', marginBottom: '0.875rem' }}>
+                  كيف كانت تجربتك؟
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.625rem' }}>
+                  {EMOJIS.map(e => (
+                    <button
+                      key={e.value}
+                      aria-label={e.value}
+                      onClick={() => handleRate(e.value, e.score)}
+                      className="emoji-btn"
+                    >
+                      <span
+                        className="emoji-icon"
+                        style={{
+                          transform: selectedRating === e.value ? 'scale(1.35)' : 'scale(1)',
+                          transition: 'transform 0.2s',
+                          display: 'block',
+                        }}
+                      >
+                        {e.icon}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* ── فاصل ── */}
+        <div style={{ borderTop: '1px solid var(--line)' }} />
+
+        {/* ══ ٣ — الشعار + الوصف ══ */}
+        <div
+          style={{
+            textAlign: 'center',
+            padding: '2rem 1.5rem 1.5rem',
+          }}
+        >
+          <Link href="/" style={{ textDecoration: 'none', color: 'var(--ink)' }}>
+            <span className="serif" style={{ fontSize: '1.5rem', letterSpacing: '0.28em' }}>
+              SIZEME
+            </span>
+          </Link>
+          <p
+            style={{
+              marginTop: '0.75rem',
+              fontSize: '0.775rem',
+              color: 'var(--mute)',
+              lineHeight: 1.8,
+              maxWidth: '34rem',
+              marginInline: 'auto',
+            }}
+          >
+            في سايزمي، نؤمن أن الأناقة لا تتوقف عند رقم معيّن.
+
+            نحن لا نبيع ملابس بمقاسات كبيرة فحسب، بل نعيد تعريف الموضة العالمية لتناسبك أنت.
+
+            دمجنا الخبرة التقنية في التصميم مع أرقى الأقمشة لنمنح الرجل العراقي الثقة التي يستحقها.
+
+            سايزمي.. مقاسك الخاص، بأناقة لا تعرف الحدود..
+            .
           </p>
         </div>
-      </div>
-    </footer>
+
+        {/* ── فاصل ── */}
+        <div style={{ borderTop: '1px solid var(--line)' }} />
+
+        {/* ══ ٤ — Copyright ══ */}
+        <div
+          style={{
+            maxWidth: '64rem',
+            margin: '0 auto',
+            padding: '1rem 1.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+            fontSize: '0.68rem',
+            color: 'var(--mute)',
+          }}
+        >
+          <span>© {new Date().getFullYear()} SizeMe — جميع الحقوق محفوظة</span>
+          <span style={{ letterSpacing: '0.28em' }}>IRAQ · BAGHDAD</span>
+        </div>
+
+      </footer>
+
+      <style>{`
+        /* Desktop */
+        .footer-cols {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2.5rem;
+          justify-items: center;
+        }
+        .footer-col {
+          display: flex;
+          flex-direction: column;
+          gap: 0.875rem;
+          text-align: right;
+          min-width: 140px;
+        }
+        .footer-col-title {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          color: var(--ink);
+          margin: 0 0 0.25rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+          .footer-cols {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+          }
+          .footer-col {
+            text-align: center;
+            align-items: center;
+            min-width: unset;
+          }
+          .footer-col:last-child {
+            grid-column: 1 / -1;
+          }
+        }
+      `}</style>
+    </>
   )
 }

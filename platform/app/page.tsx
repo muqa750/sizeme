@@ -1,6 +1,13 @@
 import { getProducts, getCategories } from '@/lib/api'
 import Header from '@/components/Header'
-import ProductCard from '@/components/ProductCard'
+import HeroSection from '@/components/home/HeroSection'
+import TrustStrip from '@/components/home/TrustStrip'
+import GuaranteeSection from '@/components/home/GuaranteeSection'
+import ContactSection from '@/components/home/ContactSection'
+import RatingsSection from '@/components/home/RatingsSection'
+import ScrollRevealInit from '@/components/ScrollRevealInit'
+import DeliveryCountdown from '@/components/home/DeliveryCountdown'
+import FilteredCatalog from '@/components/FilteredCatalog'
 
 export default async function HomePage() {
   const [products, categories] = await Promise.all([
@@ -8,98 +15,66 @@ export default async function HomePage() {
     getCategories(),
   ])
 
-  const bestSellers = products.filter(p => p.status === 'best-seller')
-  const newArrivals = products.filter(p => p.status === 'new')
+  /* كل المنتجات مجمّعة حسب القسم — بدون slice حتى يعمل الفلتر على الكل */
+  const groups = categories.map(cat => ({
+    category: cat,
+    products: products.filter(p => p.category_id === cat.id),
+  })).filter(g => g.products.length > 0)
 
   return (
     <>
       <Header categories={categories} />
-      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '2rem 1.5rem' }}>
+      <ScrollRevealInit />
+      <main>
 
-        {/* Hero */}
-        <section style={{ textAlign: 'center', padding: '3rem 0 2.5rem' }}>
-          <p style={{ fontSize: '0.75rem', letterSpacing: '0.3em', color: '#888', marginBottom: '0.75rem' }}>
-            IRAQ&apos;S PLUS-SIZE DESTINATION
-          </p>
-          <h1 style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-            letterSpacing: '0.05em',
-            lineHeight: 1.1,
-            marginBottom: '1rem',
-          }}>
-            مقاسات خاصة
-            <br />
-            <span style={{ color: '#888' }}>من 2XL إلى 7XL</span>
-          </h1>
-          <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            {products.length} منتج متاح حالياً
-          </p>
-        </section>
+        {/* ─── Hero ─── */}
+        <HeroSection />
 
-        {/* Best Sellers */}
-        {bestSellers.length > 0 && (
-          <section style={{ marginBottom: '3rem' }}>
-            <h2 style={{
-              fontSize: '0.75rem',
-              letterSpacing: '0.25em',
-              color: '#888',
-              marginBottom: '1.5rem',
-              textTransform: 'uppercase',
-            }}>
-              الأكثر مبيعاً
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gap: '1rem',
-            }}>
-              {bestSellers.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </section>
-        )}
-
-        {/* New Arrivals */}
-        {newArrivals.length > 0 && (
-          <section style={{ marginBottom: '3rem' }}>
-            <h2 style={{
-              fontSize: '0.75rem',
-              letterSpacing: '0.25em',
-              color: '#888',
-              marginBottom: '1.5rem',
-              textTransform: 'uppercase',
-            }}>
-              وصل حديثاً
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gap: '1rem',
-            }}>
-              {newArrivals.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </section>
-        )}
-
-        {/* All Products */}
-        <section>
-          <h2 style={{
-            fontSize: '0.75rem',
-            letterSpacing: '0.25em',
-            color: '#888',
-            marginBottom: '1.5rem',
-            textTransform: 'uppercase',
-          }}>
-            جميع المنتجات
+        {/* ─── About ─── */}
+        <section
+          id="about"
+          className="reveal max-w-4xl mx-auto text-center"
+          style={{ padding: '5rem 1.25rem 7rem' }}
+        >
+          <p className="kicker">حرفتنا</p>
+          <h2
+            className="serif mt-4 leading-tight"
+            style={{ fontSize: 'clamp(1.45rem, 4.6vw, 2.8rem)' }}
+          >
+            متخصصون بملابس الماركات الحصرية
+            <br />الأنماط الفاخرة والألوان المميزة
           </h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: '1rem',
-          }}>
-            {products.map(p => <ProductCard key={p.id} product={p} />)}
+          <div
+            className="flex items-center justify-center gap-3 mt-8 text-xs"
+            style={{ letterSpacing: '0.3em', color: 'var(--mute)' }}
+          >
+            <span>قماش فاخر</span>
+            <span>·</span>
+            <span>مقاسات مريحة</span>
+            <span>·</span>
+            <span>سعر عادل</span>
           </div>
         </section>
+
+        {/* ─── Trust Strip ─── */}
+        <div className="reveal"><TrustStrip /></div>
+
+        {/* ─── Delivery Countdown ─── */}
+        <DeliveryCountdown />
+
+        {/* ─── الكتالوج مع الفلتر ─── */}
+        <div style={{ paddingTop: '4rem' }}>
+          <FilteredCatalog groups={groups} />
+        </div>
+
+        {/* ─── Guarantee ─── */}
+        <div className="reveal"><GuaranteeSection /></div>
+
+        {/* ─── Contact ─── */}
+        <div className="reveal"><ContactSection /></div>
+
+        {/* ─── Ratings ─── */}
+        <div className="reveal"><RatingsSection /></div>
 
       </main>
     </>

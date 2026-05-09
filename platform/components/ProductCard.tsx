@@ -10,126 +10,145 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   const [imgError, setImgError] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const price = product.category?.price ?? 35000
 
   return (
-    <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-      <div style={{
-        border: '1px solid #e5e5e5',
-        background: '#fff',
-        cursor: 'pointer',
-        transition: 'box-shadow 0.2s',
-      }}
-        onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)')}
-        onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
+    <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+      <article
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{ cursor: 'pointer' }}
       >
-        {/* صورة المنتج */}
+        {/* ── الصورة ── */}
         <div style={{
           aspectRatio: '3/4',
-          background: '#f7f7f7',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          background: '#f5f5f5',
           overflow: 'hidden',
           position: 'relative',
         }}>
-          {/* اسم البراند كـ placeholder */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: '1rem',
-            letterSpacing: '0.1em',
-            color: '#2b2b2b',
-          }}>
-            {product.brand}
-          </div>
+          {/* Placeholder نص */}
+          {imgError && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+            }}>
+              <span style={{
+                fontFamily: 'Cormorant Garamond, serif',
+                fontSize: '1.1rem',
+                letterSpacing: '0.12em',
+                color: '#ccc',
+              }}>
+                {product.brand}
+              </span>
+              <span style={{ fontSize: '0.6rem', color: '#ddd', letterSpacing: '0.2em' }}>
+                NO IMAGE
+              </span>
+            </div>
+          )}
+
+          {/* الصورة */}
           {!imgError && (
             <img
               src={imgPath(product.category_id, product.cat_seq, product.img_key, 1)}
-              alt={product.brand}
+              alt={`${product.brand} ${product.sub ?? ''}`}
               style={{
                 position: 'absolute',
                 inset: 0,
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
+                transition: 'transform 0.5s ease',
+                transform: hovered ? 'scale(1.04)' : 'scale(1)',
               }}
               onError={() => setImgError(true)}
             />
           )}
+
           {/* Badge */}
-          {product.status === 'best-seller' && (
+          {(product.status === 'best-seller' || product.status === 'new') && (
             <span style={{
               position: 'absolute',
               top: 10,
-              right: 10,
+              left: 10,
               background: '#1a1a1a',
               color: '#fff',
-              fontSize: '0.625rem',
-              letterSpacing: '0.15em',
-              padding: '3px 8px',
+              fontSize: '0.575rem',
+              letterSpacing: '0.18em',
+              padding: '4px 9px',
             }}>
-              BEST SELLER
-            </span>
-          )}
-          {product.status === 'new' && (
-            <span style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              background: '#1a1a1a',
-              color: '#fff',
-              fontSize: '0.625rem',
-              letterSpacing: '0.15em',
-              padding: '3px 8px',
-            }}>
-              NEW
+              {product.status === 'best-seller' ? 'BEST SELLER' : 'NEW'}
             </span>
           )}
         </div>
 
-        {/* معلومات المنتج */}
-        <div style={{ padding: '0.875rem' }}>
-          <div style={{
+        {/* ── معلومات ── */}
+        <div style={{ padding: '0.75rem 0.25rem 0.5rem' }}>
+          {/* Brand */}
+          <p style={{
             fontFamily: 'Cormorant Garamond, serif',
             fontSize: '1rem',
             letterSpacing: '0.05em',
-            marginBottom: '2px',
+            color: '#1a1a1a',
+            marginBottom: 2,
+            lineHeight: 1.2,
           }}>
             {product.brand}
-          </div>
+          </p>
+
+          {/* Sub-name */}
           {product.sub && (
-            <div style={{ fontSize: '0.75rem', color: '#888', marginBottom: '6px' }}>
+            <p style={{
+              fontSize: '0.72rem',
+              color: '#999',
+              marginBottom: 6,
+              letterSpacing: '0.02em',
+            }}>
               {product.sub}
+            </p>
+          )}
+
+          {/* الألوان المتاحة */}
+          {product.colors && product.colors.length > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 8 }}>
+              {product.colors.slice(0, 6).map(color => (
+                <div
+                  key={color}
+                  title={color}
+                  style={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: COLOR_HEX[color] ?? '#ccc',
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    flexShrink: 0,
+                  }}
+                />
+              ))}
+              {product.colors.length > 6 && (
+                <span style={{ fontSize: '0.6rem', color: '#bbb' }}>
+                  +{product.colors.length - 6}
+                </span>
+              )}
             </div>
           )}
-          {/* الألوان */}
-          <div style={{ display: 'flex', gap: 4, marginBottom: 8 }}>
-            {product.colors?.slice(0, 5).map(color => (
-              <div key={color} style={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                background: COLOR_HEX[color] ?? '#ccc',
-                border: '1px solid rgba(0,0,0,0.1)',
-              }} title={color} />
-            ))}
-            {(product.colors?.length ?? 0) > 5 && (
-              <span style={{ fontSize: '0.65rem', color: '#888', lineHeight: '12px' }}>
-                +{product.colors.length - 5}
-              </span>
-            )}
-          </div>
-          <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>
+
+          {/* السعر */}
+          <p style={{
+            fontSize: '0.82rem',
+            color: '#1a1a1a',
+            fontWeight: 500,
+            letterSpacing: '0.02em',
+          }}>
             {fmt(price)}
-          </div>
+          </p>
         </div>
-      </div>
+      </article>
     </Link>
   )
 }
