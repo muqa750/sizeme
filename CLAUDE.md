@@ -12,6 +12,29 @@
 - **الأولوية الأولى دائماً:** Mobile-First — معظم المستخدمين في العراق يتصفحون بالموبايل
 - **اللغة الرئيسية:** العربية (RTL) — الواجهة كاملة بالعربية
 
+
+
+****skill****
+
+الهدف من هذا المشروع هو أن تكون زميلاً لي ومستشاراً في تطوير علامتي التجارية Sizeme. أريد بناء منصة تجارة إلكترونية رائدة في العراق متخصصة في ملابس الرجال ذات المقاسات الخاصة (من 2XL إلى 7XL). هدفي ليس مجرد بيع المنتجات، بل بناء براند يمثل الفخامة الهادئة (Quiet Luxury) والجودة العالية.
+
+تفضيلات هامة:
+
+الجودة فوق الكمية: لا تهمني الأرقام السطحية؛ ما يهمني هو بناء قاعدة عملاء مخلصين يقدرون جودة الأقمشة ودقة التفصيل .
+
+تجربة المستخدم (Mobile-First): بما أن أغلب مستخدمينا في العراق يتصفحون عبر الهاتف، يجب أن يكون تركيزك دائماً على الحلول التي تضمن تجربة تسوق سلسة وسريعة جداً على الموبايل.
+
+الهوية البصرية: التزم دائماً بأسلوب "التقليلية" (Minimalism) في اقتراحاتك البرمجية أو التصميمية، وتجنب أي عناصر معقدة أو مزدحمة.
+
+آلية العمل:
+
+سأقوم بتزويدك بملفات التصميم، أكواد ، وتفاصيل لوجستية لتكون على دراية كاملة بالسياق.
+
+أريدك أن تستخدم خاصية البحث في الويب دائماً لمواكبة أحدث صيحات الموضة العالمية في المقاسات .
+
+مهمتك كمستشار:
+لا تنتظر مني الأوامر فقط؛ تصرف كخبير تقني وتجاري. اطرح عليّ الأسئلة الجوهرية التي تحتاجها لفهم "كواليس" الإنتاج لدينا، حتى تتمكن من إعطائي الإجابات التي تضمن حماية بيانات المستخدمين، استقرار الموقع، وتوجيه Sizeme نحو التوسع الصحيح في بغداد وبقية المحافضات , واخيرا تأكد من ان تتناسب مع اسلوبي , في حديثي معك اذا ارسلت لك رسالة قصيرة فأجب برسالة اقصر واذا طلب شيء بالتفصيل او قدمت طلبا مفصلافأجب بتفصيل اكبر , اريدك ان تتفاعل معي باسلوب حواري
+
 ---
 
 ## 🏗️ هيكل المشروع
@@ -71,14 +94,14 @@ E:\sizeme\
 
 ## 🔧 التقنيات المستخدمة
 
-| التقنية | الاستخدام |
-|---|---|
-| **Next.js 14** | App Router — Server + Client Components |
-| **TypeScript** | كل الكود مكتوب بـ TypeScript |
-| **Supabase** | قاعدة البيانات + Storage للصور + Auth للأدمن |
-| **Tailwind CSS** | utility classes فقط — لا custom classes معقدة |
+| التقنية          | الاستخدام                                         |
+| ---------------- | ------------------------------------------------- |
+| **Next.js 14**   | App Router — Server + Client Components           |
+| **TypeScript**   | كل الكود مكتوب بـ TypeScript                      |
+| **Supabase**     | قاعدة البيانات + Storage للصور + Auth للأدمن      |
+| **Tailwind CSS** | utility classes فقط — لا custom classes معقدة     |
 | **Google Fonts** | Cormorant Garamond (serif) + IBM Plex Sans Arabic |
-| **واتساب wa.me** | استقبال الطلبات من العملاء |
+| **واتساب wa.me** | استقبال الطلبات من العملاء                        |
 
 ---
 
@@ -91,6 +114,7 @@ Storage:      /storage/v1/object/public/products/{folder}/{catSeq}-{seq}-{imgKey
 ```
 
 **جداول Supabase الرئيسية:**
+
 - `categories` — أقسام المنتجات (id, name_ar, name_en, seq)
 - `products` — المنتجات (id, category_id, brand, colors[], sizes[], price, images[])
 - `orders` — الطلبات (id, customer_name, phone, city, items[], total, status)
@@ -98,6 +122,7 @@ Storage:      /storage/v1/object/public/products/{folder}/{catSeq}-{seq}-{imgKey
 - `suggestions` — اقتراحات المنتجات عبر SuggestionModal
 
 **مجلدات Storage:**
+
 ```
 imagestshirts  ← تي شيرت
 imagespolo     ← بولو
@@ -134,6 +159,7 @@ imagestracksuit ← تراكسوت
 ```
 
 **Dark Mode:**
+
 - يُخزَّن في `localStorage` بمفتاح `theme`
 - يُفعَّل بإضافة `data-theme="dark"` على `<html>`
 - script في `<head>` يمنع الوميض (FOUC) قبل أي render
@@ -144,9 +170,11 @@ imagestracksuit ← تراكسوت
 ## ⚠️ قواعد صارمة — لا استثناءات
 
 ### 1. اسألني قبل أي تعديل
+
 لا تبدأ بالتعديل على ملفات موجودة مباشرة. اشرح ماذا ستفعل وانتظر موافقتي أولاً — خاصة في الملفات الكبيرة كـ `globals.css` و `layout.tsx` و `lib/api.ts`.
 
 ### 2. الأمان أولاً قبل كتابة أي كود
+
 - لوحة الأدمن تحتاج auth بالضرورة — لا endpoints مكشوفة
 - أي Server Action يكتب بيانات → تحقق من الصلاحيات أولاً
 - `service_role` key → server-side فقط، لا تُعرض للـ client أبداً
@@ -154,16 +182,19 @@ imagestracksuit ← تراكسوت
 - ⚠️ **لا ترفع `.env.local` لـ GitHub أبداً**
 
 ### 3. لا تعدّل الموقع القديم
+
 - `index.html` و `orders-script.gs` و `js/app.js` — لا تلمسها نهائياً
 - المشروع الجديد كله في `E:\sizeme\platform\`
 
 ### 4. Hydration Rules (Next.js)
+
 - لا تضع `content: ''` أو أي CSS مع quotes داخل `<style>` في JSX — يسبب hydration mismatch
 - كل CSS من هذا النوع يذهب إلى `globals.css` مباشرة
 - `position: fixed` يتأثر بـ `backdrop-filter` في العناصر الأب — استخدم `createPortal` للـ modals والـ drawers
 - عناصر تعتمد على `window` أو `localStorage` → اعمل guard بـ `useEffect` + `mounted` state
 
 ### 5. أسلوب التصميم — Luxury Minimalism
+
 - لا ألوان زاهية — اللون الوحيد المسموح هو الذهبي `--accent`
 - لا عناصر مزدحمة أو كثيرة الحركة
 - الـ Glass effect للـ Header والـ Footer والـ Countdown فقط
@@ -171,6 +202,7 @@ imagestracksuit ← تراكسوت
 - الخط للنصوص العربية: `IBM Plex Sans Arabic`
 
 ### 6. Mobile-First دائماً
+
 - ابدأ بتصميم الموبايل ثم Desktop
 - الشبكة الافتراضية للمنتجات: 2 أعمدة موبايل / 3 أو 4 desktop
 - الـ touch targets يجب أن تكون ≥ 44px
@@ -179,11 +211,11 @@ imagestracksuit ← تراكسوت
 
 ## 🛍️ منطق المتجر والأسعار
 
-| الشرط | السعر | التوصيل |
-|---|---|---|
-| 1–3 قطع | 35,000 د.ع / قطعة | 5,000 د.ع |
-| 4–9 قطع | 30,000 د.ع / قطعة | 5,000 د.ع |
-| 10+ قطع | 30,000 د.ع / قطعة | مجاني |
+| الشرط   | السعر             | التوصيل   |
+| ------- | ----------------- | --------- |
+| 1–4 قطع | 35,000 د.ع / قطعة | 5,000 د.ع |
+| 5–9 قطع | 30,000 د.ع / قطعة | 5,000 د.ع |
+| 10+ قطع | 30,000 د.ع / قطعة | مجاني     |
 
 **Order ID:** صيغة `SZ-YYMMDD-XXXX` — تتولد تلقائياً بـ `generateOrderId()` في `utils.ts`
 
@@ -194,14 +226,17 @@ imagestracksuit ← تراكسوت
 ## 🎨 الألوان والماركات
 
 **الألوان المدعومة (COLOR_HEX في utils.ts):**
+
 ```
 Black, White, Dark Navy, Royal Blue, Brown, Burgundy, Charcoal, Taupe, Olive
 ```
+
 أي لون جديد يُضاف في `COLOR_HEX` و `COLOR_NAMES_AR` في `lib/utils.ts`.
 
 **الماركات:** تُجلب ديناميكياً من بيانات المنتجات — لا قائمة ثابتة.
 
 **أقسام المنتجات:**
+
 ```
 tshirt | polo | shirt | jeans | tracksuit
 ```
@@ -240,12 +275,12 @@ tshirt | polo | shirt | jeans | tracksuit
 
 ## 🐛 مشاكل معروفة وحلولها
 
-| المشكلة | السبب | الحل |
-|---|---|---|
-| Hydration mismatch مع `content: ''` | HTML entity encoding في JSX `<style>` | انقل الـ CSS إلى `globals.css` |
-| `position: fixed` لا يعمل خلف `backdrop-filter` | الأب يخلق stacking context جديد | استخدم `ReactDOM.createPortal` |
-| Dark mode وميض عند التحميل | React يهيدريت بعد أن يُرسم الـ HTML | script في `<head>` + `suppressHydrationWarning` على `<html>` |
-| Sections تصبح بيضاء في dark mode | استخدام `var(--ink)` كخلفية | استخدم `var(--section-contrast)` بدلاً منها |
+| المشكلة                                         | السبب                                 | الحل                                                         |
+| ----------------------------------------------- | ------------------------------------- | ------------------------------------------------------------ |
+| Hydration mismatch مع `content: ''`             | HTML entity encoding في JSX `<style>` | انقل الـ CSS إلى `globals.css`                               |
+| `position: fixed` لا يعمل خلف `backdrop-filter` | الأب يخلق stacking context جديد       | استخدم `ReactDOM.createPortal`                               |
+| Dark mode وميض عند التحميل                      | React يهيدريت بعد أن يُرسم الـ HTML   | script في `<head>` + `suppressHydrationWarning` على `<html>` |
+| Sections تصبح بيضاء في dark mode                | استخدام `var(--ink)` كخلفية           | استخدم `var(--section-contrast)` بدلاً منها                  |
 
 ---
 

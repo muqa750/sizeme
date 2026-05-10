@@ -111,3 +111,91 @@ export async function updateProductStatus(
     .eq('id', productId)
   if (error) throw error
 }
+
+/* ══ الإدارة — جلب البيانات ══ */
+
+export async function getCoupons() {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('coupons')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getNewsletterSubscribers() {
+  const admin = createAdminClient()
+  const { data, error, count } = await admin
+    .from('newsletter_subscribers')
+    .select('*', { count: 'exact' })
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return { subscribers: data ?? [], count: count ?? 0 }
+}
+
+export async function getRatings() {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('ratings')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getSuggestions() {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('suggestions')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function getSettings() {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('settings')
+    .select('*')
+    .order('key')
+  if (error) throw error
+  return data ?? []
+}
+
+/* ══ الإحصائيات ══ */
+export async function getAnalyticsData() {
+  const admin = createAdminClient()
+
+  const [ordersRes, itemsRes, newsletterRes] = await Promise.all([
+    admin
+      .from('orders')
+      .select('status, province, total, shipping, created_at, name'),
+    admin
+      .from('order_items')
+      .select('brand, sub, color, size, qty'),
+    admin
+      .from('newsletter_subscribers')
+      .select('id', { count: 'exact', head: true }),
+  ])
+
+  return {
+    orders: (ordersRes.data ?? []) as Array<{
+      status: string
+      province: string
+      total: number
+      shipping: number
+      created_at: string
+      name: string
+    }>,
+    items: (itemsRes.data ?? []) as Array<{
+      brand: string
+      sub: string
+      color: string
+      size: string
+      qty: number
+    }>,
+    newsletterCount: newsletterRes.count ?? 0,
+  }
+}

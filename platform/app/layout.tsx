@@ -2,11 +2,7 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, IBM_Plex_Sans_Arabic } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/context/CartContext'
-import CartDrawer from '@/components/CartDrawer'
-import Footer from '@/components/Footer'
-import SplashLoader from '@/components/SplashLoader'
-import AnnouncementBar from '@/components/AnnouncementBar'
-import WhatsAppFloat from '@/components/WhatsAppFloat'
+import ClientShell from '@/components/ClientShell'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -41,12 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex flex-col min-h-screen">
         <CartProvider>
-          <SplashLoader />
-          <AnnouncementBar />
-          {children}
-          <Footer />
-          <CartDrawer />
-          <WhatsAppFloat />
+          <ClientShell>
+            {children}
+          </ClientShell>
         </CartProvider>
       </body>
     </html>

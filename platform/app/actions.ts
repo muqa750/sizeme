@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase'
 import { generateOrderId, fmt } from '@/lib/utils'
+import { sendOrderNotification } from '@/lib/email'
 
 export interface OrderPayload {
   name:            string
@@ -66,6 +67,25 @@ export async function submitOrder(payload: OrderPayload) {
   // تحديث كاش الأدمن
   revalidatePath('/admin')
   revalidatePath('/admin/orders')
+  revalidatePath('/admin/analytics')
+
+  // إرسال إيميل التنبيه (لا يوقف الطلب إذا فشل)
+  sendOrderNotification({
+    order_id:        order_id,
+    name:            payload.name,
+    phone:           payload.phone,
+    province:        payload.province,
+    area:            payload.area,
+    address:         payload.address,
+    notes:           payload.notes,
+    coupon_code:     payload.coupon_code,
+    items:           payload.items,
+    subtotal:        payload.subtotal,
+    bulk_discount:   payload.bulk_discount,
+    coupon_discount: payload.coupon_discount,
+    shipping:        payload.shipping,
+    total:           payload.total,
+  }).catch(err => console.error('[Email] sendOrderNotification failed:', err))
 
   // بناء رسالة الواتساب
   const itemsText = items

@@ -7,6 +7,7 @@ export async function setOrderStatus(orderId: string, status: Order['status']) {
   await updateOrderStatus(orderId, status)
   revalidatePath('/admin/orders')
   revalidatePath('/admin')
+  revalidatePath('/admin/analytics')
 }
 
 export async function setProductStatus(productId: number, status: Product['status']) {

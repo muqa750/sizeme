@@ -1,11 +1,38 @@
 import Link from 'next/link'
 import { logout } from './login/actions'
 
-const NAV = [
-  { href: '/admin',          label: 'الرئيسية' },
-  { href: '/admin/orders',   label: 'الطلبات'  },
-  { href: '/admin/products', label: 'المنتجات' },
+const NAV_MAIN = [
+  { href: '/admin',           label: 'الرئيسية' },
+  { href: '/admin/orders',    label: 'الطلبات'  },
+  { href: '/admin/products',  label: 'المنتجات' },
+  { href: '/admin/analytics', label: 'إحصائيات' },
 ]
+
+const NAV_MGMT = [
+  { href: '/admin/management/coupons',     label: 'الكوبونات'      },
+  { href: '/admin/management/newsletter',  label: 'النشرة البريدية' },
+  { href: '/admin/management/ratings',     label: 'التقييمات'      },
+  { href: '/admin/management/suggestions', label: 'الاقتراحات'     },
+  { href: '/admin/management/settings',    label: 'الإعدادات'      },
+]
+
+const linkStyle = {
+  display: 'block',
+  padding: '0.65rem 1.5rem',
+  color: '#ccc',
+  textDecoration: 'none',
+  fontSize: '0.8rem',
+  letterSpacing: '0.04em',
+} as const
+
+const sectionLabel = {
+  padding: '0.5rem 1.5rem 0.25rem',
+  fontSize: '0.58rem',
+  letterSpacing: '0.18em',
+  color: '#555',
+  fontWeight: 700,
+  marginTop: '0.75rem',
+} as const
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Sidebar */}
       <aside style={{
-        width: 200,
+        width: 210,
         background: '#1a1a1a',
         color: '#fff',
         display: 'flex',
@@ -27,33 +54,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: '1.25rem',
           letterSpacing: '0.15em',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          marginBottom: '1.5rem',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          marginBottom: '1rem',
         }}>
           SIZEME
-          <span style={{ display: 'block', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#888', marginTop: 4 }}>
+          <span style={{ display: 'block', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#555', marginTop: 4 }}>
             ADMIN
           </span>
         </div>
 
         {/* Nav */}
         <nav style={{ flex: 1 }}>
-          {NAV.map(n => (
-            <Link
-              key={n.href}
-              href={n.href}
-              style={{
-                display: 'block',
-                padding: '0.75rem 1.5rem',
-                color: '#ccc',
-                textDecoration: 'none',
-                fontSize: '0.875rem',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {n.label}
-            </Link>
+          {/* — القسم الرئيسي — */}
+          <p style={sectionLabel}>القسم الرئيسي</p>
+          {NAV_MAIN.map(n => (
+            <Link key={n.href} href={n.href} style={linkStyle}>{n.label}</Link>
           ))}
+
+          {/* — الإدارة — */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '1rem' }}>
+            <p style={sectionLabel}>الإدارة</p>
+            {NAV_MGMT.map(n => (
+              <Link key={n.href} href={n.href} style={{ ...linkStyle, color: '#aaa', fontSize: '0.775rem' }}>
+                {n.label}
+              </Link>
+            ))}
+          </div>
         </nav>
 
         {/* Footer links */}
