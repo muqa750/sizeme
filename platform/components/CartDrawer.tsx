@@ -57,8 +57,6 @@ export default function CartDrawer() {
         setWaUrl(waUrl)
         clear()
         setStep('success')
-        // فتح واتساب تلقائياً
-        window.open(waUrl, '_blank')
       } catch {
         alert('حدث خطأ أثناء إرسال الطلب، حاول مرة أخرى')
       }
