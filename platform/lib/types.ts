@@ -15,8 +15,8 @@ export type Database = {
       }
       orders: {
         Row: Order
-        Insert: Omit<Order, 'id' | 'created_at'>
-        Update: Partial<Omit<Order, 'id' | 'created_at'>>
+        Insert: Omit<Order, 'id' | 'created_at' | 'order_items'>
+        Update: Partial<Omit<Order, 'id' | 'created_at' | 'order_items'>>
       }
       order_items: {
         Row: OrderItem
