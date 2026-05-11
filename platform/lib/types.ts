@@ -1,4 +1,4 @@
-// أنواع TypeScript المولّدة من schema قاعدة البيانات
+// أنواع TypeScript — تتوافق مع @supabase/supabase-js v2
 
 export type Database = {
   public: {
@@ -7,40 +7,49 @@ export type Database = {
         Row: Category
         Insert: Omit<Category, 'created_at'>
         Update: Partial<Omit<Category, 'id' | 'created_at'>>
+        Relationships: []
       }
       products: {
         Row: Product
         Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Product, 'id' | 'created_at'>>
+        Relationships: []
       }
       orders: {
         Row: Order
-        Insert: Omit<Order, 'id' | 'created_at' | 'order_items'>
-        Update: Partial<Omit<Order, 'id' | 'created_at' | 'order_items'>>
+        Insert: OrderInsert
+        Update: Partial<OrderInsert>
+        Relationships: []
       }
       order_items: {
         Row: OrderItem
-        Insert: Omit<OrderItem, 'id'>
-        Update: Partial<Omit<OrderItem, 'id'>>
+        Insert: OrderItemInsert
+        Update: Partial<OrderItemInsert>
+        Relationships: []
       }
       coupons: {
         Row: Coupon
         Insert: Omit<Coupon, 'id' | 'created_at' | 'used_count'>
         Update: Partial<Omit<Coupon, 'id' | 'created_at'>>
+        Relationships: []
       }
       settings: {
         Row: Setting
         Insert: Setting
         Update: Partial<Setting>
+        Relationships: []
       }
       admin_otps: {
         Row: AdminOTP
         Insert: Omit<AdminOTP, 'id' | 'created_at'>
         Update: Partial<Omit<AdminOTP, 'id' | 'created_at'>>
+        Relationships: []
       }
     }
   }
 }
+
+// ── الكيانات ──────────────────────────────────────────────────────────────
 
 export interface Category {
   id: string
@@ -90,12 +99,45 @@ export interface Order {
   payment_method: string
   lang: string
   created_at: string
-  // joined
+  // joined relation — ليست عموداً حقيقياً في DB
   order_items?: OrderItem[]
+}
+
+// نوع الإدخال الصريح بدون الـ relation المُدمجة ولا الـ id
+export interface OrderInsert {
+  order_id: string
+  status: 'new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+  name: string
+  phone: string
+  province: string | null
+  area: string | null
+  address: string | null
+  notes: string | null
+  subtotal: number
+  bulk_discount: number
+  coupon_code: string | null
+  coupon_discount: number
+  shipping: number
+  total: number
+  payment_method: string
+  lang: string
 }
 
 export interface OrderItem {
   id: number
+  order_id: string
+  product_id: number | null
+  sku: string | null
+  brand: string | null
+  sub: string | null
+  color: string | null
+  size: string | null
+  qty: number
+  unit_price: number
+  line_total: number
+}
+
+export interface OrderItemInsert {
   order_id: string
   product_id: number | null
   sku: string | null

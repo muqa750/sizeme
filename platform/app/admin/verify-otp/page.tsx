@@ -1,22 +1,23 @@
-import { verifyOtp } from './actions'
+import { verifyOtp, resendOtp } from './actions'
 
 interface Props {
-  searchParams: { from?: string; error?: string }
+  searchParams: { from?: string; error?: string; resent?: string }
 }
 
 export default function VerifyOtpPage({ searchParams }: Props) {
-  const from     = searchParams.from ?? '/admin'
-  const hasError = searchParams.error === '1'
+  const from      = searchParams.from ?? '/admin'
+  const hasError  = searchParams.error === '1'
+  const wasResent = searchParams.resent === '1'
 
   return (
     <div style={{
-      minHeight:       '100vh',
-      display:         'flex',
-      alignItems:      'center',
-      justifyContent:  'center',
-      background:      '#f9f9f9',
-      fontFamily:      'system-ui, sans-serif',
-      direction:       'rtl',
+      minHeight:      '100vh',
+      display:        'flex',
+      alignItems:     'center',
+      justifyContent: 'center',
+      background:     '#f9f9f9',
+      fontFamily:     'system-ui, sans-serif',
+      direction:      'rtl',
     }}>
       <div style={{ width: '100%', maxWidth: 360, padding: '0 1.5rem' }}>
 
@@ -40,16 +41,18 @@ export default function VerifyOtpPage({ searchParams }: Props) {
         <p style={{
           textAlign:    'center',
           fontSize:     '0.82rem',
-          color:        '#888',
+          color:        wasResent ? '#16a34a' : '#888',
           marginBottom: '1.75rem',
           lineHeight:   1.6,
         }}>
-          تم إرسال رمز التحقق إلى إيميلك
+          {wasResent
+            ? 'تم إرسال رمز جديد إلى إيميلك ✓'
+            : 'تم إرسال رمز التحقق إلى إيميلك'}
           <br />
           <span style={{ fontSize: '0.72rem', color: '#bbb' }}>الرمز صالح لمدة 5 دقائق</span>
         </p>
 
-        {/* Form */}
+        {/* Verify Form */}
         <form action={verifyOtp}>
           <input type="hidden" name="from" value={from} />
 
@@ -104,13 +107,34 @@ export default function VerifyOtpPage({ searchParams }: Props) {
               fontSize:      '0.8rem',
               letterSpacing: '0.15em',
               cursor:        'pointer',
+              marginBottom:  '0.75rem',
             }}
           >
             تحقق من الرمز
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.72rem', color: '#ccc' }}>
+        {/* Resend Form */}
+        <form action={resendOtp}>
+          <input type="hidden" name="from" value={from} />
+          <button
+            type="submit"
+            style={{
+              width:         '100%',
+              background:    'transparent',
+              color:         '#888',
+              padding:       '0.625rem',
+              border:        '1px solid #e5e5e5',
+              fontSize:      '0.78rem',
+              letterSpacing: '0.05em',
+              cursor:        'pointer',
+            }}
+          >
+            إعادة إرسال الرمز
+          </button>
+        </form>
+
+        <p style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.72rem', color: '#ccc' }}>
           <a href="/admin/login" style={{ color: '#aaa', textDecoration: 'none' }}>
             ← العودة لتسجيل الدخول
           </a>
