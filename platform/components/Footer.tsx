@@ -416,7 +416,6 @@ export default function Footer() {
         .footer-col-title {
           font-size: 0.68rem;
           font-weight: 700;
-          letter-spacing: 0.18em;
           color: var(--ink);
           margin: 0 0 0.25rem;
         }

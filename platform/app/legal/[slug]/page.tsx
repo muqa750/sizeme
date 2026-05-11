@@ -237,7 +237,6 @@ export default async function LegalPage({ params }: Props) {
           color: var(--ink);
           padding-bottom: 0.5rem;
           border-bottom: 1px solid var(--line);
-          letter-spacing: 0.01em;
         }
         .legal-h3:first-child { margin-top: 0; }
         .legal-p  { margin-bottom: 0.75rem; color: var(--mute); line-height: 1.85; }

@@ -141,6 +141,15 @@ html, body {
   color: var(--ink);
 }
 
+/* ── Arabic Global: إلغاء letter-spacing لمنع تفكك الحروف العربية ── */
+html[lang="ar"], html[lang="ar"] * {
+  letter-spacing: 0 !important;
+}
+/* استثناء: لوغو شاشة البداية (نص لاتيني) */
+#sizeLoader .ld-logo {
+  letter-spacing: 0.4em !important;
+}
+
 body {
   background: transparent;
   font-family: var(--font-ibm), 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
@@ -152,20 +161,13 @@ body {
 .serif {
   font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
   font-weight: 500;
-  letter-spacing: 0.02em;
 }
 
 /* ── Kicker (labels فوق العناوين) ── */
 .kicker {
-  letter-spacing: 0.35em;
   text-transform: uppercase;
   font-size: 0.7rem;
   color: var(--mute);
-}
-/* Arabic: letter-spacing يفصل الحروف العربية — نصفّره دائماً */
-[dir="rtl"] .kicker,
-html[lang="ar"] .kicker {
-  letter-spacing: 0;
 }
 
 /* ── Hairline borders ── */
