@@ -1,4 +1,5 @@
 import { getProducts, getCategories } from '@/lib/api'
+import { getSettings } from '@/lib/admin-api'
 import Header from '@/components/Header'
 import HeroSection from '@/components/home/HeroSection'
 import TrustStrip from '@/components/home/TrustStrip'
@@ -10,10 +11,13 @@ import DeliveryCountdown from '@/components/home/DeliveryCountdown'
 import FilteredCatalog from '@/components/FilteredCatalog'
 
 export default async function HomePage() {
-  const [products, categories] = await Promise.all([
+  const [products, categories, settings] = await Promise.all([
     getProducts(),
     getCategories(),
+    getSettings(),
   ])
+
+  const heroVideoUrl = settings.find(s => s.key === 'hero_video_url')?.value as string | undefined
 
   /* كل المنتجات مجمّعة حسب القسم — بدون slice حتى يعمل الفلتر على الكل */
   const groups = categories.map(cat => ({
@@ -28,7 +32,7 @@ export default async function HomePage() {
       <main>
 
         {/* ─── Hero ─── */}
-        <HeroSection />
+        <HeroSection videoUrl={heroVideoUrl} />
 
         {/* ─── About ─── */}
         <section

@@ -28,12 +28,20 @@ const colLink = {
   textAlign: 'inherit',
 } as const
 
+const LANGS = [
+  { code: 'ar', label: 'العربية' },
+  { code: 'en', label: 'English' },
+  { code: 'ku', label: 'کوردی' },
+]
+
 export default function Footer() {
   const [contact, setContact] = useState('')
   const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [rated, setRated] = useState(false)
   const [selectedRating, setSelected] = useState<string | null>(null)
   const [suggOpen, setSuggOpen] = useState(false)
+  const [activeLang, setActiveLang] = useState('ar')
+  const [langOpen, setLangOpen] = useState(false)
 
   async function handleNewsletter(e: React.FormEvent) {
     e.preventDefault()
@@ -64,6 +72,77 @@ export default function Footer() {
         backdropFilter: 'blur(24px) saturate(160%)',
         WebkitBackdropFilter: 'blur(24px) saturate(160%)',
       }}>
+
+        {/* ══ ٠ — شريط اللغة ══ */}
+        <div style={{
+          padding: '14px 20px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setLangOpen(o => !o)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'transparent',
+                border: 'none',
+                borderRadius: 999,
+                padding: '6px 10px',
+                cursor: 'pointer', color: 'var(--mute)',
+                fontSize: '0.82rem', fontFamily: 'inherit',
+                letterSpacing: '0.04em',
+              }}
+            >
+              {/* Globe */}
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9.5" />
+                <ellipse cx="12" cy="12" rx="4" ry="9.5" />
+                <line x1="2.5" y1="12" x2="21.5" y2="12" />
+              </svg>
+              <span>{LANGS.find(l => l.code === activeLang)?.label}</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                style={{ transform: langOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}>
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+
+            {/* Dropdown */}
+            {langOpen && (
+              <div style={{
+                position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'var(--paper)',
+                border: '1px solid var(--line)',
+                borderRadius: 10, overflow: 'hidden',
+                minWidth: 130,
+                boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
+                zIndex: 10,
+              }}>
+                {LANGS.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => { setActiveLang(lang.code); setLangOpen(false) }}
+                    style={{
+                      display: 'block', width: '100%',
+                      padding: '10px 16px', textAlign: 'center',
+                      background: activeLang === lang.code ? 'rgba(201,168,76,0.08)' : 'transparent',
+                      color: activeLang === lang.code ? 'var(--accent)' : 'var(--ink)',
+                      border: 'none', cursor: 'pointer',
+                      fontSize: '0.82rem', fontFamily: 'inherit',
+                      transition: 'background 0.12s',
+                      borderBottom: '1px solid var(--line)',
+                    }}
+                    onMouseEnter={e => { if (activeLang !== lang.code) e.currentTarget.style.background = 'rgba(0,0,0,0.03)' }}
+                    onMouseLeave={e => { if (activeLang !== lang.code) e.currentTarget.style.background = 'transparent' }}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* ══ ١ — أعمدة الروابط ══ */}
         <div style={{ maxWidth: '64rem', margin: '0 auto', padding: '3rem 1.5rem 2.5rem' }}>

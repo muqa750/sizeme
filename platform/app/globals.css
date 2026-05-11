@@ -162,6 +162,11 @@ body {
   font-size: 0.7rem;
   color: var(--mute);
 }
+/* Arabic: letter-spacing يفصل الحروف العربية — نصفّره دائماً */
+[dir="rtl"] .kicker,
+html[lang="ar"] .kicker {
+  letter-spacing: 0;
+}
 
 /* ── Hairline borders ── */
 .hairline { border-color: var(--line); }
