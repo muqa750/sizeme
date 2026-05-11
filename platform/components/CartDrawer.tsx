@@ -32,14 +32,10 @@ export default function CartDrawer() {
 
     startTx(async () => {
       try {
+        // الأسعار تُحسب على السيرفر — نرسل بيانات المنتجات فقط
         const payload: OrderPayload = {
           ...form,
-          coupon_code:     '',
-          coupon_discount: 0,
-          subtotal:        totals.subtotal,
-          bulk_discount:   totals.bulkDisc,
-          shipping:        totals.shipping,
-          total:           totals.total,
+          coupon_code: '',
           items: items.map(i => ({
             product_id: i.productId,
             sku:        i.sku,
@@ -48,8 +44,6 @@ export default function CartDrawer() {
             color:      i.color,
             size:       i.size,
             qty:        i.qty,
-            unit_price: totals.unitPrice,
-            line_total: i.qty * totals.unitPrice,
           })),
         }
         const { order_id, waUrl } = await submitOrder(payload)

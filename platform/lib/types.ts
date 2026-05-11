@@ -33,6 +33,11 @@ export type Database = {
         Insert: Setting
         Update: Partial<Setting>
       }
+      admin_otps: {
+        Row: AdminOTP
+        Insert: Omit<AdminOTP, 'id' | 'created_at'>
+        Update: Partial<Omit<AdminOTP, 'id' | 'created_at'>>
+      }
     }
   }
 }
@@ -137,3 +142,12 @@ export interface CartItem {
 }
 
 export type Lang = 'ar' | 'en' | 'ku'
+
+// OTP للأدمن
+export interface AdminOTP {
+  id: string
+  code: string
+  expires_at: string
+  used: boolean
+  created_at: string
+}
