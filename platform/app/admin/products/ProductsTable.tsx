@@ -4,13 +4,6 @@ import { fmtEn, imgPath } from '@/lib/utils'
 import ProductStatusSelect from './ProductStatusSelect'
 import type { Product } from '@/lib/types'
 
-const STATUS_COLOR: Record<string, string> = {
-  active:        '#16a34a',
-  'best-seller': '#7c3aed',
-  new:           '#2563eb',
-  hidden:        '#9ca3af',
-}
-
 export default function ProductsTable({ products }: { products: Product[] }) {
   const [query, setQuery] = useState('')
 
@@ -23,118 +16,82 @@ export default function ProductsTable({ products }: { products: Product[] }) {
 
   return (
     <>
-      {/* خانة البحث */}
-      <div style={{ marginBottom: '1rem' }}>
+      {/* بحث */}
+      <div style={{ marginBottom: '1rem', display: 'flex', gap: 10, alignItems: 'center' }}>
         <input
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="ابحث بكود المنتج أو البراند..."
           style={{
-            width: '100%',
-            maxWidth: 340,
-            padding: '0.625rem 1rem',
-            border: '1px solid #e5e5e5',
-            fontSize: '0.875rem',
-            outline: 'none',
-            background: '#fff',
-            boxSizing: 'border-box',
+            flex: 1, maxWidth: 340,
+            padding: '9px 14px',
+            border: '1px solid #e5e5e5', borderRadius: 8,
+            fontSize: '0.875rem', outline: 'none',
+            background: '#fff', boxSizing: 'border-box',
           }}
         />
         {query && (
-          <span style={{ fontSize: '0.72rem', color: '#aaa', marginRight: 10 }}>
+          <span style={{ fontSize: '0.72rem', color: '#aaa', whiteSpace: 'nowrap' }}>
             {filtered.length} نتيجة
           </span>
         )}
       </div>
 
-      {/* الجدول */}
-      <div style={{ background: '#fff', border: '1px solid #e5e5e5', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', minWidth: 700 }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fafafa' }}>
-              {['', 'SKU', 'البراند', 'الفئة', 'الألوان', 'السعر', 'الحالة'].map(h => (
-                <th key={h} style={{
-                  textAlign: 'right',
-                  padding: '0.75rem 1rem',
-                  fontWeight: 500,
-                  color: '#888',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.08em',
-                }}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((product, i) => (
-              <tr key={product.id} style={{
-                borderBottom: '1px solid #f5f5f5',
-                background: i % 2 === 0 ? '#fff' : '#fafafa',
-              }}>
-                {/* صورة مصغرة */}
-                <td style={{ padding: '0.625rem 1rem', width: 48 }}>
-                  <div style={{ width: 40, height: 52, background: '#f7f7f7', overflow: 'hidden' }}>
-                    <img
-                      src={imgPath(product.category_id, product.cat_seq, product.img_key, 1)}
-                      alt={product.brand}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-                    />
-                  </div>
-                </td>
+      {/* Cards Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+        {filtered.map(product => (
+          <div key={product.id} style={{
+            background: '#fff',
+            border: '1px solid #e8e8e8',
+            borderRadius: 10,
+            padding: 14,
+            display: 'flex',
+            gap: 14,
+            alignItems: 'flex-start',
+          }}>
+            {/* صورة */}
+            <div style={{ width: 52, height: 66, background: '#f5f5f5', borderRadius: 6, flexShrink: 0, overflow: 'hidden' }}>
+              <img
+                src={imgPath(product.category_id, product.cat_seq, product.img_key, 1)}
+                alt={product.brand}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+              />
+            </div>
 
-                {/* SKU */}
-                <td style={{ padding: '0.875rem 1rem', fontFamily: 'monospace', fontSize: '0.75rem', color: '#555', fontWeight: 500 }}>
-                  {product.sku}
-                </td>
-
-                {/* البراند */}
-                <td style={{ padding: '0.875rem 1rem', fontWeight: 600 }}>
-                  {product.brand}
-                  {product.sub && (
-                    <span style={{ display: 'block', fontSize: '0.72rem', color: '#aaa', fontWeight: 400 }}>
-                      {product.sub}
-                    </span>
-                  )}
-                </td>
-
-                {/* الفئة */}
-                <td style={{ padding: '0.875rem 1rem', color: '#888', fontSize: '0.78rem' }}>
-                  {product.category?.name_ar ?? product.category_id}
-                </td>
-
-                {/* الألوان */}
-                <td style={{ padding: '0.875rem 1rem' }}>
-                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.72rem', color: '#aaa' }}>
-                      {product.colors?.length ?? 0} لون
-                    </span>
-                  </div>
-                </td>
-
-                {/* السعر */}
-                <td style={{ padding: '0.875rem 1rem', fontWeight: 500, whiteSpace: 'nowrap', direction: 'ltr', textAlign: 'right', fontSize: '0.78rem' }}>
-                  {fmtEn(product.category?.price ?? 35000)}
-                </td>
-
-                {/* الحالة */}
-                <td style={{ padding: '0.875rem 1rem' }}>
+            {/* معلومات */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontWeight: 600, fontSize: '0.88rem', marginBottom: 2 }}>
+                {product.brand}
+                {product.sub && <span style={{ fontWeight: 400, color: '#999', fontSize: '0.75rem' }}> — {product.sub}</span>}
+              </p>
+              <p style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: '#888', marginBottom: 6 }}>
+                {product.sku}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <div>
+                  <span style={{ fontSize: '0.72rem', color: '#aaa' }}>
+                    {product.category?.name_ar ?? product.category_id} · {product.colors?.length ?? 0} ألوان
+                  </span>
+                  <br />
+                  <span style={{ fontSize: '0.78rem', fontWeight: 600, color: '#555', direction: 'ltr', display: 'inline-block' }}>
+                    {fmtEn(product.category?.price ?? 35000)}
+                  </span>
+                </div>
+                <div>
                   <ProductStatusSelect productId={product.id} current={product.status} />
-                </td>
-              </tr>
-            ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
 
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={7} style={{ padding: '3rem', textAlign: 'center', color: '#aaa', fontSize: '0.875rem' }}>
-                  لا توجد نتائج لـ "{query}"
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        {filtered.length === 0 && (
+          <div style={{ gridColumn: '1/-1', padding: '3rem', textAlign: 'center', color: '#aaa', background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10 }}>
+            لا توجد نتائج{query ? ` لـ "${query}"` : ''}
+          </div>
+        )}
       </div>
     </>
   )

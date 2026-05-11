@@ -26,31 +26,27 @@ export default async function ProductsPage() {
   }
 
   return (
-    <div style={{ padding: '2rem 2.5rem', direction: 'rtl' }}>
+    <div style={{ padding: '1.25rem 1rem', direction: 'rtl', maxWidth: 860, margin: '0 auto' }}>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1a1a1a' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <h1 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a1a' }}>
           المنتجات
-          <span style={{ fontSize: '0.8rem', color: '#aaa', marginRight: 8, fontWeight: 400 }}>
+          <span style={{ fontSize: '0.78rem', color: '#aaa', marginRight: 6, fontWeight: 400 }}>
             ({products.length})
           </span>
         </h1>
       </div>
 
       {/* ملخص الحالات */}
-      <div style={{ display: 'flex', gap: '0.875rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: '1rem', flexWrap: 'wrap' }}>
         {Object.entries(byStat).map(([status, count]) => (
           <div key={status} style={{
-            background: '#fff',
-            border: '1px solid #e5e5e5',
-            padding: '0.625rem 1rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
+            background: '#fff', border: '1px solid #e5e5e5', borderRadius: 8,
+            padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6,
           }}>
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLOR[status], flexShrink: 0 }} />
-            <span style={{ fontSize: '0.75rem', color: '#888' }}>{STATUS_AR[status]}</span>
-            <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1a1a1a' }}>{count}</span>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: STATUS_COLOR[status], flexShrink: 0 }} />
+            <span style={{ fontSize: '0.72rem', color: '#888' }}>{STATUS_AR[status]}</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1a1a1a' }}>{count}</span>
           </div>
         ))}
       </div>

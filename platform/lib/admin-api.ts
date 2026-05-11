@@ -124,6 +124,41 @@ export async function getCoupons() {
   return data ?? []
 }
 
+export interface CouponOrder {
+  order_id: string
+  name: string
+  created_at: string
+  coupon_discount: number
+  total: number
+}
+
+export type CouponUsageMap = Record<string, CouponOrder[]>
+
+export async function getCouponUsage(): Promise<CouponUsageMap> {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('orders')
+    .select('order_id, name, created_at, coupon_code, coupon_discount, total')
+    .not('coupon_code', 'is', null)
+    .gt('coupon_discount', 0)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+
+  const map: CouponUsageMap = {}
+  for (const o of (data ?? [])) {
+    const code = o.coupon_code as string
+    if (!map[code]) map[code] = []
+    map[code].push({
+      order_id:        o.order_id,
+      name:            o.name,
+      created_at:      o.created_at,
+      coupon_discount: o.coupon_discount,
+      total:           o.total,
+    })
+  }
+  return map
+}
+
 export async function getNewsletterSubscribers() {
   const admin = createAdminClient()
   const { data, error, count } = await admin

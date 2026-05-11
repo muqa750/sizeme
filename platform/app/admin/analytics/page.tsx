@@ -28,10 +28,12 @@ export default async function AnalyticsPage() {
   orders.forEach(o => {
     if (o.name?.trim()) buyerMap[o.name.trim()] = (buyerMap[o.name.trim()] ?? 0) + 1
   })
-  const topBuyerEntry = Object.entries(buyerMap).sort((a, b) => b[1] - a[1])[0]
-  const topBuyer = topBuyerEntry
-    ? { name: topBuyerEntry[0], count: topBuyerEntry[1] }
-    : null
+  const sortedBuyers = Object.entries(buyerMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 15)
+    .map(([name, count]) => ({ name, count }))
+  const topBuyer = sortedBuyers[0] ?? null
+  const topBuyers = sortedBuyers
 
   // ── Status breakdown ──────────────────────────────────────────────────────
   const statusMap: Record<string, number> = {}
@@ -104,6 +106,7 @@ export default async function AnalyticsPage() {
         completionRate,
         topBuyer,
       }}
+      topBuyers={topBuyers}
       statusData={statusData}
       provinceData={provinceData}
       topProducts={topProducts}

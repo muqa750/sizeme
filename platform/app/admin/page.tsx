@@ -1,137 +1,110 @@
 import { getDashboardStats, getAdminOrders } from '@/lib/admin-api'
 import { fmtEn, dateEn } from '@/lib/utils'
+import Link from 'next/link'
 
 const STATUS_AR: Record<string, string> = {
-  new:       'جديد',
-  confirmed: 'مؤكد',
-  shipped:   'شُحن',
-  delivered: 'سُلّم',
-  cancelled: 'ملغي',
+  new: 'جديد', confirmed: 'مؤكد', shipped: 'شُحن', delivered: 'سُلّم', cancelled: 'ملغي',
 }
-
 const STATUS_COLOR: Record<string, string> = {
-  new:       '#2563eb',
-  confirmed: '#7c3aed',
-  shipped:   '#d97706',
-  delivered: '#16a34a',
-  cancelled: '#dc2626',
+  new: '#2563eb', confirmed: '#7c3aed', shipped: '#d97706', delivered: '#16a34a', cancelled: '#dc2626',
 }
 
 export default async function AdminDashboard() {
   const [stats, { orders }] = await Promise.all([
     getDashboardStats(),
-    getAdminOrders({ limit: 10 }),
+    getAdminOrders({ limit: 8 }),
   ])
 
   const STATS = [
-    { label: 'طلبات اليوم',      value: stats.todayCount.toString() },
-    { label: 'إجمالي الطلبات',   value: stats.totalOrders.toString() },
-    { label: 'طلبات جديدة',      value: stats.pendingOrders.toString() },
-    { label: 'إيرادات اليوم',    value: fmtEn(stats.todayRevenue) },
-    { label: 'إجمالي الإيرادات', value: fmtEn(stats.totalRevenue) },
+    { label: 'طلبات اليوم',      value: stats.todayCount.toString(),     icon: '📦' },
+    { label: 'جديدة',            value: stats.pendingOrders.toString(),   icon: '🔔' },
+    { label: 'إجمالي الطلبات',   value: stats.totalOrders.toString(),     icon: '📊' },
+    { label: 'إيرادات اليوم',    value: fmtEn(stats.todayRevenue),        icon: '💰' },
+    { label: 'إجمالي الإيرادات', value: fmtEn(stats.totalRevenue),        icon: '📈' },
   ]
 
   return (
-    <div style={{ padding: '2rem 2.5rem', direction: 'rtl' }}>
-      <h1 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '2rem', color: '#1a1a1a' }}>
+    <div style={{ padding: '1.25rem 1rem', direction: 'rtl', maxWidth: 860, margin: '0 auto' }}>
+
+      <h1 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1.25rem', color: '#1a1a1a' }}>
         لوحة التحكم
       </h1>
 
-      {/* Stats */}
+      {/* Stats Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-        gap: '1rem',
-        marginBottom: '2.5rem',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+        gap: '0.75rem',
+        marginBottom: '1.75rem',
       }}>
         {STATS.map(s => (
           <div key={s.label} style={{
             background: '#fff',
-            border: '1px solid #e5e5e5',
-            padding: '1.25rem',
+            border: '1px solid #e8e8e8',
+            borderRadius: 10,
+            padding: '1rem',
           }}>
-            <p style={{ fontSize: '0.68rem', letterSpacing: '0.08em', color: '#aaa', marginBottom: 8, textTransform: 'uppercase' }}>
-              {s.label}
-            </p>
-            <p style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1a1a1a' }}>
+            <p style={{ fontSize: '1.4rem', marginBottom: 6 }}>{s.icon}</p>
+            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1, direction: 'ltr', textAlign: 'right' }}>
               {s.value}
             </p>
+            <p style={{ fontSize: '0.7rem', color: '#aaa', marginTop: 4 }}>{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Recent Orders */}
-      <div style={{ background: '#fff', border: '1px solid #e5e5e5' }}>
-        <div style={{
-          padding: '1rem 1.5rem',
-          borderBottom: '1px solid #e5e5e5',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <h2 style={{ fontSize: '0.875rem', fontWeight: 600 }}>آخر الطلبات</h2>
-          <a href="/admin/orders" style={{ fontSize: '0.75rem', color: '#888', textDecoration: 'none' }}>
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <h2 style={{ fontSize: '0.9rem', fontWeight: 600 }}>آخر الطلبات</h2>
+          <Link href="/admin/orders" style={{ fontSize: '0.75rem', color: '#888', textDecoration: 'none' }}>
             عرض الكل ←
-          </a>
+          </Link>
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid #f0f0f0', background: '#fafafa' }}>
-              {['رقم الطلب', 'الزبون', 'المحافظة', 'المبلغ', 'الحالة', 'التاريخ'].map(h => (
-                <th key={h} style={{
-                  textAlign: 'right',
-                  padding: '0.75rem 1.5rem',
-                  fontWeight: 500,
-                  color: '#888',
-                  fontSize: '0.7rem',
-                  letterSpacing: '0.08em',
-                }}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order, i) => (
-              <tr key={order.id} style={{
-                borderBottom: '1px solid #f5f5f5',
-                background: i % 2 === 0 ? '#fff' : '#fafafa',
-              }}>
-                <td style={{ padding: '0.875rem 1.5rem', fontFamily: 'monospace', color: '#555', fontSize: '0.75rem' }}>
-                  {order.order_id}
-                </td>
-                <td style={{ padding: '0.875rem 1.5rem', fontWeight: 500 }}>{order.name}</td>
-                <td style={{ padding: '0.875rem 1.5rem', color: '#888' }}>{order.province ?? '—'}</td>
-                <td style={{ padding: '0.875rem 1.5rem', fontWeight: 500, direction: 'ltr', textAlign: 'right' }}>
-                  {fmtEn(order.total)}
-                </td>
-                <td style={{ padding: '0.875rem 1.5rem' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '2px 10px',
-                    fontSize: '0.7rem',
-                    color: STATUS_COLOR[order.status] ?? '#888',
-                    background: (STATUS_COLOR[order.status] ?? '#888') + '18',
-                    borderRadius: 2,
-                  }}>
-                    {STATUS_AR[order.status] ?? order.status}
-                  </span>
-                </td>
-                <td style={{ padding: '0.875rem 1.5rem', color: '#aaa', fontSize: '0.72rem', direction: 'ltr', textAlign: 'right' }}>
-                  {dateEn(order.created_at)}
-                </td>
-              </tr>
-            ))}
-            {orders.length === 0 && (
-              <tr>
-                <td colSpan={6} style={{ padding: '3rem', textAlign: 'center', color: '#aaa' }}>
-                  لا توجد طلبات بعد
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {orders.map(order => {
+            const sc = STATUS_COLOR[order.status] ?? '#888'
+            return (
+              <Link
+                key={order.id}
+                href="/admin/orders"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div style={{ background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10, padding: '12px 14px' }}>
+                  {/* الصف الأول */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#666' }}>
+                      {order.order_id}
+                    </span>
+                    <span style={{
+                      padding: '2px 10px', borderRadius: 4, fontSize: '0.7rem',
+                      color: sc, background: sc + '18',
+                    }}>
+                      {STATUS_AR[order.status] ?? order.status}
+                    </span>
+                  </div>
+                  {/* الصف الثاني */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>{order.name}</span>
+                    <span style={{ fontWeight: 700, fontSize: '0.88rem', direction: 'ltr' }}>{fmtEn(order.total)}</span>
+                  </div>
+                  {/* الصف الثالث */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                    <span style={{ fontSize: '0.75rem', color: '#aaa' }}>{order.province ?? '—'}</span>
+                    <span style={{ fontSize: '0.72rem', color: '#ccc', direction: 'ltr' }}>{dateEn(order.created_at)}</span>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+
+          {orders.length === 0 && (
+            <div style={{ padding: '2.5rem', textAlign: 'center', color: '#aaa', background: '#fff', border: '1px solid #e8e8e8', borderRadius: 10 }}>
+              لا توجد طلبات بعد
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
