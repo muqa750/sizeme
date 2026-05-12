@@ -20,22 +20,25 @@ interface DataPoint      { name: string; value: number }
 interface StatusPoint   { name: string; value: number; color: string }
 interface Buyer         { name: string; count: number }
 
+interface BuyerAmount { name: string; total: number }
+
 interface Props {
   kpis: {
-    newsletterCount: number
-    totalItemsSold:  number
-    completionRate:  number
-    topBuyer:        Buyer | null
+    newsletterCount:   number
+    totalItemsSold:    number
+    completionRate:    number
+    uniqueBuyersCount: number
   }
-  topBuyers:    Buyer[]
-  statusData:   StatusPoint[]
-  provinceData: DataPoint[]
-  topProducts:  DataPoint[]
-  topBrands:    DataPoint[]
-  sizeData:     DataPoint[]
-  colorData:    DataPoint[]
-  trendData7:   DataPoint[]
-  trendData30:  DataPoint[]
+  topBuyers:         Buyer[]
+  topBuyersByAmount: BuyerAmount[]
+  statusData:        StatusPoint[]
+  provinceData:      DataPoint[]
+  topProducts:       DataPoint[]
+  topBrands:         DataPoint[]
+  sizeData:          DataPoint[]
+  colorData:         DataPoint[]
+  trendData7:        DataPoint[]
+  trendData30:       DataPoint[]
 }
 
 // ─── Design ────────────────────────────────────────────────────────────────────
@@ -122,7 +125,7 @@ function ColorBarShape(props: any) {
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 export default function AnalyticsCharts({
-  kpis, topBuyers, statusData, provinceData, topProducts, topBrands, sizeData, colorData, trendData7, trendData30,
+  kpis, topBuyers, topBuyersByAmount, statusData, provinceData, topProducts, topBrands, sizeData, colorData, trendData7, trendData30,
 }: Props) {
   const router = useRouter()
   const [showBuyers, setShowBuyers] = useState(false)
@@ -173,63 +176,93 @@ export default function AnalyticsCharts({
             onClick={e => e.stopPropagation()}
             style={{
               background: '#fff', borderRadius: 16, padding: 24,
-              width: '100%', maxWidth: 400, maxHeight: '80vh', overflow: 'auto',
+              width: '100%', maxWidth: 680, maxHeight: '85vh', overflow: 'auto',
               direction: 'rtl',
             }}
           >
+            {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h2 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>أكثر الزبائن شراءً</h2>
               <button onClick={() => setShowBuyers(false)} style={{
                 background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', fontSize: 18, padding: 4,
               }}>✕</button>
             </div>
-            {topBuyers.length === 0 ? (
-              <p style={{ color: '#bbb', textAlign: 'center', padding: '2rem 0' }}>لا توجد بيانات بعد</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {topBuyers.map((b, i) => (
-                  <div key={b.name} style={{
-                    display: 'flex', alignItems: 'center', gap: 14,
-                    padding: '10px 12px', background: i === 0 ? 'rgba(201,168,76,0.06)' : '#fafafa',
-                    borderRadius: 10, border: `1px solid ${i === 0 ? '#c9a84c33' : '#f0f0f0'}`,
-                  }}>
-                    <span style={{
-                      width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                      background: i === 0 ? ACCENT : '#e8e8e8',
-                      color: i === 0 ? '#fff' : '#888',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 12, fontWeight: 700,
-                    }}>
-                      {i + 1}
-                    </span>
-                    <span style={{ flex: 1, fontWeight: i === 0 ? 600 : 400, fontSize: 14 }}>{b.name}</span>
-                    <span style={{
-                      background: '#f0f0f0', borderRadius: 20, padding: '2px 10px',
-                      fontSize: 12, color: '#555', fontWeight: 600,
-                    }}>
-                      {b.count} طلب
-                    </span>
-                  </div>
-                ))}
+
+            {/* القائمتان جنباً لجنب */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+
+              {/* عدد الطلبات */}
+              <div>
+                <p style={{ fontSize: 11, color: '#aaa', fontWeight: 600, marginBottom: 10, borderBottom: '1px solid #f0f0f0', paddingBottom: 8 }}>
+                  بعدد الطلبات
+                </p>
+                {topBuyers.length === 0
+                  ? <p style={{ color: '#bbb', fontSize: 13 }}>لا توجد بيانات</p>
+                  : <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {topBuyers.map((b, i) => (
+                        <div key={b.name} style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '8px 10px',
+                          background: i === 0 ? 'rgba(201,168,76,0.06)' : '#fafafa',
+                          borderRadius: 8, border: `1px solid ${i === 0 ? '#c9a84c33' : '#f0f0f0'}`,
+                        }}>
+                          <span style={{
+                            width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                            background: i === 0 ? ACCENT : '#e8e8e8',
+                            color: i === 0 ? '#fff' : '#888',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 10, fontWeight: 700,
+                          }}>{i + 1}</span>
+                          <span style={{ flex: 1, fontSize: 13, fontWeight: i === 0 ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.name}</span>
+                          <span style={{ fontSize: 12, color: '#888', fontWeight: 600, flexShrink: 0 }}>{b.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                }
               </div>
-            )}
+
+              {/* مجموع المبالغ */}
+              <div>
+                <p style={{ fontSize: 11, color: '#aaa', fontWeight: 600, marginBottom: 10, borderBottom: '1px solid #f0f0f0', paddingBottom: 8 }}>
+                  بمجموع المبالغ
+                </p>
+                {topBuyersByAmount.length === 0
+                  ? <p style={{ color: '#bbb', fontSize: 13 }}>لا توجد بيانات</p>
+                  : <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {topBuyersByAmount.map((b, i) => (
+                        <div key={b.name} style={{
+                          display: 'flex', alignItems: 'center', gap: 10,
+                          padding: '8px 10px',
+                          background: i === 0 ? 'rgba(201,168,76,0.06)' : '#fafafa',
+                          borderRadius: 8, border: `1px solid ${i === 0 ? '#c9a84c33' : '#f0f0f0'}`,
+                        }}>
+                          <span style={{
+                            width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                            background: i === 0 ? ACCENT : '#e8e8e8',
+                            color: i === 0 ? '#fff' : '#888',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: 10, fontWeight: 700,
+                          }}>{i + 1}</span>
+                          <span style={{ flex: 1, fontSize: 13, fontWeight: i === 0 ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.name}</span>
+                          <span style={{ fontSize: 11, color: '#888', fontWeight: 600, flexShrink: 0, direction: 'ltr' }}>
+                            {b.total.toLocaleString('en-US')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                }
+              </div>
+
+            </div>
           </div>
         </div>
       )}
 
       <div style={{
-        padding: '20px 16px', direction: 'rtl',
+        padding: '14px 16px', direction: 'rtl',
         fontFamily: 'IBM Plex Sans Arabic, sans-serif',
         background: '#f9f9f9', minHeight: '100vh',
       }}>
-
-        {/* Header */}
-        <div style={{ marginBottom: 20 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 600, color: '#1a1a1a', fontFamily: 'Cormorant Garamond, serif', margin: '0 0 4px' }}>
-            الإحصائيات
-          </h1>
-          <p style={{ color: '#aaa', fontSize: 13, margin: 0 }}>نظرة شاملة على أداء Sizeme</p>
-        </div>
 
         {/* KPIs */}
         <div className="analytics-kpis">
@@ -252,11 +285,11 @@ export default function AnalyticsCharts({
             sub="طلبات وصلت للزبون"
           />
           <KpiCard
-            title="أكثر زبون شراءً"
-            value={kpis.topBuyer ? kpis.topBuyer.name : '—'}
-            sub={kpis.topBuyer ? `${kpis.topBuyer.count} طلب — اضغط لعرض الكل` : undefined}
+            title="الزبائن المتكررون"
+            value={kpis.uniqueBuyersCount.toLocaleString('en-US')}
+            sub="اضغط لعرض الأكثر شراءً"
             onClick={() => setShowBuyers(true)}
-            linkLabel="عرض أكثر 15 زبون"
+            linkLabel="عرض التفاصيل"
           />
         </div>
 

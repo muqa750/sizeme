@@ -45,6 +45,7 @@ export async function getDashboardStats() {
 /* ══ الطلبات ══ */
 export async function getAdminOrders(opts?: {
   status?: string
+  search?: string
   limit?: number
   offset?: number
 }): Promise<{ orders: Order[]; count: number }> {
@@ -56,6 +57,14 @@ export async function getAdminOrders(opts?: {
     .order('created_at', { ascending: false })
 
   if (opts?.status && opts.status !== 'all') q = q.eq('status', opts.status)
+
+  // البحث بالاسم أو رقم الطلب
+  if (opts?.search?.trim()) {
+    const s = opts.search.trim()
+    // ilike تعمل مع النصوص — نبحث في الاسم أو رقم الطلب
+    q = (q as any).or(`name.ilike.%${s}%,order_id.ilike.%${s}%`)
+  }
+
   if (opts?.limit)  q = q.limit(opts.limit)
   if (opts?.offset) q = q.range(opts.offset, (opts.offset + (opts.limit ?? 50)) - 1)
 

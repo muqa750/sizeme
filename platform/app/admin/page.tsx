@@ -44,8 +44,8 @@ export default async function AdminDashboard() {
             borderRadius: 10,
             padding: '1.1rem 1rem',
           }}>
-            <p style={{ fontSize: '0.78rem', color: '#555', marginBottom: 10, fontWeight: 500 }}>{s.label}</p>
-            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1, direction: 'ltr', textAlign: 'right', fontFamily: 'Cormorant Garamond, serif' }}>
+            <p style={{ fontSize: '0.8rem', color: '#333', marginBottom: 8, fontWeight: 600, letterSpacing: '0.01em' }}>{s.label}</p>
+            <p style={{ fontSize: '1.2rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1, direction: 'ltr', textAlign: 'right', fontFamily: 'Cormorant Garamond, serif' }}>
               {s.value}
             </p>
           </div>
