@@ -59,7 +59,7 @@ interface OrderItem {
 }
 
 interface Props {
-  order: Order & { order_items?: OrderItem[] }
+  order: Omit<Order, 'order_items'> & { order_items?: OrderItem[] }
   index: number
 }
 
