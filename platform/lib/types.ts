@@ -2,10 +2,10 @@
 
 export type Database = {
   public: {
-    Views:          Record<string, never>
-    Functions:      Record<string, never>
-    Enums:          Record<string, never>
-    CompositeTypes: Record<string, never>
+    Views:          Record<string, unknown>
+    Functions:      Record<string, unknown>
+    Enums:          Record<string, unknown>
+    CompositeTypes: Record<string, unknown>
     Tables: {
       categories: {
         Row: Category

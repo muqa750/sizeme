@@ -150,7 +150,8 @@ export async function submitOrder(payload: OrderPayload) {
     total,
   }
 
-  const { error: orderErr } = await admin.from('orders').insert(orderData)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: orderErr } = await admin.from('orders').insert(orderData as any)
   if (orderErr) {
     console.error('[Order] Insert error:', orderErr)
     throw new Error(orderErr.message)
@@ -170,7 +171,8 @@ export async function submitOrder(payload: OrderPayload) {
     line_total: i.qty * unitPrice,
   }))
 
-  const { error: itemsErr } = await admin.from('order_items').insert(itemsData)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: itemsErr } = await admin.from('order_items').insert(itemsData as any)
   if (itemsErr) {
     console.error('[Order] Items insert error:', itemsErr)
     throw new Error(itemsErr.message)
