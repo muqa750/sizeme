@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/lib/supabase'
 import { generateOrderId, fmt } from '@/lib/utils'
 import { sendOrderNotification } from '@/lib/email'
-import type { OrderInsert, OrderItemInsert } from '@/lib/types'
+import type { OrderInsert, OrderItemInsert, Coupon } from '@/lib/types'
 
 // ── ثوابت الأسعار (السيرفر هو المرجع الوحيد) ──────────────────────────────
 const UNIT_PRICE     = 35_000
@@ -105,12 +105,14 @@ export async function submitOrder(payload: OrderPayload) {
   let coupon_discount: number        = 0
 
   if (payload.coupon_code?.trim()) {
-    const { data: coupon } = await admin
+    const { data: couponRaw } = await admin
       .from('coupons')
       .select('*')
       .eq('code', payload.coupon_code.trim().toUpperCase())
       .eq('is_active', true)
       .single()
+
+    const coupon = couponRaw as Coupon | null
 
     if (coupon) {
       const expired = coupon.expires_at && new Date(coupon.expires_at) < new Date()
