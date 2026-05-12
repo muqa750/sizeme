@@ -107,7 +107,7 @@ export async function submitOrder(payload: OrderPayload) {
   if (payload.coupon_code?.trim()) {
     const { data: coupon } = await admin
       .from('coupons')
-      .select('code, type, value, expires_at, max_uses, used_count, is_active')
+      .select('*')
       .eq('code', payload.coupon_code.trim().toUpperCase())
       .eq('is_active', true)
       .single()
