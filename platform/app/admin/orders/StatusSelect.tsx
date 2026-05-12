@@ -4,11 +4,10 @@ import { setOrderStatus } from '../actions'
 import type { Order } from '@/lib/types'
 
 const OPTIONS: { value: Order['status']; label: string }[] = [
-  { value: 'new', label: 'جديد' },
-  { value: 'confirmed', label: 'مؤكد' },
-  { value: 'shipped', label: 'شُحن' },
+  { value: 'new',       label: 'جديد'  },
+  { value: 'confirmed', label: 'مؤكد'  },
   { value: 'delivered', label: 'سُلّم' },
-  { value: 'cancelled', label: 'ملغي' },
+  { value: 'cancelled', label: 'ملغي'  },
 ]
 
 const STATUS_COLOR: Record<string, string> = {

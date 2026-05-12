@@ -214,7 +214,7 @@ export async function getAnalyticsData() {
       .select('status, province, total, shipping, created_at, name'),
     admin
       .from('order_items')
-      .select('brand, sub, color, size, qty'),
+      .select('brand, sub, sku, color, size, qty'),
     admin
       .from('newsletter_subscribers')
       .select('id', { count: 'exact', head: true }),
@@ -232,6 +232,7 @@ export async function getAnalyticsData() {
     items: (itemsRes.data ?? []) as Array<{
       brand: string
       sub: string
+      sku: string | null
       color: string
       size: string
       qty: number

@@ -16,11 +16,11 @@ export default async function AdminDashboard() {
   ])
 
   const STATS = [
-    { label: 'طلبات اليوم',      value: stats.todayCount.toString(),     icon: '📦' },
-    { label: 'جديدة',            value: stats.pendingOrders.toString(),   icon: '🔔' },
-    { label: 'إجمالي الطلبات',   value: stats.totalOrders.toString(),     icon: '📊' },
-    { label: 'إيرادات اليوم',    value: fmtEn(stats.todayRevenue),        icon: '💰' },
-    { label: 'إجمالي الإيرادات', value: fmtEn(stats.totalRevenue),        icon: '📈' },
+    { label: 'طلبات اليوم',      value: stats.todayCount.toString()  },
+    { label: 'طلبات جديدة',      value: stats.pendingOrders.toString() },
+    { label: 'إجمالي الطلبات',   value: stats.totalOrders.toString()  },
+    { label: 'إيرادات اليوم',    value: fmtEn(stats.todayRevenue)     },
+    { label: 'إجمالي الإيرادات', value: fmtEn(stats.totalRevenue)     },
   ]
 
   return (
@@ -33,7 +33,7 @@ export default async function AdminDashboard() {
       {/* Stats Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
         gap: '0.75rem',
         marginBottom: '1.75rem',
       }}>
@@ -42,13 +42,12 @@ export default async function AdminDashboard() {
             background: '#fff',
             border: '1px solid #e8e8e8',
             borderRadius: 10,
-            padding: '1rem',
+            padding: '1.1rem 1rem',
           }}>
-            <p style={{ fontSize: '1.4rem', marginBottom: 6 }}>{s.icon}</p>
-            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1, direction: 'ltr', textAlign: 'right' }}>
+            <p style={{ fontSize: '0.78rem', color: '#555', marginBottom: 10, fontWeight: 500 }}>{s.label}</p>
+            <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', lineHeight: 1, direction: 'ltr', textAlign: 'right', fontFamily: 'Cormorant Garamond, serif' }}>
               {s.value}
             </p>
-            <p style={{ fontSize: '0.7rem', color: '#aaa', marginTop: 4 }}>{s.label}</p>
           </div>
         ))}
       </div>

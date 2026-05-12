@@ -89,6 +89,7 @@ export interface Product {
   sku: string
   brand: string
   sub: string | null
+  description?: string | null
   category_id: string
   img_key: string
   cat_seq: string | null

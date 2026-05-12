@@ -1,4 +1,5 @@
 import { getAdminProducts } from '@/lib/admin-api'
+import { getCategories } from '@/lib/api'
 import ProductsTable from './ProductsTable'
 
 const STATUS_AR: Record<string, string> = {
@@ -15,8 +16,13 @@ const STATUS_COLOR: Record<string, string> = {
   hidden:        '#9ca3af',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProductsPage() {
-  const products = await getAdminProducts()
+  const [products, categories] = await Promise.all([
+    getAdminProducts(),
+    getCategories(),
+  ])
 
   const byStat = {
     active:        products.filter(p => p.status === 'active').length,
@@ -26,7 +32,7 @@ export default async function ProductsPage() {
   }
 
   return (
-    <div style={{ padding: '1.25rem 1rem', direction: 'rtl', maxWidth: 860, margin: '0 auto' }}>
+    <div style={{ padding: '1.25rem 1rem', direction: 'rtl', maxWidth: 900, margin: '0 auto' }}>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h1 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a1a' }}>
@@ -51,8 +57,8 @@ export default async function ProductsPage() {
         ))}
       </div>
 
-      {/* الجدول مع البحث */}
-      <ProductsTable products={products} />
+      {/* الجدول مع البحث + الإدارة */}
+      <ProductsTable products={products} categories={categories} />
     </div>
   )
 }

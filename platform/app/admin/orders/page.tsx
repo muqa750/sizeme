@@ -6,12 +6,11 @@ interface Props {
 }
 
 const FILTERS = [
-  { value: 'all',       label: 'الكل'   },
-  { value: 'new',       label: 'جديد'   },
-  { value: 'confirmed', label: 'مؤكد'   },
-  { value: 'shipped',   label: 'شُحن'   },
-  { value: 'delivered', label: 'سُلّم'  },
-  { value: 'cancelled', label: 'ملغي'   },
+  { value: 'all',       label: 'الكل'  },
+  { value: 'new',       label: 'جديد'  },
+  { value: 'confirmed', label: 'مؤكد'  },
+  { value: 'delivered', label: 'سُلّم' },
+  { value: 'cancelled', label: 'ملغي'  },
 ]
 
 export default async function OrdersPage({ searchParams }: Props) {

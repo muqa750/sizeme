@@ -16,8 +16,9 @@ const COLOR_HEX: Record<string, string> = {
 function colorForBar(name: string) { return COLOR_HEX[name] ?? '#c9a84c' }
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
-interface DataPoint { name: string; value: number }
-interface Buyer     { name: string; count: number }
+interface DataPoint      { name: string; value: number }
+interface StatusPoint   { name: string; value: number; color: string }
+interface Buyer         { name: string; count: number }
 
 interface Props {
   kpis: {
@@ -27,12 +28,14 @@ interface Props {
     topBuyer:        Buyer | null
   }
   topBuyers:    Buyer[]
-  statusData:   DataPoint[]
+  statusData:   StatusPoint[]
   provinceData: DataPoint[]
   topProducts:  DataPoint[]
+  topBrands:    DataPoint[]
   sizeData:     DataPoint[]
   colorData:    DataPoint[]
-  trendData:    DataPoint[]
+  trendData7:   DataPoint[]
+  trendData30:  DataPoint[]
 }
 
 // ─── Design ────────────────────────────────────────────────────────────────────
@@ -119,7 +122,7 @@ function ColorBarShape(props: any) {
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 export default function AnalyticsCharts({
-  kpis, topBuyers, statusData, provinceData, topProducts, sizeData, colorData, trendData,
+  kpis, topBuyers, statusData, provinceData, topProducts, topBrands, sizeData, colorData, trendData7, trendData30,
 }: Props) {
   const router = useRouter()
   const [showBuyers, setShowBuyers] = useState(false)
@@ -257,54 +260,114 @@ export default function AnalyticsCharts({
           />
         </div>
 
-        {/* Row 1: Top Products + Status */}
-        <div className="analytics-grid-3-2">
-          <ChartCard title="أكثر المنتجات مبيعاً (قطع)">
+        {/* Row 1: Top Products (SKU) | Top Brands */}
+        <div className="analytics-grid-2">
+          <ChartCard title="أكثر المنتجات مبيعاً — بالكود (SKU)">
             {topProducts.length === 0 ? <Empty /> : (
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={topProducts} layout="vertical" margin={{ right: 16, left: 0 }}>
-                  <XAxis type="number" tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false}
-                    tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
-                  <YAxis type="category" dataKey="name" width={130} tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
-                  <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' قطعة', 'المبيعات']} />
-                  <Bar dataKey="value" fill={ACCENT} radius={[0, 6, 6, 0]} barSize={16} />
-                </BarChart>
-              </ResponsiveContainer>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                {topProducts.map((item, i) => {
+                  const max = topProducts[0]?.value ?? 1
+                  const pct = Math.round((item.value / max) * 100)
+                  return (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 10, color: i < 3 ? ACCENT : '#ccc', minWidth: 16, textAlign: 'center', fontWeight: 700 }}>{i + 1}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                          <code style={{ fontSize: 11, color: '#1a1a1a', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', direction: 'ltr', background: '#f5f5f5', padding: '1px 6px', borderRadius: 4 }}>
+                            {item.name}
+                          </code>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#555', flexShrink: 0, marginRight: 6, direction: 'ltr' }}>
+                            {item.value.toLocaleString('en-US')}
+                          </span>
+                        </div>
+                        <div style={{ height: 3, background: '#f0f0f0', borderRadius: 99 }}>
+                          <div style={{ height: '100%', width: `${pct}%`, background: ACCENT, borderRadius: 99 }} />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             )}
           </ChartCard>
 
+          <ChartCard title="أكثر 10 ماركات مبيعاً (قطع)">
+            {topBrands.length === 0 ? <Empty /> : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                {topBrands.map((brand, i) => {
+                  const max = topBrands[0]?.value ?? 1
+                  const pct = Math.round((brand.value / max) * 100)
+                  return (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 10, color: i < 3 ? ACCENT : '#ccc', minWidth: 16, textAlign: 'center', fontWeight: 700 }}>{i + 1}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                          <span style={{ fontSize: 12, fontWeight: 600, color: '#1a1a1a', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {brand.name}
+                          </span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: '#555', flexShrink: 0, marginRight: 6, direction: 'ltr' }}>
+                            {brand.value.toLocaleString('en-US')}
+                          </span>
+                        </div>
+                        <div style={{ height: 3, background: '#f0f0f0', borderRadius: 99 }}>
+                          <div style={{ height: '100%', width: `${pct}%`, background: i < 3 ? ACCENT : '#c9a84c66', borderRadius: 99 }} />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* Row 2: Status (بألوان الحالة) | Province */}
+        <div className="analytics-grid-2">
           <ChartCard title="الطلبات حسب الحالة">
             {statusData.length === 0 ? <Empty /> : (
               <>
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={160}>
                   <PieChart>
-                    <Pie data={statusData} cx="50%" cy="50%" innerRadius={48} outerRadius={75} paddingAngle={3} dataKey="value">
-                      {statusData.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}
+                    <Pie data={statusData} cx="50%" cy="50%" innerRadius={42} outerRadius={66} paddingAngle={3} dataKey="value">
+                      {statusData.map((s, i) => <Cell key={i} fill={s.color} />)}
                     </Pie>
                     <Tooltip {...tip} formatter={(v, _, p) => [v, p.payload.name]} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 10 }}>
                   {statusData.map((s, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: PALETTE[i % PALETTE.length], flexShrink: 0 }} />
-                        {s.name}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <span style={{ width: 9, height: 9, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                        <span style={{ fontWeight: 500, color: '#333' }}>{s.name}</span>
                       </div>
-                      <span style={{ color: '#aaa', direction: 'ltr' }}>{s.value.toLocaleString('en-US')}</span>
+                      <span style={{ color: s.color, fontWeight: 700, direction: 'ltr' }}>{s.value.toLocaleString('en-US')}</span>
                     </div>
                   ))}
                 </div>
               </>
             )}
           </ChartCard>
+
+          <ChartCard title="الطلبات حسب المحافظة">
+            {provinceData.length === 0 ? <Empty /> : (
+              <ResponsiveContainer width="100%" height={230}>
+                <BarChart data={provinceData} margin={{ right: 8, left: 0 }}>
+                  <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
+                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
+                  <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'المحافظة']} />
+                  <Bar dataKey="value" fill={DARK} radius={[6, 6, 0, 0]} barSize={26} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
         </div>
 
-        {/* Row 2: Sizes + Colors */}
+        {/* Row 3: Sizes | Colors */}
         <div className="analytics-grid-2">
           <ChartCard title="أكثر القياسات طلباً">
             {sizeData.length === 0 ? <Empty /> : (
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={210}>
                 <BarChart data={sizeData} margin={{ right: 8, left: 0 }}>
                   <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a', fontWeight: 600 }} axisLine={false} tickLine={false} />
                   <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
@@ -318,7 +381,7 @@ export default function AnalyticsCharts({
           <ChartCard title="أكثر الألوان طلباً">
             {colorData.length === 0 ? <Empty /> : (
               <>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={185}>
                   <BarChart data={colorData} margin={{ right: 8, left: 0 }}>
                     <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
                     <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
@@ -339,30 +402,30 @@ export default function AnalyticsCharts({
           </ChartCard>
         </div>
 
-        {/* Row 3: Province + Trend */}
+        {/* Row 4: 7 أيام | 30 يوم */}
         <div className="analytics-grid-2">
-          <ChartCard title="الطلبات حسب المحافظة">
-            {provinceData.length === 0 ? <Empty /> : (
-              <ResponsiveContainer width="100%" height={230}>
-                <BarChart data={provinceData} margin={{ right: 8, left: 0 }}>
-                  <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
-                  <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'المحافظة']} />
-                  <Bar dataKey="value" fill={DARK} radius={[6, 6, 0, 0]} barSize={26} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </ChartCard>
-
           <ChartCard title="الطلبات — آخر 7 أيام">
-            <ResponsiveContainer width="100%" height={230}>
-              <LineChart data={trendData} margin={{ right: 8, left: 0 }}>
+            <ResponsiveContainer width="100%" height={210}>
+              <LineChart data={trendData7} margin={{ right: 8, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
                 <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
                 <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'اليوم']} />
                 <Line type="monotone" dataKey="value" stroke={ACCENT} strokeWidth={2.5}
                   dot={{ fill: ACCENT, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+
+          <ChartCard title="الطلبات — آخر 30 يوم">
+            <ResponsiveContainer width="100%" height={210}>
+              <LineChart data={trendData30} margin={{ right: 8, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} interval={4} />
+                <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
+                <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'اليوم']} />
+                <Line type="monotone" dataKey="value" stroke={DARK} strokeWidth={2}
+                  dot={false} activeDot={{ r: 5, strokeWidth: 0 }} />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
