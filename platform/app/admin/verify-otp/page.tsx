@@ -1,4 +1,4 @@
-import { verifyOtp, resendOtp } from './actions'
+import { resendOtp } from './actions'
 
 interface Props {
   searchParams: { from?: string; error?: string; resent?: string }
@@ -45,15 +45,13 @@ export default function VerifyOtpPage({ searchParams }: Props) {
           marginBottom: '1.75rem',
           lineHeight:   1.6,
         }}>
-          {wasResent
-            ? 'تم إرسال رمز جديد إلى إيميلك ✓'
-            : 'تم إرسال رمز التحقق إلى إيميلك'}
+          {wasResent ? 'تم إرسال رمز جديد إلى إيميلك ✓' : 'تم إرسال رمز التحقق إلى إيميلك'}
           <br />
           <span style={{ fontSize: '0.72rem', color: '#bbb' }}>الرمز صالح لمدة 5 دقائق</span>
         </p>
 
-        {/* Verify Form */}
-        <form action={verifyOtp}>
+        {/* Verify Form → Route Handler (أكثر موثوقية من Server Action للـ cookies) */}
+        <form method="POST" action="/api/admin/verify-otp">
           <input type="hidden" name="from" value={from} />
 
           <div style={{ marginBottom: '1rem' }}>
@@ -114,7 +112,7 @@ export default function VerifyOtpPage({ searchParams }: Props) {
           </button>
         </form>
 
-        {/* Resend Form */}
+        {/* Resend — Server Action */}
         <form action={resendOtp}>
           <input type="hidden" name="from" value={from} />
           <button
@@ -126,7 +124,6 @@ export default function VerifyOtpPage({ searchParams }: Props) {
               padding:       '0.625rem',
               border:        '1px solid #e5e5e5',
               fontSize:      '0.78rem',
-              letterSpacing: '0.05em',
               cursor:        'pointer',
             }}
           >

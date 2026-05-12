@@ -10,52 +10,39 @@ const SESSION_MAX_AGE = 60 * 60 * 24 * 3 // 3 أيام
 const OTP_MAX_AGE     = 5 * 60           // 5 دقائق
 
 // ── التحقق من الرمز ────────────────────────────────────────────────────────
+// لا نعتمد على pending cookie (مشكلة في Next.js 14 Server Actions)
+// بدلاً من ذلك: نبحث مباشرةً في DB عن رمز صالح غير مستخدم
 export async function verifyOtp(formData: FormData) {
   const code = ((formData.get('code') as string) ?? '').trim()
   const from = (formData.get('from') as string) || '/admin'
 
-  const cookieStore = await cookies()
-  const pendingId   = cookieStore.get(PENDING_COOKIE)?.value
-
-  // تحقق أساسي من الصيغة
-  if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+  if (!code || !/^\d{6}$/.test(code)) {
     redirect(`/admin/verify-otp?error=1&from=${encodeURIComponent(from)}`)
-  }
-
-  // إذا لم توجد pending cookie → أعد للدخول
-  if (!pendingId) {
-    redirect(`/admin/login?error=3&from=${encodeURIComponent(from)}`)
   }
 
   const admin = createAdminClient()
 
-  const { data: otpRecord, error: fetchErr } = await admin
+  // نبحث عن أحدث رمز صالح يطابق الكود المدخل
+  const { data: otpRecord } = await admin
     .from('admin_otps')
     .select('id, code, expires_at, used')
-    .eq('id', pendingId)
-    .single()
+    .eq('used', false)
+    .gt('expires_at', new Date().toISOString())
+    .order('created_at', { ascending: false })
+    .limit(10)
 
-  if (fetchErr) {
-    console.error('[OTP] Fetch error:', fetchErr)
-    redirect(`/admin/verify-otp?error=1&from=${encodeURIComponent(from)}`)
-  }
+  // نتحقق من الكود مع إزالة أي مسافات (CHAR padding في PostgreSQL)
+  const match = (otpRecord ?? []).find(r => r.code.trim() === code)
 
-  // .trim() لحل مشكلة CHAR(6) padding في PostgreSQL
-  const storedCode = (otpRecord?.code ?? '').trim()
-
-  if (
-    !otpRecord         ||
-    otpRecord.used     ||
-    storedCode !== code ||
-    new Date(otpRecord.expires_at) < new Date()
-  ) {
+  if (!match) {
     redirect(`/admin/verify-otp?error=1&from=${encodeURIComponent(from)}`)
   }
 
   // وضع علامة "مستخدم" لمنع إعادة الاستخدام
-  await admin.from('admin_otps').update({ used: true }).eq('id', pendingId)
+  await admin.from('admin_otps').update({ used: true }).eq('id', match.id)
 
-  // حذف pending cookie وإضافة auth cookie
+  // حذف pending cookie وإضافة auth cookie (3 أيام)
+  const cookieStore = await cookies()
   cookieStore.delete(PENDING_COOKIE)
   cookieStore.set(AUTH_COOKIE, process.env.ADMIN_SECRET!, {
     httpOnly: true,
@@ -72,34 +59,27 @@ export async function verifyOtp(formData: FormData) {
 export async function resendOtp(formData: FormData) {
   const from = (formData.get('from') as string) || '/admin'
 
-  const cookieStore = await cookies()
-  const pendingId   = cookieStore.get(PENDING_COOKIE)?.value
-
-  // إذا لم توجد pending cookie → المستخدم لم يمر بكلمة السر → أعده للدخول
-  if (!pendingId) {
-    redirect(`/admin/login?from=${encodeURIComponent(from)}`)
-  }
-
   const admin = createAdminClient()
 
-  // إلغاء الرمز القديم
-  await admin.from('admin_otps').update({ used: true }).eq('id', pendingId)
+  // إلغاء كل الرموز القديمة غير المستخدمة
+  await admin
+    .from('admin_otps')
+    .update({ used: true })
+    .eq('used', false)
 
   // توليد رمز جديد
   const code      = String(Math.floor(100000 + Math.random() * 900000))
   const expiresAt = new Date(Date.now() + OTP_MAX_AGE * 1000)
 
-  const { data: newOtp, error: insertErr } = await admin
+  const { error: insertErr } = await admin
     .from('admin_otps')
     .insert({ code, expires_at: expiresAt.toISOString(), used: false })
-    .select('id')
-    .single()
 
-  if (insertErr || !newOtp) {
-    redirect(`/admin/login?error=2&from=${encodeURIComponent(from)}`)
+  if (insertErr) {
+    redirect(`/admin/login?from=${encodeURIComponent(from)}`)
   }
 
-  // إرسال الرمز الجديد عبر Resend
+  // إرسال الرمز الجديد
   const resendKey = process.env.RESEND_API_KEY
   if (resendKey) {
     const resend = new Resend(resendKey)
@@ -108,9 +88,9 @@ export async function resendOtp(formData: FormData) {
       to:      'mustafaqais750@gmail.com',
       subject: `${code} — رمز دخول SizeMe Admin`,
       html: `
-        <div style="font-family:Arial,sans-serif;direction:rtl;max-width:420px;margin:0 auto;padding:40px 20px;background:#fff;">
+        <div style="font-family:Arial,sans-serif;direction:rtl;max-width:420px;margin:0 auto;padding:40px 20px;">
           <div style="text-align:center;margin-bottom:36px;">
-            <div style="font-size:22px;color:#c9a84c;letter-spacing:6px;font-weight:300;font-family:'Georgia',serif;">SizeMe</div>
+            <div style="font-size:22px;color:#c9a84c;letter-spacing:6px;font-family:'Georgia',serif;">SizeMe</div>
             <div style="font-size:10px;color:#aaa;letter-spacing:3px;margin-top:4px;">ADMIN ACCESS</div>
           </div>
           <div style="background:#f9f9f9;border-radius:10px;padding:36px;text-align:center;">
@@ -120,19 +100,10 @@ export async function resendOtp(formData: FormData) {
           </div>
         </div>
       `,
-    }).catch(err => console.error('[Resend OTP Email] Failed:', err))
+    }).catch(err => console.error('[Resend OTP] Failed:', err))
   } else {
-    console.log(`[DEV RESEND OTP] الرمز الجديد: ${code}`)
+    console.log(`[DEV RESEND OTP] ${code}`)
   }
-
-  // تحديث الـ pending cookie بالـ ID الجديد
-  cookieStore.set(PENDING_COOKIE, newOtp.id as string, {
-    httpOnly: true,
-    secure:   process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge:   OTP_MAX_AGE,
-    path:     '/',
-  })
 
   redirect(`/admin/verify-otp?resent=1&from=${encodeURIComponent(from)}`)
 }
