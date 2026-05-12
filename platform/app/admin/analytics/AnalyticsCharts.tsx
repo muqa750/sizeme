@@ -264,7 +264,7 @@ export default function AnalyticsCharts({
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={topProducts} layout="vertical" margin={{ right: 16, left: 0 }}>
                   <XAxis type="number" tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false}
-                    tickFormatter={v => v.toLocaleString('en-US')} />
+                    tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
                   <YAxis type="category" dataKey="name" width={130} tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
                   <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' قطعة', 'المبيعات']} />
                   <Bar dataKey="value" fill={ACCENT} radius={[0, 6, 6, 0]} barSize={16} />
@@ -307,7 +307,7 @@ export default function AnalyticsCharts({
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={sizeData} margin={{ right: 8, left: 0 }}>
                   <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => v.toLocaleString('en-US')} />
+                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
                   <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'القياس']} />
                   <Bar dataKey="value" fill={ACCENT} radius={[6, 6, 0, 0]} barSize={36} />
                 </BarChart>
@@ -321,7 +321,7 @@ export default function AnalyticsCharts({
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={colorData} margin={{ right: 8, left: 0 }}>
                     <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => v.toLocaleString('en-US')} />
+                    <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
                     <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'اللون']} />
                     <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={30} shape={<ColorBarShape />} />
                   </BarChart>
@@ -346,8 +346,8 @@ export default function AnalyticsCharts({
               <ResponsiveContainer width="100%" height={230}>
                 <BarChart data={provinceData} margin={{ right: 8, left: 0 }}>
                   <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
-                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => v.toLocaleString('en-US')} />
-                  <Tooltip {...tip} formatter={(v) => { const n = Number(v ?? 0); return [v.toLocaleString('en-US') + ' طلب', 'المحافظة']} />
+                  <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
+                  <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'المحافظة']} />
                   <Bar dataKey="value" fill={DARK} radius={[6, 6, 0, 0]} barSize={26} />
                 </BarChart>
               </ResponsiveContainer>
@@ -359,8 +359,8 @@ export default function AnalyticsCharts({
               <LineChart data={trendData} margin={{ right: 8, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
                 <XAxis dataKey="name" tick={{ ...axisStyle, fill: '#1a1a1a' }} axisLine={false} tickLine={false} />
-                <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => v.toLocaleString('en-US')} />
-                <Tooltip {...tip} formatter={(v) => { const n = Number(v ?? 0); return [v.toLocaleString('en-US') + ' طلب', 'اليوم']} />
+                <YAxis allowDecimals={false} tick={{ ...axisStyle, fill: '#aaa' }} axisLine={false} tickLine={false} tickFormatter={v => Number(v ?? 0).toLocaleString('en-US')} />
+                <Tooltip {...tip} formatter={(v) => [Number(v ?? 0).toLocaleString('en-US') + ' طلب', 'اليوم']} />
                 <Line type="monotone" dataKey="value" stroke={ACCENT} strokeWidth={2.5}
                   dot={{ fill: ACCENT, r: 4, strokeWidth: 0 }} activeDot={{ r: 6, strokeWidth: 0 }} />
               </LineChart>
