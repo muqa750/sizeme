@@ -12,15 +12,15 @@ import type { Order } from '@/lib/types'
 
 // ─── الثوابت ───────────────────────────────────────────────────────────────
 const COLORS = [
-  { en: 'Black',      ar: 'أسود',      hex: '#1a1a1a' },
-  { en: 'White',      ar: 'أبيض',      hex: '#e0e0e0' },
-  { en: 'Dark Navy',  ar: 'نيلي',      hex: '#1B2A4A' },
+  { en: 'Black', ar: 'أسود', hex: '#1a1a1a' },
+  { en: 'White', ar: 'أبيض', hex: '#e0e0e0' },
+  { en: 'Dark Navy', ar: 'نيلي', hex: '#1B2A4A' },
   { en: 'Royal Blue', ar: 'أزرق ملكي', hex: '#1C4EBF' },
-  { en: 'Brown',      ar: 'جوزي',      hex: '#6B3F2A' },
-  { en: 'Burgundy',   ar: 'ماروني',    hex: '#6D1A36' },
-  { en: 'Charcoal',   ar: 'رصاصي',     hex: '#3D3D3D' },
-  { en: 'Taupe',      ar: 'توبي',      hex: '#B5A69A' },
-  { en: 'Olive',      ar: 'زيتوني',    hex: '#5A5E3A' },
+  { en: 'Brown', ar: 'جوزي', hex: '#6B3F2A' },
+  { en: 'Burgundy', ar: 'ماروني', hex: '#6D1A36' },
+  { en: 'Charcoal', ar: 'رصاصي', hex: '#3D3D3D' },
+  { en: 'Taupe', ar: 'توبي', hex: '#B5A69A' },
+  { en: 'Olive', ar: 'زيتوني', hex: '#5A5E3A' },
 ]
 
 const SIZES = ['XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL', '8XL']
@@ -43,8 +43,8 @@ const sel: React.CSSProperties = { ...inp, cursor: 'pointer' }
 
 const btn = (v: 'dark' | 'ghost' | 'danger' | 'gold'): React.CSSProperties => ({
   background: v === 'dark' ? '#1a1a1a' : v === 'gold' ? 'rgba(201,168,76,0.1)' : 'transparent',
-  color:      v === 'dark' ? '#fff' : v === 'danger' ? '#c0392b' : v === 'gold' ? '#c9a84c' : '#666',
-  border:     `1px solid ${v === 'dark' ? '#1a1a1a' : v === 'danger' ? '#f5c6c6' : v === 'gold' ? '#c9a84c55' : '#ddd'}`,
+  color: v === 'dark' ? '#fff' : v === 'danger' ? '#c0392b' : v === 'gold' ? '#c9a84c' : '#666',
+  border: `1px solid ${v === 'dark' ? '#1a1a1a' : v === 'danger' ? '#f5c6c6' : v === 'gold' ? '#c9a84c55' : '#ddd'}`,
   borderRadius: 6, padding: '7px 14px', fontSize: '0.78rem',
   cursor: 'pointer', fontFamily: 'inherit', minHeight: 36, whiteSpace: 'nowrap',
 })
@@ -67,12 +67,12 @@ const emptyNew = () => ({ sku: '', brand: '', sub: '', color: '', size: '', qty:
 
 // ─── Component ─────────────────────────────────────────────────────────────
 export default function OrderRow({ order }: Props) {
-  const [open, setOpen]             = useState(false)
-  const [pending, startTransition]  = useTransition()
+  const [open, setOpen] = useState(false)
+  const [pending, startTransition] = useTransition()
 
   // معلومات الزبون
-  const [editing, setEditing]   = useState(false)
-  const [saveErr, setSaveErr]   = useState('')
+  const [editing, setEditing] = useState(false)
+  const [saveErr, setSaveErr] = useState('')
   const [saveDone, setSaveDone] = useState(false)
   const [editData, setEditData] = useState({
     name: order.name ?? '', phone: order.phone ?? '',
@@ -81,15 +81,15 @@ export default function OrderRow({ order }: Props) {
   })
 
   // تعديل منتج
-  const [items, setItems]           = useState(order.order_items ?? [])
+  const [items, setItems] = useState(order.order_items ?? [])
   const [editItemId, setEditItemId] = useState<number | null>(null)
-  const [itemEdit, setItemEdit]     = useState({ qty: 1, color: '', size: '', sku: '' })
-  const [itemErr, setItemErr]       = useState('')
+  const [itemEdit, setItemEdit] = useState({ qty: 1, color: '', size: '', sku: '' })
+  const [itemErr, setItemErr] = useState('')
 
   // إضافة منتج
   const [showAdd, setShowAdd] = useState(false)
   const [newItem, setNewItem] = useState(emptyNew())
-  const [addErr, setAddErr]   = useState('')
+  const [addErr, setAddErr] = useState('')
 
   const totalQty = items.reduce((s, i) => s + i.qty, 0)
   const sc = STATUS_COLOR[order.status] ?? '#888'
@@ -169,11 +169,11 @@ export default function OrderRow({ order }: Props) {
             <a
               href={(() => {
                 // تحويل الرقم العراقي إلى صيغة دولية
-                const raw   = (order.phone ?? '').replace(/\D/g, '')
+                const raw = (order.phone ?? '').replace(/\D/g, '')
                 const phone = raw.startsWith('964') ? raw
-                            : raw.startsWith('0')   ? '964' + raw.slice(1)
-                            : '964' + raw
-                const msg = `أهلاً *${order.name ?? ''}*\n\nنشكرك على اختيارك لقطعنا لتناسب تطلعاتك\n\nنود تأكيد طلبك رقم *${order.order_id}*\nالمجموع الكلي للطلب مع التوصيل *${fmtEn(order.total)}*\n\nهل تود إجراء أي تعديل على المقاسات أو العنوان قبل البدء بإجراءات الشحن؟\nعلماً أن التوصيل المتوقع هو خلال [24 ساعة]، سيتواصل معك مندوب الشحن بعدها مباشرة\n\nنحن بانتظار ردك لتأكيد الطلب\n\n*فريق SizeMe*"`
+                  : raw.startsWith('0') ? '964' + raw.slice(1)
+                    : '964' + raw
+                const msg = `أهلاً *${order.name ?? ''}*\n\nنشكرك على اختيارك لقطعنا لتناسب تطلعاتك\n\nنود تأكيد طلبك رقم *${order.order_id}*\nالمجموع الكلي للطلب مع التوصيل *${fmtEn(order.total)}*\n\nهل تود إجراء أي تعديل على المقاسات أو العنوان قبل البدء بإجراءات الشحن؟\nعلماً أن التوصيل المتوقع هو خلال 24 ساعة، سيتواصل معك مندوب الشحن بعدها مباشرة\n\nنحن بانتظار ردك لتأكيد الطلب\n\n*فريق SizeMe*"`
                 return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
               })()}
               target="_blank"
@@ -190,7 +190,7 @@ export default function OrderRow({ order }: Props) {
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
               </svg>
             </a>
             <span style={{
@@ -249,9 +249,9 @@ export default function OrderRow({ order }: Props) {
                 {!editing
                   ? <button onClick={() => setEditing(true)} style={btn('ghost')}>تعديل</button>
                   : <>
-                      <button onClick={handleSaveEdit} disabled={pending} style={btn('dark')}>{pending ? '...' : 'حفظ'}</button>
-                      <button onClick={() => { setEditing(false); setSaveErr('') }} style={btn('ghost')}>إلغاء</button>
-                    </>
+                    <button onClick={handleSaveEdit} disabled={pending} style={btn('dark')}>{pending ? '...' : 'حفظ'}</button>
+                    <button onClick={() => { setEditing(false); setSaveErr('') }} style={btn('ghost')}>إلغاء</button>
+                  </>
                 }
               </div>
             </div>
@@ -260,12 +260,12 @@ export default function OrderRow({ order }: Props) {
             {editing ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 10, padding: 12, background: '#fff', border: '1px solid #d0d8ff', borderRadius: 8 }}>
                 {([
-                  { key: 'name',     label: 'الاسم',      dir: 'rtl' },
-                  { key: 'phone',    label: 'الهاتف',     dir: 'ltr' },
-                  { key: 'province', label: 'المحافظة',   dir: 'rtl' },
-                  { key: 'area',     label: 'المنطقة',    dir: 'rtl' },
-                  { key: 'address',  label: 'العنوان',    dir: 'rtl' },
-                  { key: 'notes',    label: 'ملاحظات',    dir: 'rtl' },
+                  { key: 'name', label: 'الاسم', dir: 'rtl' },
+                  { key: 'phone', label: 'الهاتف', dir: 'ltr' },
+                  { key: 'province', label: 'المحافظة', dir: 'rtl' },
+                  { key: 'area', label: 'المنطقة', dir: 'rtl' },
+                  { key: 'address', label: 'العنوان', dir: 'rtl' },
+                  { key: 'notes', label: 'ملاحظات', dir: 'rtl' },
                 ] as const).map(f => (
                   <div key={f.key}>
                     <p style={{ fontSize: '0.65rem', color: '#bbb', marginBottom: 4 }}>{f.label}</p>
@@ -276,12 +276,12 @@ export default function OrderRow({ order }: Props) {
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '8px 16px', padding: 12, background: '#fff', border: '1px solid #eee', borderRadius: 8, fontSize: '0.82rem' }}>
-                <InfoCell label="الاسم"      value={order.name} />
-                <InfoCell label="الهاتف"     value={order.phone} dir="ltr" />
-                <InfoCell label="المحافظة"   value={order.province ?? '—'} />
-                {order.area    && <InfoCell label="المنطقة"  value={order.area} />}
-                {order.address && <InfoCell label="العنوان"  value={order.address} />}
-                {order.notes   && <InfoCell label="ملاحظات"  value={order.notes} />}
+                <InfoCell label="الاسم" value={order.name} />
+                <InfoCell label="الهاتف" value={order.phone} dir="ltr" />
+                <InfoCell label="المحافظة" value={order.province ?? '—'} />
+                {order.area && <InfoCell label="المنطقة" value={order.area} />}
+                {order.address && <InfoCell label="العنوان" value={order.address} />}
+                {order.notes && <InfoCell label="ملاحظات" value={order.notes} />}
               </div>
             )}
           </div>
@@ -306,9 +306,9 @@ export default function OrderRow({ order }: Props) {
                 <p style={{ fontSize: '0.72rem', color: '#c9a84c', fontWeight: 600, marginBottom: 12 }}>منتج جديد</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10, marginBottom: 10 }}>
                   {[
-                    { label: 'كود SKU',        key: 'sku',    ph: 'SZ-001' },
-                    { label: 'الماركة *',       key: 'brand',  ph: 'Sizeme' },
-                    { label: 'النوع / القسم',   key: 'sub',    ph: 'تي شيرت' },
+                    { label: 'كود SKU', key: 'sku', ph: 'SZ-001' },
+                    { label: 'الماركة *', key: 'brand', ph: 'Sizeme' },
+                    { label: 'النوع / القسم', key: 'sub', ph: 'تي شيرت' },
                   ].map(f => (
                     <div key={f.key}>
                       <p style={{ fontSize: '0.65rem', color: '#aaa', marginBottom: 4 }}>{f.label}</p>
@@ -353,8 +353,8 @@ export default function OrderRow({ order }: Props) {
             {/* قائمة المنتجات */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {items.map(item => {
-                const imgSrc  = item.product ? imgPath(item.product.category_id, item.product.cat_seq, item.product.img_key, 1) : null
-                const isEdit  = editItemId === item.id
+                const imgSrc = item.product ? imgPath(item.product.category_id, item.product.cat_seq, item.product.img_key, 1) : null
+                const isEdit = editItemId === item.id
                 const colorHex = COLORS.find(c => c.en === item.color)?.hex
 
                 return (
@@ -377,7 +377,7 @@ export default function OrderRow({ order }: Props) {
                           {item.sub && <span style={{ fontWeight: 400, color: '#999', fontSize: '0.75rem' }}> — {item.sub}</span>}
                         </p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', color: '#888', fontSize: '0.75rem' }}>
-                          {item.sku   && <span>كود: <b style={{ color: '#555' }}>{item.sku}</b></span>}
+                          {item.sku && <span>كود: <b style={{ color: '#555' }}>{item.sku}</b></span>}
                           {item.color && (
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                               <span style={{ width: 10, height: 10, borderRadius: '50%', background: colorHex ?? '#ccc', border: '1px solid #ddd', display: 'inline-block', flexShrink: 0 }} />

@@ -392,7 +392,7 @@ export default function Footer() {
             color: 'var(--mute)',
           }}
         >
-          <span>© {new Date().getFullYear()} SizeMe — جميع الحقوق محفوظة</span>
+          <span>جميع الحقوق محفوظة لـ SIZEME {new Date().getFullYear()} ©</span>
           <span style={{ letterSpacing: '0.28em' }}>IRAQ · BAGHDAD</span>
         </div>
 

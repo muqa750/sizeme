@@ -3,7 +3,7 @@
  * كل الدوال server-side (تُستدعى من Server Components)
  */
 import { supabase } from './supabase'
-import type { Product, Category, Coupon } from './types'
+import type { Product, Category, Coupon, Review } from './types'
 
 /* ══ الفئات ══ */
 export async function getCategories(): Promise<Category[]> {
@@ -143,4 +143,35 @@ export async function createOrder(payload: {
   if (itemsErr) throw itemsErr
 
   return order
+}
+
+/* ══ الآراء ══ */
+export async function getReviews(): Promise<Review[]> {
+  const { data, error } = await (supabase as any)
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) return []
+  return (data ?? []) as Review[]
+}
+
+export async function getReviewStats(): Promise<{
+  avg: number; fabric: number; size: number; delivery: number; service: number; count: number
+}> {
+  const reviews = await getReviews()
+  if (reviews.length === 0) return { avg: 0, fabric: 0, size: 0, delivery: 0, service: 0, count: 0 }
+  const n = reviews.length
+  const fabric   = reviews.reduce((s, r) => s + r.fabric_rating,   0) / n
+  const size     = reviews.reduce((s, r) => s + r.size_rating,     0) / n
+  const delivery = reviews.reduce((s, r) => s + r.delivery_rating, 0) / n
+  const service  = reviews.reduce((s, r) => s + r.service_rating,  0) / n
+  const avg = (fabric + size + delivery + service) / 4
+  return {
+    avg:      Math.round(avg  * 10) / 10,
+    fabric:   Math.round(fabric   * 10) / 10,
+    size:     Math.round(size     * 10) / 10,
+    delivery: Math.round(delivery * 10) / 10,
+    service:  Math.round(service  * 10) / 10,
+    count: n,
+  }
 }

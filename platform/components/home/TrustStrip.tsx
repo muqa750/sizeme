@@ -45,27 +45,21 @@ export default function TrustStrip() {
   ]
 
   return (
-    <section className="border-y hairline" style={{ background: 'var(--paper)' }}>
+    <section className="border-y hairline" style={{ background: 'var(--paper)', overflowX: 'auto' }}>
       <div
-        className="trust-grid max-w-7xl mx-auto px-5 py-8 grid text-center text-sm"
-        style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}
+        className="max-w-7xl mx-auto px-5 py-6 grid text-center"
+        style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem', minWidth: 340 }}
       >
         {items.map((item) => (
-          <div key={item.label} className="flex flex-col items-center gap-2">
-            <div className="w-7 h-7 flex items-center justify-center">
+          <div key={item.label} className="flex flex-col items-center gap-1" style={{ padding: '0 0.25rem' }}>
+            <div style={{ width: 24, height: 24, flexShrink: 0 }} className="flex items-center justify-center">
               {item.icon}
             </div>
-            <div className="serif text-base leading-tight">{item.label}</div>
-            <div className="kicker">{item.sub}</div>
+            <div className="serif leading-tight" style={{ fontSize: 'clamp(0.7rem, 2.2vw, 0.95rem)' }}>{item.label}</div>
+            <div className="kicker" style={{ fontSize: 'clamp(0.55rem, 1.5vw, 0.65rem)' }}>{item.sub}</div>
           </div>
         ))}
       </div>
-
-      <style>{`
-        @media (min-width: 768px) {
-          .trust-grid { grid-template-columns: repeat(4, 1fr) !important; }
-        }
-      `}</style>
     </section>
   )
 }

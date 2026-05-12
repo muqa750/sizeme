@@ -196,8 +196,8 @@ function parseBody(body: string): string {
   for (const raw of lines) {
     const line = raw.trim()
 
-    // سطر فارغ — أغلق القائمة إن كانت مفتوحة
-    if (line === '') {
+    // سطر فارغ أو فاصل * * — أغلق القائمة إن كانت مفتوحة
+    if (line === '' || /^\*\s*\*$/.test(line)) {
       if (inList) { html += '</ul>\n'; inList = false }
       continue
     }
@@ -207,6 +207,14 @@ function parseBody(body: string): string {
     if (heading) {
       if (inList) { html += '</ul>\n'; inList = false }
       html += `<h3 class="legal-h3">${heading[1]}</h3>\n`
+      continue
+    }
+
+    // عنوان قسم FAQ: أولاً / ثانياً / ثالثاً / ...
+    const faqSection = line.match(/^(أولاً|ثانياً|ثالثاً|رابعاً|خامساً|سادساً|سابعاً|ثامناً)/)
+    if (faqSection) {
+      if (inList) { html += '</ul>\n'; inList = false }
+      html += `<h3 class="legal-h3">${line}</h3>\n`
       continue
     }
 
@@ -258,7 +266,7 @@ export default async function LegalPage({ params }: Props) {
           {content.title}
         </h1>
 
-        <div className="hairline" style={{ borderTop: '1px solid', marginBottom: '2rem' }} />
+        <div style={{ marginBottom: '2rem' }} />
 
         {/* Content */}
         <div
@@ -288,8 +296,8 @@ export default async function LegalPage({ params }: Props) {
           font-weight: 700;
           margin: 2rem 0 0.75rem;
           color: var(--ink);
-          padding-bottom: 0.5rem;
-          border-bottom: 1px solid var(--line);
+          padding-bottom: 0.45rem;
+          border-bottom: 1px solid rgba(201,168,76,0.15);
         }
         .legal-h3:first-child { margin-top: 0; }
         .legal-p  { margin-bottom: 0.75rem; color: var(--mute); line-height: 1.85; }

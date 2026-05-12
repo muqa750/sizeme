@@ -13,6 +13,7 @@ const NAV_MAIN = [
   { href: '/admin/management/newsletter',       label: 'النشرة البريدية' },
   { href: '/admin/management/suggestions',      label: 'الاقتراحات'     },
   { href: '/admin/management/ratings',          label: 'التقييمات'      },
+  { href: '/admin/management/reviews',          label: 'الآراء'         },
 ]
 
 const NAV_ADMIN = [

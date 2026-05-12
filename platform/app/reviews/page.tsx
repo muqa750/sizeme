@@ -1,222 +1,136 @@
 import Link from 'next/link'
 import { getCategories } from '@/lib/api'
+import { getReviews } from '@/lib/api'
 import Header from '@/components/Header'
+import ReviewForm from './ReviewForm'
+import type { Review } from '@/lib/types'
 
-const REVIEWS = [
-  {
-    name: 'أحمد الموسوي',
-    city: 'بغداد',
-    score: 5,
-    date: 'مارس 2025',
-    text: 'أخيراً متجر يفهم المقاسات الكبيرة. الجودة ممتازة والقماش ناعم جداً. الطلب وصل بالوقت المحدد وكان التغليف أنيق.',
-  },
-  {
-    name: 'عمر الربيعي',
-    city: 'البصرة',
-    score: 5,
-    date: 'فبراير 2025',
-    text: 'طلبت 4XL وجاء بالمقاس الصحيح تماماً. الاستبدال كان سهل لما احتجت تغيير اللون. خدمة عملاء ممتازة والفريق محترف.',
-  },
-  {
-    name: 'محمد الجبوري',
-    city: 'الموصل',
-    score: 5,
-    date: 'يناير 2025',
-    text: 'من أفضل تجارب التسوق اللي مريت بيها. الأسعار معقولة والجودة أفضل مما توقعت. راح أطلب مرة ثانية بالتأكيد.',
-  },
-  {
-    name: 'كريم الشمري',
-    city: 'النجف',
-    score: 5,
-    date: 'أبريل 2025',
-    text: 'بحثت كثيراً عن مقاس 6XL وما لقيت غير سايزمي. القميص وصل وكأنه مصمم خصيصاً لي. شكراً للفريق الرائع.',
-  },
-  {
-    name: 'حسين البغدادي',
-    city: 'بغداد',
-    score: 5,
-    date: 'مارس 2025',
-    text: 'تصاميم راقية تختلف عن أي متجر ثاني. الألوان مميزة والأقمشة فاخرة. التوصيل لبغداد كان بيوم واحد فقط.',
-  },
-  {
-    name: 'علي الحسناوي',
-    city: 'كربلاء',
-    score: 4,
-    date: 'فبراير 2025',
-    text: 'منتجات جيدة جداً والمقاسات دقيقة. أتمنى يضيفون المزيد من ألوان البولو. بشكل عام تجربة ممتازة وسأعود للطلب.',
-  },
-]
+const PER_PAGE = 6
 
 function Stars({ score }: { score: number }) {
   return (
     <div style={{ display: 'flex', gap: 2 }}>
       {[1, 2, 3, 4, 5].map(i => (
-        <span
-          key={i}
-          style={{
-            color: i <= score ? 'var(--accent)' : 'var(--line)',
-            fontSize: '0.9rem',
-          }}
-        >
-          ★
-        </span>
+        <span key={i} style={{ color: i <= score ? 'var(--accent)' : 'var(--line)', fontSize: '0.85rem' }}>★</span>
       ))}
     </div>
   )
 }
 
-export default async function ReviewsPage() {
-  const categories = await getCategories()
+function avgScore(r: Pick<Review, 'fabric_rating'|'size_rating'|'delivery_rating'|'service_rating'>) {
+  return (r.fabric_rating + r.size_rating + r.delivery_rating + r.service_rating) / 4
+}
 
-  const avg = (REVIEWS.reduce((s, r) => s + r.score, 0) / REVIEWS.length).toFixed(1)
+interface Props {
+  searchParams: { page?: string }
+}
+
+export default async function ReviewsPage({ searchParams }: Props) {
+  const [categories, dynamicReviews] = await Promise.all([
+    getCategories(),
+    getReviews(),
+  ])
+
+  const allCount   = dynamicReviews.length
+  const totalPages = Math.max(1, Math.ceil(allCount / PER_PAGE))
+  const page       = Math.max(1, Math.min(totalPages, parseInt(searchParams.page ?? '1') || 1))
+  const offset     = (page - 1) * PER_PAGE
+
+  const combined = dynamicReviews.map(r => ({
+    id: r.id, name: r.name, body: r.body,
+    score: avgScore(r),
+    date: new Date(r.created_at).toLocaleDateString('ar-IQ', { year: 'numeric', month: 'long' }),
+  }))
+  const pageItems = combined.slice(offset, offset + PER_PAGE)
+
+  const allScores = combined.map(r => r.score)
+  const avg = allScores.length ? (allScores.reduce((s, v) => s + v, 0) / allScores.length).toFixed(1) : '5.0'
 
   return (
     <>
+      <style>{`
+        .reviews-main { max-width: 860px; margin: 0 auto; padding: 3rem 1.25rem 5rem; direction: rtl; }
+        @media (max-width: 600px) {
+          .reviews-main { max-width: 100%; margin: 0; padding: 1.75rem 0 4rem; }
+          .reviews-main .reviews-inner { padding: 0 0.75rem; }
+          .reviews-grid { padding: 0 0.75rem; }
+        }
+      `}</style>
       <Header categories={categories} />
-      <main style={{ maxWidth: 860, margin: '0 auto', padding: '3rem 1.25rem 5rem', direction: 'rtl' }}>
+      <main className="reviews-main">
 
         {/* Breadcrumb */}
-        <p style={{ fontSize: '0.68rem', letterSpacing: '0.2em', color: 'var(--mute)', marginBottom: '2rem' }}>
+        <p className="reviews-inner" style={{ fontSize: '0.68rem', letterSpacing: '0.2em', color: 'var(--mute)', marginBottom: '2rem' }}>
           <Link href="/" style={{ color: 'var(--mute)', textDecoration: 'none' }}>SIZEME</Link>
           {' / '}آراء الزبائن
         </p>
 
         {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div className="reviews-inner" style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <p className="kicker" style={{ marginBottom: '0.75rem' }}>تقييمات حقيقية</p>
-          <h1
-            className="serif"
-            style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 400, marginBottom: '1rem' }}
-          >
+          <h1 className="serif" style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 400, marginBottom: '1rem' }}>
             ماذا يقول زبائننا
           </h1>
-
-          {/* Aggregate Score */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '1rem',
-              padding: '1rem 2rem',
-              border: '1px solid var(--line)',
-              marginTop: '1rem',
-            }}
-          >
-            <span className="serif" style={{ fontSize: '3.5rem', lineHeight: 1, color: 'var(--ink)' }}>
-              {avg}
-            </span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', padding: '1rem 2rem', border: '1px solid var(--line)', marginTop: '1rem' }}>
+            <span className="serif" style={{ fontSize: '3.5rem', lineHeight: 1, color: 'var(--ink)' }}>{avg}</span>
             <div style={{ textAlign: 'right' }}>
               <div style={{ display: 'flex', gap: 3, marginBottom: 4 }}>
-                {[0, 1, 2, 3, 4].map(i => (
-                  <span key={i} style={{ color: 'var(--accent)', fontSize: '1.1rem' }}>★</span>
-                ))}
+                {[0,1,2,3,4].map(i => <span key={i} style={{ color: 'var(--accent)', fontSize: '1.1rem' }}>★</span>)}
               </div>
-              <p style={{ fontSize: '0.75rem', color: 'var(--mute)' }}>
-                من {REVIEWS.length}+ تقييم موثق
-              </p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--mute)' }}>من {allCount}+ تقييم موثق</p>
             </div>
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--line)', marginBottom: '3rem' }} />
+        <div className="reviews-inner" style={{ borderTop: '1px solid var(--line)', marginBottom: '3rem' }} />
 
         {/* Reviews Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))',
-            gap: '1.5rem',
-          }}
-        >
-          {REVIEWS.map((r, i) => (
-            <div
-              key={i}
-              style={{
-                border: '1px solid var(--line)',
-                padding: '1.5rem',
-                background: i % 2 === 0 ? '#fafaf9' : '#fff',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.75rem',
-              }}
-            >
-              {/* Stars + date */}
+        <div className="reviews-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))', gap: '1.5rem' }}>
+          {pageItems.map((r) => (
+            <div key={r.id} style={{ border: '1px solid var(--line)', borderRadius: 12, padding: '1.5rem', background: '#fff', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Stars score={r.score} />
-                <span style={{ fontSize: '0.68rem', color: 'var(--mute)', letterSpacing: '0.08em' }}>
-                  {r.date}
-                </span>
+                <Stars score={Math.round(r.score)} />
+                <span style={{ fontSize: '0.68rem', color: 'var(--mute)', letterSpacing: '0.08em' }}>{r.date}</span>
               </div>
-
-              {/* Text */}
-              <p style={{ fontSize: '0.875rem', color: 'var(--mute)', lineHeight: 1.8, flex: 1 }}>
-                "{r.text}"
-              </p>
-
-              {/* Author */}
+              <p style={{ fontSize: '0.875rem', color: 'var(--mute)', lineHeight: 1.8, flex: 1 }}>"{r.body}"</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--line)' }}>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: '50%',
-                    background: 'var(--ink)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    flexShrink: 0,
-                  }}
-                >
+                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '0.75rem', fontWeight: 600, flexShrink: 0 }}>
                   {r.name.charAt(0)}
                 </div>
-                <div>
-                  <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)' }}>{r.name}</p>
-                  <p style={{ fontSize: '0.68rem', color: 'var(--mute)' }}>{r.city}</p>
-                </div>
+                <p style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)' }}>{r.name}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* CTA */}
-        <div
-          style={{
-            marginTop: '3rem',
-            textAlign: 'center',
-            padding: '2.5rem',
-            border: '1px solid var(--line)',
-            background: '#fafaf9',
-          }}
-        >
-          <p className="serif" style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>
-            جربت منتجاتنا؟
-          </p>
-          <p style={{ fontSize: '0.825rem', color: 'var(--mute)', marginBottom: '1.5rem' }}>
-            رأيك يساعدنا ويساعد زبائن آخرين في اختيار المقاس الصحيح.
-          </p>
-          <a
-            href="https://wa.me/9647739334545?text=أريد%20تقييم%20منتج%20من%20سايزمي"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: 'inline-block',
-              background: 'var(--ink)',
-              color: '#fff',
-              padding: '0.75rem 2rem',
-              fontSize: '0.78rem',
-              letterSpacing: '0.1em',
-              textDecoration: 'none',
-            }}
-          >
-            شارك تقييمك عبر واتساب
-          </a>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="reviews-inner" style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: '2.5rem' }}>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <Link
+                key={p}
+                href={p === 1 ? '/reviews' : `/reviews?page=${p}`}
+                style={{
+                  width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: '1px solid', borderRadius: 6, fontSize: '0.82rem', textDecoration: 'none',
+                  background: p === page ? 'var(--ink)' : 'transparent',
+                  color:      p === page ? '#fff'      : 'var(--mute)',
+                  borderColor: p === page ? 'var(--ink)' : 'var(--line)',
+                }}
+              >
+                {p}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* فورم الرأي */}
+        <div className="reviews-inner" style={{ marginTop: '3.5rem' }}>
+          <ReviewForm />
         </div>
 
         {/* Back */}
-        <div style={{ marginTop: '2.5rem', borderTop: '1px solid var(--line)', paddingTop: '1.5rem' }}>
+        <div className="reviews-inner" style={{ marginTop: '2.5rem', borderTop: '1px solid var(--line)', paddingTop: '1.5rem' }}>
           <Link href="/" style={{ fontSize: '0.75rem', letterSpacing: '0.15em', color: 'var(--mute)', textDecoration: 'none' }}>
             ← العودة للرئيسية
           </Link>

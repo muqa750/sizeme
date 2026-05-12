@@ -192,6 +192,35 @@ export async function getRatings() {
   return data ?? []
 }
 
+/* ══ الآراء ══ */
+export async function getAdminReviews() {
+  const admin = createAdminClient() as any
+  const { data, error } = await admin
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
+export async function updateReview(id: number, name: string, body: string) {
+  const admin = createAdminClient() as any
+  const { error } = await admin
+    .from('reviews')
+    .update({ name: name.trim(), body: body.trim() })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function deleteReview(id: number) {
+  const admin = createAdminClient() as any
+  const { error } = await admin
+    .from('reviews')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
+
 export async function getSuggestions() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const admin = createAdminClient() as any

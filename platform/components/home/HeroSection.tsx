@@ -1,11 +1,14 @@
 'use client'
+import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
 interface Props {
   videoUrl?: string
+  collectionPath?: string
+  firstCategoryId?: string
 }
 
-export default function HeroSection({ videoUrl }: Props) {
+export default function HeroSection({ videoUrl, collectionPath, firstCategoryId }: Props) {
   const videoRef    = useRef<HTMLVideoElement>(null)
   const fallbackRef = useRef<HTMLDivElement>(null)
 
@@ -134,6 +137,37 @@ export default function HeroSection({ videoUrl }: Props) {
           </div>
         </div>
       </div>
+
+      {/* ── زر اكتشف المجموعة ── */}
+      <div style={{ padding: '1rem 1.25rem 0', display: 'flex', justifyContent: 'center' }}>
+        <Link
+          href={collectionPath || (firstCategoryId ? `/category/${firstCategoryId}` : '/#catalog')}
+          className="hero-discover-btn"
+        >
+          اكتشف المجموعة
+        </Link>
+      </div>
+
+      <style>{`
+        .hero-discover-btn {
+          display: block;
+          width: min(100%, 480px);
+          padding: 0.85rem 2rem;
+          border: 1px solid var(--ink);
+          color: var(--ink);
+          background: transparent;
+          font-size: 0.72rem;
+          letter-spacing: 0.2em;
+          text-decoration: none;
+          text-align: center;
+          font-family: IBM Plex Sans Arabic, sans-serif;
+          transition: background 0.2s, color 0.2s;
+        }
+        .hero-discover-btn:hover {
+          background: var(--ink);
+          color: var(--paper);
+        }
+      `}</style>
     </section>
   )
 }

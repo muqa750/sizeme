@@ -9,6 +9,7 @@ import RatingsSection from '@/components/home/RatingsSection'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
 import DeliveryCountdown from '@/components/home/DeliveryCountdown'
 import FilteredCatalog from '@/components/FilteredCatalog'
+import CategoryCards from '@/components/home/CategoryCards'
 
 export default async function HomePage() {
   const [products, categories, settings] = await Promise.all([
@@ -17,7 +18,9 @@ export default async function HomePage() {
     getSettings(),
   ])
 
-  const heroVideoUrl = settings.find(s => s.key === 'hero_video_url')?.value as string | undefined
+  const heroVideoUrl       = settings.find(s => s.key === 'hero_video_url')?.value as string | undefined
+  const heroCollectionPath = (settings.find(s => s.key === 'hero_video_collection')?.value as string | undefined)
+    ?? (categories.find(c => c.id === 'tshirt') ? '/category/tshirt' : undefined)
 
   /* كل المنتجات مجمّعة حسب القسم — بدون slice حتى يعمل الفلتر على الكل */
   const groups = categories.map(cat => ({
@@ -32,7 +35,11 @@ export default async function HomePage() {
       <main>
 
         {/* ─── Hero ─── */}
-        <HeroSection videoUrl={heroVideoUrl} />
+        <HeroSection
+          videoUrl={heroVideoUrl}
+          collectionPath={heroCollectionPath}
+          firstCategoryId={categories[0]?.id}
+        />
 
         {/* ─── About ─── */}
         <section
@@ -60,14 +67,19 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ─── Trust Strip ─── */}
-        <div className="reveal"><TrustStrip /></div>
-
         {/* ─── Delivery Countdown ─── */}
         <DeliveryCountdown />
 
+        {/* ─── بطاقات الأقسام ─── */}
+        <div className="reveal">
+          <CategoryCards categories={categories} />
+        </div>
+
+        {/* ─── Trust Strip ─── */}
+        <div className="reveal"><TrustStrip /></div>
+
         {/* ─── الكتالوج مع الفلتر ─── */}
-        <div style={{ paddingTop: '4rem' }}>
+        <div style={{ paddingTop: '2rem' }}>
           <FilteredCatalog groups={groups} />
         </div>
 

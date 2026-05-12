@@ -67,6 +67,12 @@ export type Database = {
         Update: Partial<Omit<Rating, 'id' | 'created_at'>>
         Relationships: []
       }
+      reviews: {
+        Row: Review
+        Insert: Omit<Review, 'id' | 'created_at'>
+        Update: Partial<Omit<Review, 'id' | 'created_at'>>
+        Relationships: []
+      }
     }
   }
 }
@@ -234,5 +240,16 @@ export interface Rating {
   label: string
   value?: string | null
   score: number
+  created_at: string
+}
+
+export interface Review {
+  id: number
+  name: string
+  body: string
+  fabric_rating: number
+  size_rating: number
+  delivery_rating: number
+  service_rating: number
   created_at: string
 }
