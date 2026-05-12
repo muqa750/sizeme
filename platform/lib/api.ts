@@ -120,7 +120,8 @@ export async function createOrder(payload: {
   const { items, ...orderData } = payload
 
   // إدخال الطلب
-  const { data: order, error: orderErr } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: order, error: orderErr } = await (supabase as any)
     .from('orders')
     .insert(orderData)
     .select()
@@ -134,7 +135,8 @@ export async function createOrder(payload: {
     order_id: payload.order_id,
   }))
 
-  const { error: itemsErr } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: itemsErr } = await (supabase as any)
     .from('order_items')
     .insert(itemsToInsert)
 

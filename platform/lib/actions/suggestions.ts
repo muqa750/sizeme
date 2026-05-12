@@ -12,7 +12,8 @@ export async function submitSuggestion(
     return { ok: false, error: 'الاقتراح طويل جداً (الحد 1000 حرف).' }
   }
 
-  const { error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase as any)
     .from('suggestions')
     .insert({ text: trimmed })
 

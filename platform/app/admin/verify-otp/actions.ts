@@ -61,8 +61,11 @@ export async function resendOtp(formData: FormData) {
 
   const admin = createAdminClient()
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const adminAny = admin as any
+
   // إلغاء كل الرموز القديمة غير المستخدمة
-  await admin
+  await adminAny
     .from('admin_otps')
     .update({ used: true })
     .eq('used', false)
@@ -71,7 +74,7 @@ export async function resendOtp(formData: FormData) {
   const code      = String(Math.floor(100000 + Math.random() * 900000))
   const expiresAt = new Date(Date.now() + OTP_MAX_AGE * 1000)
 
-  const { error: insertErr } = await admin
+  const { error: insertErr } = await adminAny
     .from('admin_otps')
     .insert({ code, expires_at: expiresAt.toISOString(), used: false })
 

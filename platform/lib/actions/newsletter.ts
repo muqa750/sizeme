@@ -7,7 +7,8 @@ export async function subscribeNewsletter(
   const trimmed = contact.trim()
   if (!trimmed) return { ok: false, error: 'يرجى إدخال بريدك أو رقم هاتفك.' }
 
-  const { error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase as any)
     .from('newsletter_subscribers')
     .insert({ contact: trimmed })
 

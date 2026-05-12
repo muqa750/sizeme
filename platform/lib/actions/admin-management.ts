@@ -8,7 +8,8 @@ import { revalidatePath } from 'next/cache'
 // ══════════════════════════════════════════════════════════════
 
 export async function createCoupon(formData: FormData) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   const code      = (formData.get('code') as string).trim().toUpperCase()
   const type      = formData.get('type') as 'percent' | 'fixed'
@@ -34,7 +35,8 @@ export async function createCoupon(formData: FormData) {
 }
 
 export async function updateCoupon(id: number, formData: FormData) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   const code      = (formData.get('code') as string).trim().toUpperCase()
   const type      = formData.get('type') as 'percent' | 'fixed'
@@ -56,7 +58,8 @@ export async function updateCoupon(id: number, formData: FormData) {
 }
 
 export async function deleteCoupon(id: number) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin.from('coupons').delete().eq('id', id)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin/management/coupons')
@@ -64,7 +67,8 @@ export async function deleteCoupon(id: number) {
 }
 
 export async function toggleCouponActive(id: number, isActive: boolean) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin.from('coupons').update({ is_active: isActive }).eq('id', id)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin/management/coupons')
@@ -76,7 +80,8 @@ export async function toggleCouponActive(id: number, isActive: boolean) {
 // ══════════════════════════════════════════════════════════════
 
 export async function deleteSubscriber(id: number) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin.from('newsletter_subscribers').delete().eq('id', id)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin/management/newsletter')
@@ -84,7 +89,8 @@ export async function deleteSubscriber(id: number) {
 }
 
 export async function deleteAllSubscribers() {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin.from('newsletter_subscribers').delete().neq('id', 0)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin/management/newsletter')
@@ -96,7 +102,8 @@ export async function deleteAllSubscribers() {
 // ══════════════════════════════════════════════════════════════
 
 export async function updateSetting(key: string, value: string) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   let parsed: unknown = value
   try { parsed = JSON.parse(value) } catch { /* leave as string */ }
@@ -122,7 +129,8 @@ export async function updateOrderDetails(
     notes:    string
   },
 ) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   const { error } = await admin
     .from('orders')
@@ -150,7 +158,8 @@ export async function updateOrderItem(
   orderId: string,
   data: { qty: number; color: string; size: string; sku: string },
 ) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   const { data: item } = await admin
     .from('order_items')
@@ -160,7 +169,7 @@ export async function updateOrderItem(
 
   if (!item) return { ok: false, error: 'العنصر غير موجود' }
 
-  const lineTotal = item.unit_price * data.qty
+  const lineTotal = (item.unit_price as number) * data.qty
 
   const { error } = await admin
     .from('order_items')
@@ -199,7 +208,8 @@ export async function addOrderItem(
 
   const lineTotal = data.unitPrice * data.qty
 
-  const { error } = await admin.from('order_items').insert({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin as any).from('order_items').insert({
     order_id:   orderId,
     product_id: null,
     sku:        data.sku    || null,
@@ -221,7 +231,8 @@ export async function addOrderItem(
 }
 
 export async function removeOrderItem(itemId: number, orderId: string) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   const { error } = await admin.from('order_items').delete().eq('id', itemId)
   if (error) return { ok: false, error: error.message }
@@ -234,14 +245,15 @@ export async function removeOrderItem(itemId: number, orderId: string) {
 }
 
 // ── حساب مجموع الطلب بعد أي تعديل على المنتجات ─────────────────────────────
-async function recalcOrderTotal(admin: ReturnType<typeof import('@/lib/supabase').createAdminClient>, orderId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function recalcOrderTotal(admin: any, orderId: string) {
   // جلب كل المنتجات المتبقية
   const { data: items } = await admin
     .from('order_items')
     .select('line_total')
     .eq('order_id', orderId)
 
-  const newSubtotal = (items ?? []).reduce((s, i) => s + (i.line_total ?? 0), 0)
+  const newSubtotal = (items ?? []).reduce((s: number, i: { line_total?: number }) => s + (i.line_total ?? 0), 0)
 
   // جلب الطلب الحالي لمعرفة الخصومات والتوصيل
   const { data: order } = await admin
@@ -254,9 +266,9 @@ async function recalcOrderTotal(admin: ReturnType<typeof import('@/lib/supabase'
 
   const newTotal =
     newSubtotal
-    - (order.bulk_discount    ?? 0)
-    - (order.coupon_discount  ?? 0)
-    + (order.shipping         ?? 0)
+    - ((order.bulk_discount   as number) ?? 0)
+    - ((order.coupon_discount as number) ?? 0)
+    + ((order.shipping        as number) ?? 0)
 
   await admin
     .from('orders')
@@ -269,7 +281,8 @@ async function recalcOrderTotal(admin: ReturnType<typeof import('@/lib/supabase'
 // ══════════════════════════════════════════════════════════════
 
 export async function deleteSuggestion(id: number) {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin.from('suggestions').delete().eq('id', id)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin/management/suggestions')

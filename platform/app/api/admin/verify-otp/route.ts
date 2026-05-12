@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
 
   // نبحث عن رمز صالح (غير مستخدم وغير منتهٍ) يطابق الكود المدخل
   const { data: records } = await admin
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
     .order('created_at', { ascending: false })
     .limit(10)
 
-  const match = (records ?? []).find(r => r.code.trim() === code)
+  const match = (records ?? []).find((r: { code: string; id: string }) => r.code.trim() === code)
 
   if (!match) {
     return NextResponse.redirect(

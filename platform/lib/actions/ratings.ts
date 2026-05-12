@@ -5,7 +5,8 @@ export async function submitRating(
   label: string,
   score: number,
 ): Promise<{ ok: boolean }> {
-  const { error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase as any)
     .from('ratings')
     .insert({ label, score })
 

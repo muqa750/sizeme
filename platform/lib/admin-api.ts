@@ -91,7 +91,8 @@ export async function updateOrderStatus(
   orderId: string,
   status: Order['status']
 ): Promise<void> {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin
     .from('orders')
     .update({ status })
@@ -104,7 +105,8 @@ export async function updateProductStatus(
   productId: number,
   status: Product['status']
 ): Promise<void> {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { error } = await admin
     .from('products')
     .update({ status })
@@ -160,7 +162,8 @@ export async function getCouponUsage(): Promise<CouponUsageMap> {
 }
 
 export async function getNewsletterSubscribers() {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { data, error, count } = await admin
     .from('newsletter_subscribers')
     .select('*', { count: 'exact' })
@@ -170,7 +173,8 @@ export async function getNewsletterSubscribers() {
 }
 
 export async function getRatings() {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { data, error } = await admin
     .from('ratings')
     .select('*')
@@ -180,7 +184,8 @@ export async function getRatings() {
 }
 
 export async function getSuggestions() {
-  const admin = createAdminClient()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
   const { data, error } = await admin
     .from('suggestions')
     .select('*')

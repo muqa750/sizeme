@@ -25,7 +25,8 @@ export async function login(formData: FormData) {
 
   // حفظ الـ OTP في قاعدة البيانات
   const admin = createAdminClient()
-  const { data: otpRecord, error: otpErr } = await admin
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: otpRecord, error: otpErr } = await (admin as any)
     .from('admin_otps')
     .insert({
       code,

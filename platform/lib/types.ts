@@ -49,6 +49,24 @@ export type Database = {
         Update: Partial<Omit<AdminOTP, 'id' | 'created_at'>>
         Relationships: []
       }
+      suggestions: {
+        Row: Suggestion
+        Insert: Omit<Suggestion, 'id' | 'created_at'>
+        Update: Partial<Omit<Suggestion, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: NewsletterSubscriber
+        Insert: Omit<NewsletterSubscriber, 'id' | 'created_at'>
+        Update: Partial<Omit<NewsletterSubscriber, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      ratings: {
+        Row: Rating
+        Insert: Omit<Rating, 'id' | 'created_at'>
+        Update: Partial<Omit<Rating, 'id' | 'created_at'>>
+        Relationships: []
+      }
     }
   }
 }
@@ -195,5 +213,25 @@ export interface AdminOTP {
   code: string
   expires_at: string
   used: boolean
+  created_at: string
+}
+
+export interface Suggestion {
+  id: number
+  text: string
+  created_at: string
+}
+
+export interface NewsletterSubscriber {
+  id: number
+  contact: string
+  created_at: string
+}
+
+export interface Rating {
+  id: number
+  label: string
+  value?: string | null
+  score: number
   created_at: string
 }
