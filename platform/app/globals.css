@@ -132,8 +132,7 @@ html[data-theme="dark"] {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  /* gradient فاتح جداً يجعل backdrop-filter يشتغل */
-  background: linear-gradient(170deg, #ffffff 0%, #fdfcf9 50%, #f9f7f2 100%);
+  background: var(--paper);
   min-height: 100%;
 }
 
@@ -213,6 +212,39 @@ body {
   .cat-preview-grid {
     grid-template-columns: repeat(4, 1fr) !important;
   }
+}
+
+/* ── زر عرض المزيد ── */
+.load-more-btn {
+  padding: 0.75rem 3.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  font-family: var(--font-ibm), 'IBM Plex Sans Arabic', sans-serif;
+  transition: background 0.2s, color 0.2s;
+}
+.load-more-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+.load-more-btn:disabled { opacity: 0.55; cursor: wait; }
+
+/* ── Product grid flush ── */
+.product-grid-flush {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 0 4px;
+}
+@media (min-width: 768px) {
+  .product-grid-flush { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1200px) {
+  .product-grid-flush { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ── Ratings bars grid — 4 cols on desktop ── */

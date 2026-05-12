@@ -1,4 +1,4 @@
-import { getProducts, getCategories } from '@/lib/api'
+import { getCategories, getNewArrivals, getBestSellers } from '@/lib/api'
 import { getSettings } from '@/lib/admin-api'
 import Header from '@/components/Header'
 import HeroSection from '@/components/home/HeroSection'
@@ -8,25 +8,20 @@ import ContactSection from '@/components/home/ContactSection'
 import RatingsSection from '@/components/home/RatingsSection'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
 import DeliveryCountdown from '@/components/home/DeliveryCountdown'
-import FilteredCatalog from '@/components/FilteredCatalog'
 import CategoryCards from '@/components/home/CategoryCards'
+import HomeProductRow from '@/components/home/HomeProductRow'
 
 export default async function HomePage() {
-  const [products, categories, settings] = await Promise.all([
-    getProducts(),
+  const [categories, newArrivals, bestSellers, settings] = await Promise.all([
     getCategories(),
+    getNewArrivals(6),
+    getBestSellers(6),
     getSettings(),
   ])
 
   const heroVideoUrl       = settings.find(s => s.key === 'hero_video_url')?.value as string | undefined
   const heroCollectionPath = (settings.find(s => s.key === 'hero_video_collection')?.value as string | undefined)
     ?? (categories.find(c => c.id === 'tshirt') ? '/category/tshirt' : undefined)
-
-  /* كل المنتجات مجمّعة حسب القسم — بدون slice حتى يعمل الفلتر على الكل */
-  const groups = categories.map(cat => ({
-    category: cat,
-    products: products.filter(p => p.category_id === cat.id),
-  })).filter(g => g.products.length > 0)
 
   return (
     <>
@@ -78,10 +73,29 @@ export default async function HomePage() {
         {/* ─── Trust Strip ─── */}
         <div className="reveal"><TrustStrip /></div>
 
-        {/* ─── الكتالوج مع الفلتر ─── */}
-        <div style={{ paddingTop: '2rem' }}>
-          <FilteredCatalog groups={groups} />
-        </div>
+        {/* ─── وصل حديثاً ─── */}
+        {newArrivals.length > 0 && (
+          <div className="reveal">
+            <HomeProductRow
+              kicker="جديد"
+              title="وصل حديثاً"
+              products={newArrivals}
+              viewAllHref="/new-arrivals"
+            />
+          </div>
+        )}
+
+        {/* ─── الأكثر طلباً ─── */}
+        {bestSellers.length > 0 && (
+          <div className="reveal">
+            <HomeProductRow
+              kicker="الأبرز"
+              title="الأكثر طلباً"
+              products={bestSellers}
+              viewAllHref="/best-sellers"
+            />
+          </div>
+        )}
 
         {/* ─── Guarantee ─── */}
         <div className="reveal"><GuaranteeSection /></div>

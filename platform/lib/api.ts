@@ -38,22 +38,26 @@ export async function getProducts(opts?: {
 
 /* ══ المنتجات مع pagination ══ */
 export async function getProductsPaged(opts: {
-  category: string
+  category?: string
+  status?: string
   page: number
   perPage: number
 }): Promise<{ products: Product[]; total: number }> {
-  const { page, perPage, category } = opts
+  const { page, perPage, category, status } = opts
   const from = (page - 1) * perPage
   const to   = from + perPage - 1
 
-  const { data, error, count } = await supabase
+  let q = supabase
     .from('products')
     .select('*, category:categories(*)', { count: 'exact' })
     .neq('status', 'hidden')
-    .eq('category_id', category)
     .order('sort_order', { ascending: false })
     .range(from, to)
 
+  if (category) q = q.eq('category_id', category)
+  if (status)   q = q.eq('status', status)
+
+  const { data, error, count } = await q
   if (error) throw error
   return { products: (data ?? []) as Product[], total: count ?? 0 }
 }
@@ -146,6 +150,31 @@ export async function createOrder(payload: {
 }
 
 /* ══ الآراء ══ */
+/* ══ وصل حديثاً ══ */
+export async function getNewArrivals(limit = 6): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, category:categories(*)')
+    .eq('status', 'new')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) return []
+  return (data ?? []) as Product[]
+}
+
+/* ══ الأكثر طلباً ══ */
+export async function getBestSellers(limit = 6): Promise<Product[]> {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, category:categories(*)')
+    .eq('status', 'best-seller')
+    .order('sort_order', { ascending: false })
+    .limit(limit)
+  if (error) return []
+  return (data ?? []) as Product[]
+}
+
+/* ══ المراجعات ══ */
 export async function getReviews(): Promise<Review[]> {
   const { data, error } = await (supabase as any)
     .from('reviews')

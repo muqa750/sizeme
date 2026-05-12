@@ -88,65 +88,77 @@ export default function ProductCard({ product }: Props) {
         </div>
 
         {/* ── معلومات ── */}
-        <div style={{ padding: '0.75rem 0.25rem 0.5rem' }}>
-          {/* Brand */}
-          <p style={{
-            fontFamily: 'Cormorant Garamond, serif',
-            fontSize: '1rem',
-            letterSpacing: '0.05em',
-            color: '#1a1a1a',
-            marginBottom: 2,
-            lineHeight: 1.2,
-          }}>
-            {product.brand}
-          </p>
+        <div style={{ display: 'flex', padding: '0.7rem 0.5rem 0.7rem 0.4rem', gap: '1rem' }}>
 
-          {/* Sub-name */}
-          {product.sub && (
+          {/* الخط العمودي — مقوس الطرفين */}
+          <div style={{
+            width: 3,
+            flexShrink: 0,
+            alignSelf: 'stretch',
+            background: '#a3a3a3ff',
+            borderRadius: 999,
+          }} />
+
+          {/* المحتوى */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Brand */}
+            <p className="serif" style={{
+              fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+              letterSpacing: '0.05em',
+              color: 'var(--ink)',
+              marginBottom: 2,
+              lineHeight: 1.2,
+            }}>
+              {product.brand}
+            </p>
+
+            {/* Sub-name */}
+            {product.sub && (
+              <p style={{
+                fontSize: '0.72rem',
+                color: '#999',
+                marginBottom: 6,
+                letterSpacing: '0.02em',
+              }}>
+                {product.sub}
+              </p>
+            )}
+
+            {/* الألوان المتاحة */}
+            {product.colors && product.colors.length > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 8 }}>
+                {product.colors.slice(0, 6).map(color => (
+                  <div
+                    key={color}
+                    title={color}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      background: COLOR_HEX[color] ?? '#ccc',
+                      border: '1px solid rgba(0,0,0,0.12)',
+                      flexShrink: 0,
+                    }}
+                  />
+                ))}
+                {product.colors.length > 6 && (
+                  <span style={{ fontSize: '0.6rem', color: '#bbb' }}>
+                    +{product.colors.length - 6}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* السعر */}
             <p style={{
-              fontSize: '0.72rem',
-              color: '#999',
-              marginBottom: 6,
+              fontSize: '0.82rem',
+              color: 'var(--ink)',
+              fontWeight: 500,
               letterSpacing: '0.02em',
             }}>
-              {product.sub}
+              {fmt(price)}
             </p>
-          )}
-
-          {/* الألوان المتاحة */}
-          {product.colors && product.colors.length > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 8 }}>
-              {product.colors.slice(0, 6).map(color => (
-                <div
-                  key={color}
-                  title={color}
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    background: COLOR_HEX[color] ?? '#ccc',
-                    border: '1px solid rgba(0,0,0,0.12)',
-                    flexShrink: 0,
-                  }}
-                />
-              ))}
-              {product.colors.length > 6 && (
-                <span style={{ fontSize: '0.6rem', color: '#bbb' }}>
-                  +{product.colors.length - 6}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* السعر */}
-          <p style={{
-            fontSize: '0.82rem',
-            color: '#1a1a1a',
-            fontWeight: 500,
-            letterSpacing: '0.02em',
-          }}>
-            {fmt(price)}
-          </p>
+          </div>
         </div>
       </article>
     </Link>
