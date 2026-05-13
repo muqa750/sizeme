@@ -40,10 +40,12 @@ export async function getProducts(opts?: {
 export async function getProductsPaged(opts: {
   category?: string
   status?: string
+  brands?: string[]
+  colors?: string[]
   page: number
   perPage: number
 }): Promise<{ products: Product[]; total: number }> {
-  const { page, perPage, category, status } = opts
+  const { page, perPage, category, status, brands = [], colors = [] } = opts
   const from = (page - 1) * perPage
   const to   = from + perPage - 1
 
@@ -54,12 +56,36 @@ export async function getProductsPaged(opts: {
     .order('sort_order', { ascending: false })
     .range(from, to)
 
-  if (category) q = q.eq('category_id', category)
-  if (status)   q = q.eq('status', status)
+  if (category)         q = q.eq('category_id', category)
+  if (status)           q = q.eq('status', status)
+  if (brands.length)    q = q.in('brand', brands)
+  if (colors.length)    q = q.overlaps('colors', colors)
 
   const { data, error, count } = await q
   if (error) throw error
   return { products: (data ?? []) as Product[], total: count ?? 0 }
+}
+
+export async function getCategoryFilters(category: string): Promise<{ brands: string[]; colors: string[] }> {
+  const { data } = await supabase
+    .from('products')
+    .select('brand, colors')
+    .eq('category_id', category)
+    .neq('status', 'hidden')
+
+  const rows = data ?? []
+
+  // ترتيب الماركات حسب عدد المنتجات (الأكثر أولاً)
+  const brandCount: Record<string, number> = {}
+  rows.forEach((p: any) => { if (p.brand) brandCount[p.brand] = (brandCount[p.brand] ?? 0) + 1 })
+  const brands = Object.entries(brandCount).sort((a, b) => b[1] - a[1]).map(([b]) => b)
+
+  // ترتيب الألوان حسب عدد المنتجات (الأكثر أولاً)
+  const colorCount: Record<string, number> = {}
+  rows.forEach((p: any) => (p.colors ?? []).forEach((c: string) => { colorCount[c] = (colorCount[c] ?? 0) + 1 }))
+  const colors = Object.entries(colorCount).sort((a, b) => b[1] - a[1]).map(([c]) => c)
+
+  return { brands, colors }
 }
 
 export async function getProductById(id: number): Promise<Product | null> {
@@ -83,13 +109,15 @@ export async function validateCoupon(code: string): Promise<Coupon | null> {
 
   if (error || !data) return null
 
+  const coupon = data as any
+
   // تحقق من تاريخ الانتهاء
-  if (data.expires_at && new Date(data.expires_at) < new Date()) return null
+  if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) return null
 
   // تحقق من الحد الأقصى للاستخدام
-  if (data.max_uses !== null && data.used_count >= data.max_uses) return null
+  if (coupon.max_uses !== null && coupon.used_count >= coupon.max_uses) return null
 
-  return data
+  return coupon
 }
 
 /* ══ الطلبات ══ */

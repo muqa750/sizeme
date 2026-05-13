@@ -1,4 +1,4 @@
-import { getProductsPaged, getCategories } from '@/lib/api'
+import { getProductsPaged, getCategories, getCategoryFilters } from '@/lib/api'
 import Header from '@/components/Header'
 import ProductGrid from '@/components/ProductGrid'
 import { notFound } from 'next/navigation'
@@ -16,9 +16,10 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const [{ products, total }, categories] = await Promise.all([
+  const [{ products, total }, categories, filters] = await Promise.all([
     getProductsPaged({ category: params.slug, page: 1, perPage: PER_PAGE }),
     getCategories(),
+    getCategoryFilters(params.slug),
   ])
 
   const category = categories.find(c => c.id === params.slug)
@@ -56,6 +57,8 @@ export default async function CategoryPage({ params }: Props) {
           initialProducts={products}
           total={total}
           category={params.slug}
+          brands={filters.brands}
+          colors={filters.colors}
         />
 
         {/* ── Back ── */}
