@@ -25,9 +25,11 @@ export default function HomeProductRow({ title, kicker, products, viewAllHref }:
       }}>
         <div>
           <p className="kicker" style={{ marginBottom: '0.4rem' }}>{kicker}</p>
-          <h2 className="serif" style={{ fontSize: 'clamp(1.25rem, 3.5vw, 1.75rem)', fontWeight: 400 }}>
-            {title}
-          </h2>
+          <Link href={viewAllHref} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <h2 className="serif" style={{ fontSize: 'clamp(1.25rem, 3.5vw, 1.75rem)', fontWeight: 400 }}>
+              {title}
+            </h2>
+          </Link>
         </div>
         <Link
           href={viewAllHref}

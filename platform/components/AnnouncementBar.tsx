@@ -3,7 +3,7 @@ const MESSAGES = [
   'وفر فلوسك وكشخ.. اطلب 5 قطع تي شيرت واحصل على خصم خاص! 💸',
   'القياس ما ناسبك؟ لتشيل هم.. الاستبدال عدنا أسهل منه ماكو وبكل بساطة 🔄',
   'كشختك بـ سايزمي غير.. اطلب بسرعة قبل ما تخلص الوجبة! 🔥',
-  'مقاسات من 2XL حتى 7XL — جودة ماركات عالمية وبأسعار تناسبك',
+  'خصم خاص بمناسبة الإطلاق استخدم كود sizeme2026 للخصم الآن',
 ]
 
 export default function AnnouncementBar() {
@@ -19,7 +19,7 @@ export default function AnnouncementBar() {
         letterSpacing: '0.04em',
       }}
     >
-      <div className="marquee-track">
+      <div className="marquee-track" style={{ animationDirection: 'reverse' }}>
         {/* نسختان لتأثير اللف المتواصل */}
         {[0, 1].map(copy => (
           <div
@@ -35,8 +35,7 @@ export default function AnnouncementBar() {
             }}
           >
             {MESSAGES.map((msg, i) => (
-              <span key={i} style={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
-                <span style={{ color: 'var(--accent)', marginInlineEnd: '0.4rem' }}>·</span>
+              <span key={i} dir="rtl" style={{ flexShrink: 0, whiteSpace: 'nowrap', unicodeBidi: 'embed' }}>
                 {msg}
               </span>
             ))}

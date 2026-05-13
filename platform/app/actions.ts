@@ -69,6 +69,28 @@ function validate(p: OrderPayload): string | null {
   return null
 }
 
+// ── التحقق من الكوبون (للعرض في السلة قبل الطلب) ─────────────────────────
+export async function validateCoupon(code: string): Promise<
+  | { ok: true; code: string; type: 'percent' | 'fixed'; value: number }
+  | { ok: false }
+> {
+  if (!code?.trim()) return { ok: false }
+  const admin = createAdminClient()
+  const { data } = await admin
+    .from('coupons')
+    .select('code, type, value, expires_at, max_uses, used_count, is_active')
+    .eq('code', code.trim().toUpperCase())
+    .eq('is_active', true)
+    .single()
+
+  if (!data) return { ok: false }
+  const expired = data.expires_at && new Date(data.expires_at) < new Date()
+  const maxed   = data.max_uses != null && data.used_count >= data.max_uses
+  if (expired || maxed) return { ok: false }
+
+  return { ok: true, code: data.code, type: data.type as 'percent' | 'fixed', value: data.value }
+}
+
 const WA_NUMBER = '9647739334545'
 
 // ── الدالة الرئيسية ────────────────────────────────────────────────────────

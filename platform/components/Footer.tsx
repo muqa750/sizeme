@@ -153,9 +153,9 @@ export default function Footer() {
               <p className="footer-col-title">المساعدة</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
                 {[
-                  { label: 'سياسة الاستبدال والإرجاع', href: '/legal/exchange' },
+                  { label: 'سياسة الاستبدال', href: '/legal/exchange' },
                   { label: 'الأسئلة الشائعة', href: '/legal/faq' },
-                  { label: 'حاسبة المقاس', href: '/size-guide' },
+                  { label: 'دليل المقاسات', href: '/size-guide' },
                 ].map(({ label, href }) => (
                   <li key={href}>
                     <Link href={href} style={colLink}

@@ -88,14 +88,14 @@ export default function ProductCard({ product }: Props) {
         </div>
 
         {/* ── معلومات ── */}
-        <div style={{ display: 'flex', padding: '0.7rem 0.5rem 0.7rem 0.4rem', gap: '1rem' }}>
+        <div style={{ display: 'flex', padding: '0.7rem 0.5rem 0.7rem 0.4rem', gap: '0.5rem' }}>
 
           {/* الخط العمودي — مقوس الطرفين */}
           <div style={{
             width: 3,
             flexShrink: 0,
             alignSelf: 'stretch',
-            background: '#a3a3a3ff',
+            background: '#f0f0f0ff',
             borderRadius: 999,
           }} />
 
