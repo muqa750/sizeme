@@ -277,6 +277,33 @@ async function recalcOrderTotal(admin: any, orderId: string) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  ORDERS — حذف طلب كامل
+// ══════════════════════════════════════════════════════════════
+
+export async function deleteOrder(orderId: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
+
+  // حذف المنتجات أولاً (foreign key)
+  const { error: itemsErr } = await admin
+    .from('order_items')
+    .delete()
+    .eq('order_id', orderId)
+  if (itemsErr) return { ok: false, error: itemsErr.message }
+
+  // حذف الطلب
+  const { error: orderErr } = await admin
+    .from('orders')
+    .delete()
+    .eq('order_id', orderId)
+  if (orderErr) return { ok: false, error: orderErr.message }
+
+  revalidatePath('/admin/orders')
+  revalidatePath('/admin/analytics')
+  return { ok: true }
+}
+
+// ══════════════════════════════════════════════════════════════
 //  SUGGESTIONS — حذف اقتراح
 // ══════════════════════════════════════════════════════════════
 

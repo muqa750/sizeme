@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition, type CSSProperties } from 'react'
+import React, { useState, useTransition, type CSSProperties } from 'react'
 import { useCart }   from '@/context/CartContext'
 import { fmt, imgPath } from '@/lib/utils'
 import { submitOrder, validateCoupon, type OrderPayload } from '@/app/actions'
@@ -15,6 +15,18 @@ function isValidIraqiPhone(phone: string): boolean {
 }
 
 type Step = 'cart' | 'checkout' | 'success'
+
+const labelStyle: CSSProperties = {
+  fontSize: '0.7rem', letterSpacing: '0.08em', color: '#888',
+  display: 'block', marginBottom: 6,
+}
+const inputStyle: CSSProperties = {
+  width: '100%', padding: '0.625rem 0.75rem',
+  border: '1px solid #e5e5e5', fontSize: '0.875rem',
+  outline: 'none', boxSizing: 'border-box',
+  fontFamily: 'inherit', borderRadius: 4,
+  color: 'var(--ink)', background: 'var(--paper)',
+}
 
 export default function CartDrawer() {
   const { items, totals, open, setOpen, removeItem, setQty, clear, itemKey } = useCart()
@@ -59,7 +71,6 @@ export default function CartDrawer() {
     name: '', phone: '', province: '', area: '', address: '', notes: '',
   })
   const [phoneError, setPhoneError] = useState(false)
-  const paymentMethod = 'cod' // ثابت حالياً — الدفع الإلكتروني قريباً
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm(p => ({ ...p, [k]: e.target.value }))
@@ -92,18 +103,6 @@ export default function CartDrawer() {
         alert('حدث خطأ أثناء إرسال الطلب، حاول مرة أخرى')
       }
     })
-  }
-
-  const labelStyle: CSSProperties = {
-    fontSize: '0.7rem', letterSpacing: '0.08em', color: '#888',
-    display: 'block', marginBottom: 6,
-  }
-  const inputStyle: CSSProperties = {
-    width: '100%', padding: '0.625rem 0.75rem',
-    border: '1px solid #e5e5e5', fontSize: '0.875rem',
-    outline: 'none', boxSizing: 'border-box',
-    fontFamily: 'inherit', borderRadius: 4,
-    color: 'var(--ink)', background: 'var(--paper)',
   }
 
   if (!open) return null
@@ -353,7 +352,6 @@ export default function CartDrawer() {
                   إتمام الطلب
                 </button>
               </div>
-              <div style={{ height: 'env(safe-area-inset-bottom, 0px)' }} />
             )}
           </>
         )}
@@ -510,10 +508,12 @@ export default function CartDrawer() {
                       border: '1.5px solid #1a1a1a', borderRadius: 8,
                       padding: '0.7rem 1rem', background: '#fff',
                     }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="6" width="20" height="12" rx="2"/>
-                        <path d="M2 10h20"/>
-                        <path d="M6 14h4"/>
+                      {/* ورقة نقدية */}
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="6" width="20" height="12" rx="2" />
+                        <circle cx="12" cy="12" r="2.5" />
+                        <path d="M6 12H6.01M18 12H18.01" />
+                        <path d="M2 10h2M20 10h2M2 14h2M20 14h2" />
                       </svg>
                       <span style={{ fontSize: '0.82rem', color: '#1a1a1a', fontWeight: 500 }}>الدفع عند الاستلام</span>
                       <div style={{ marginRight: 'auto', width: 16, height: 16, borderRadius: '50%', background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -526,16 +526,19 @@ export default function CartDrawer() {
                       display: 'flex', alignItems: 'center', gap: 12,
                       border: '1px solid #e8e8e8', borderRadius: 8,
                       padding: '0.7rem 1rem', background: '#fafafa',
-                      opacity: 0.6,
+                      opacity: 0.65,
                     }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      {/* بطاقة دفع */}
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="6" width="20" height="12" rx="2"/>
+                        <path d="M2 10h20"/>
+                        <path d="M6 14h4"/>
                       </svg>
-                      <span style={{ fontSize: '0.82rem', color: '#aaa' }}>دفع إلكتروني آمن</span>
+                      <span style={{ fontSize: '0.82rem', color: '#777' }}>دفع إلكتروني آمن</span>
                       <span style={{
-                        marginRight: 'auto', fontSize: '0.6rem', color: '#aaa',
-                        border: '1px solid #ddd', borderRadius: 4,
-                        padding: '2px 7px', letterSpacing: '0.06em',
+                        marginRight: 'auto', fontSize: '0.62rem', color: '#666',
+                        border: '1px solid #bbb', borderRadius: 4,
+                        padding: '2px 7px', letterSpacing: '0.06em', fontWeight: 500,
                       }}>
                         قريباً
                       </span>

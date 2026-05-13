@@ -246,22 +246,25 @@ tshirt | polo | shirt | jeans | tracksuit
 ## 🔄 ميزات مكتملة
 
 - ✅ SplashLoader — شاشة البداية مع لوغو
-- ✅ AnnouncementBar — شريط إعلانات متحرك
+- ✅ AnnouncementBar — شريط إعلانات متحرك عكسي (RTL bidi مصحح، بدون نقاط فاصلة)
 - ✅ Header — glass effect + dark mode toggle + mobile drawer (يفتح من اليمين)
 - ✅ Dark Mode — iOS-style toggle داخل الدرج + زر في الهيدر
 - ✅ Footer — glass effect + نشرة بريدية + روابط الأقسام
-- ✅ CartDrawer — سلة تسوق كاملة مع حساب الأسعار والخصومات
+- ✅ CartDrawer — سلة تسوق full-screen مع peek مبلور (calc(100% - 56px))، كوبون خصم، نموذج تسليم كامل، طرق دفع (كاش + قريباً)، safe-area inset
 - ✅ DeliveryCountdown — عداد تجهيز الطلب بتوقيت العراق (UTC+3)
 - ✅ CategoryPreview — معاينة قسم مع رابط "عرض الكل"
-- ✅ ProductCard — بطاقة منتج مع صور متعددة وألوان
+- ✅ ProductCard — بطاقة منتج مع صور متعددة وألوان، gap بين الخط والمحتوى 1.5rem
+- ✅ HomeProductRow — صف منتجات أفقي قابل للتمرير، العنوان رابط للقسم
 - ✅ صفحة القسم — pagination بـ 18 منتج/صفحة
 - ✅ صفحة المنتج — تفاصيل كاملة + Add to Cart
 - ✅ SuggestionModal — نموذج اقتراح منتج يُحفظ في Supabase
-- ✅ لوحة الأدمن — عرض الطلبات، إدارة المنتجات، تغيير حالة الطلب
+- ✅ لوحة الأدمن — عرض الطلبات، إدارة المنتجات، تغيير حالة الطلب، **حذف طلب كامل مع تأكيد**
 - ✅ صفحات Legal — warning / terms / privacy
 - ✅ صفحة size-guide
 - ✅ صفحة reviews
 - ✅ WhatsApp Float Button
+- ✅ validateCoupon — Server Action للتحقق من كوبون الخصم قبل الطلب
+- ✅ deleteOrder — Server Action لحذف طلب كامل مع order_items من Supabase
 
 ---
 

@@ -7,6 +7,7 @@ import {
   updateOrderItem,
   removeOrderItem,
   addOrderItem,
+  deleteOrder,
 } from '@/lib/actions/admin-management'
 import type { Order } from '@/lib/types'
 
@@ -91,6 +92,10 @@ export default function OrderRow({ order }: Props) {
   const [newItem, setNewItem] = useState(emptyNew())
   const [addErr, setAddErr] = useState('')
 
+  // حذف الطلب
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleteErr, setDeleteErr] = useState('')
+
   const totalQty = items.reduce((s, i) => s + i.qty, 0)
   const sc = STATUS_COLOR[order.status] ?? '#888'
 
@@ -131,6 +136,15 @@ export default function OrderRow({ order }: Props) {
       const res = await removeOrderItem(itemId, order.order_id)
       if (!res.ok) { setItemErr(res.error ?? 'حدث خطأ'); return }
       setItems(prev => prev.filter(i => i.id !== itemId))
+    })
+  }
+
+  function handleDeleteOrder() {
+    setDeleteErr('')
+    startTransition(async () => {
+      const res = await deleteOrder(order.order_id)
+      if (!res.ok) { setDeleteErr(res.error ?? 'حدث خطأ'); return }
+      // الصفحة ستُعاد تحميلها تلقائياً بسبب revalidatePath
     })
   }
 
@@ -469,6 +483,89 @@ export default function OrderRow({ order }: Props) {
           <p style={{ fontSize: '0.7rem', color: '#ccc', textAlign: 'center', marginTop: 12, direction: 'ltr' }}>
             {dateEn(order.created_at)} — {timeEn(order.created_at)}
           </p>
+
+          {/* ── حذف الطلب ── */}
+          <div style={{ marginTop: 16, borderTop: '1px solid #f5e8e8', paddingTop: 14 }}>
+            {!confirmDelete ? (
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  style={{
+                    background: 'transparent',
+                    color: '#c0392b',
+                    border: '1px solid #f5c6c6',
+                    borderRadius: 6,
+                    padding: '7px 16px',
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                    <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                  </svg>
+                  حذف الطلب
+                </button>
+              </div>
+            ) : (
+              <div style={{
+                background: '#fff5f5',
+                border: '1px solid #fbd0d0',
+                borderRadius: 8,
+                padding: '14px 16px',
+              }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#c0392b', marginBottom: 6 }}>
+                  تأكيد حذف الطلب
+                </p>
+                <p style={{ fontSize: '0.78rem', color: '#888', marginBottom: 14, lineHeight: 1.6 }}>
+                  سيتم حذف الطلب <strong style={{ color: '#555' }}>{order.order_id}</strong> وجميع منتجاته بشكل نهائي. هذا الإجراء لا يمكن التراجع عنه.
+                </p>
+                {deleteErr && (
+                  <p style={{ fontSize: '0.72rem', color: '#c0392b', marginBottom: 10 }}>{deleteErr}</p>
+                )}
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={handleDeleteOrder}
+                    disabled={pending}
+                    style={{
+                      background: '#c0392b',
+                      color: '#fff',
+                      border: '1px solid #c0392b',
+                      borderRadius: 6,
+                      padding: '8px 18px',
+                      fontSize: '0.8rem',
+                      cursor: pending ? 'not-allowed' : 'pointer',
+                      fontFamily: 'inherit',
+                      opacity: pending ? 0.7 : 1,
+                    }}
+                  >
+                    {pending ? 'جارٍ الحذف...' : 'نعم، احذف الطلب'}
+                  </button>
+                  <button
+                    onClick={() => { setConfirmDelete(false); setDeleteErr('') }}
+                    style={{
+                      background: 'transparent',
+                      color: '#666',
+                      border: '1px solid #ddd',
+                      borderRadius: 6,
+                      padding: '8px 16px',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
