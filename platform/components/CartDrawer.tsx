@@ -1,13 +1,13 @@
 'use client'
 import React, { useState, useTransition, type CSSProperties } from 'react'
-import { useCart }   from '@/context/CartContext'
+import { useCart } from '@/context/CartContext'
 import { fmt, imgPath } from '@/lib/utils'
 import { submitOrder, validateCoupon, type OrderPayload } from '@/app/actions'
 
 const PROVINCES = [
-  'بغداد','البصرة','الموصل','أربيل','السليمانية','الأنبار',
-  'كربلاء','كركوك','النجف','بابل','الديوانية','الناصرية',
-  'صلاح الدين','السماوة','دهوك','ميسان','سامراء','ديالى',
+  'بغداد', 'البصرة', 'الموصل', 'أربيل', 'السليمانية', 'الأنبار',
+  'كربلاء', 'كركوك', 'النجف', 'بابل', 'الديوانية', 'الناصرية',
+  'صلاح الدين', 'السماوة', 'دهوك', 'ميسان', 'سامراء', 'ديالى',
 ]
 
 function isValidIraqiPhone(phone: string): boolean {
@@ -30,14 +30,14 @@ const inputStyle: CSSProperties = {
 
 export default function CartDrawer() {
   const { items, totals, open, setOpen, removeItem, setQty, clear, itemKey } = useCart()
-  const [step, setStep]       = useState<Step>('cart')
+  const [step, setStep] = useState<Step>('cart')
   const [orderId, setOrderId] = useState('')
-  const [waUrl,   setWaUrl]   = useState('')
-  const [pending, startTx]    = useTransition()
+  const [waUrl, setWaUrl] = useState('')
+  const [pending, startTx] = useTransition()
 
   // Coupon state
-  const [couponInput,   setCouponInput]   = useState('')
-  const [couponStatus,  setCouponStatus]  = useState<'idle' | 'loading' | 'error'>('idle')
+  const [couponInput, setCouponInput] = useState('')
+  const [couponStatus, setCouponStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; type: 'percent' | 'fixed'; value: number } | null>(null)
 
   const couponDiscount = appliedCoupon
@@ -86,12 +86,12 @@ export default function CartDrawer() {
           coupon_code: appliedCoupon?.code ?? '',
           items: items.map(i => ({
             product_id: i.productId,
-            sku:        i.sku,
-            brand:      i.brand,
-            sub:        i.sub ?? '',
-            color:      i.color,
-            size:       i.size,
-            qty:        i.qty,
+            sku: i.sku,
+            brand: i.brand,
+            sub: i.sub ?? '',
+            color: i.color,
+            size: i.size,
+            qty: i.qty,
           })),
         }
         const { order_id, waUrl } = await submitOrder(payload)
@@ -162,7 +162,7 @@ export default function CartDrawer() {
                 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 12H5M12 5l-7 7 7 7"/>
+                  <path d="M19 12H5M12 5l-7 7 7 7" />
                 </svg>
                 تابع التسوق
               </button>
@@ -371,7 +371,7 @@ export default function CartDrawer() {
                 }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 12H5M12 5l-7 7 7 7"/>
+                  <path d="M19 12H5M12 5l-7 7 7 7" />
                 </svg>
                 العودة للسلة
               </button>
@@ -509,11 +509,11 @@ export default function CartDrawer() {
                       padding: '0.7rem 1rem', background: '#fff',
                     }}>
                       {/* ورقة نقدية */}
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="6" width="20" height="12" rx="2" />
-                        <circle cx="12" cy="12" r="2.5" />
-                        <path d="M6 12H6.01M18 12H18.01" />
-                        <path d="M2 10h2M20 10h2M2 14h2M20 14h2" />
+                      <svg width="28" height="18" viewBox="0 0 28 18" fill="none" stroke="#1a1a1a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="1" y="1" width="26" height="16" rx="3" />
+                        <line x1="3" y1="9" x2="9" y2="9" />
+                        <text x="14" y="13" fontSize="7" fontFamily="IBM Plex Sans Arabic, sans-serif" fill="#1a1a1a" stroke="none" textAnchor="middle" fontWeight="500">$</text>
+                        <line x1="19" y1="9" x2="25" y2="9" />
                       </svg>
                       <span style={{ fontSize: '0.82rem', color: '#1a1a1a', fontWeight: 500 }}>الدفع عند الاستلام</span>
                       <div style={{ marginRight: 'auto', width: 16, height: 16, borderRadius: '50%', background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -530,9 +530,9 @@ export default function CartDrawer() {
                     }}>
                       {/* بطاقة دفع */}
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="6" width="20" height="12" rx="2"/>
-                        <path d="M2 10h20"/>
-                        <path d="M6 14h4"/>
+                        <rect x="2" y="6" width="20" height="12" rx="2" />
+                        <path d="M2 10h20" />
+                        <path d="M6 14h4" />
                       </svg>
                       <span style={{ fontSize: '0.82rem', color: '#777' }}>دفع إلكتروني آمن</span>
                       <span style={{
