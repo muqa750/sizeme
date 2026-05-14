@@ -72,17 +72,11 @@ export default function ProductCard({ product }: Props) {
 
           {/* Badge */}
           {(product.status === 'best-seller' || product.status === 'new') && (
-            <span style={{
-              position: 'absolute',
-              top: 10,
-              left: 10,
-              background: '#1a1a1a',
-              color: '#fff',
-              fontSize: '0.575rem',
-              letterSpacing: '0.18em',
-              padding: '4px 9px',
-            }}>
-              {product.status === 'best-seller' ? 'BEST SELLER' : 'NEW'}
+            <span
+              className={product.status === 'best-seller' ? 'badge-bestseller' : 'badge-new'}
+              style={{ position: 'absolute', top: 10, right: 10 }}
+            >
+              {product.status === 'best-seller' ? 'الأكثر طلباً' : 'جديد'}
             </span>
           )}
         </div>

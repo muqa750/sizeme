@@ -410,6 +410,47 @@ body {
   transition: transform 0.2s;
 }
 
+/* ── Product Badges ── */
+@keyframes bestseller-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 137, 46, 0.52); }
+  55%       { box-shadow: 0 0 0 5px rgba(184, 137, 46, 0); }
+}
+
+.badge-bestseller {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ibm), 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.56rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(to right, #B8892E 0%, #C9A040 45%, #D8B45E 80%, #DEBB6A 100%);
+  padding: 3.5px 10px;
+  border-radius: 50px;
+  white-space: nowrap;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.22);
+  animation: bestseller-pulse 2.4s ease-in-out infinite;
+}
+
+.badge-new {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ibm), 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.56rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(to right, #2E6AD4 0%, #3D80E8 45%, #5597F2 80%, #6BA8F7 100%);
+  padding: 3.5px 10px;
+  border-radius: 50px;
+  white-space: nowrap;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.22);
+}
+
+@media (max-width: 768px) {
+  .badge-bestseller, .badge-new { font-size: 0.52rem; padding: 3px 9px; }
+}
+
 /* ── Filter Chips Grid — صفين دائماً مع تمرير أفقي ── */
 .filter-chips-grid {
   display: grid;
