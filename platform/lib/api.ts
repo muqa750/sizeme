@@ -88,6 +88,37 @@ export async function getCategoryFilters(category: string): Promise<{ brands: st
   return { brands, colors }
 }
 
+/* ══ جلب اسم الماركة الحقيقي من قاعدة البيانات عبر slug ══ */
+export async function getActualBrandName(slug: string): Promise<string | null> {
+  const { data } = await supabase
+    .from('products')
+    .select('brand')
+    .neq('status', 'hidden')
+    .not('brand', 'is', null)
+
+  const brands = Array.from(
+    new Set((data ?? []).map((p: any) => p.brand as string).filter(Boolean))
+  )
+
+  // تطبيع قوي: أحرف صغيرة + إزالة التشكيل (Hermès→hermes) + حذف كل غير الحروف والأرقام
+  const normalize = (s: string) =>
+    s.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')  // يزيل الـ accents
+      .replace(/[^a-z0-9]/g, '')                          // يبقي الحروف والأرقام فقط
+
+  const slugNorm = normalize(slug)
+
+  return (
+    // 1. مطابقة تامة
+    brands.find(b => normalize(b) === slugNorm) ??
+    // 2. الـ slug يبدأ بـ اسم الماركة في DB (us-polo ← uspolo inside uspoloassn)
+    brands.find(b => normalize(b).startsWith(slugNorm)) ??
+    // 3. اسم الماركة في DB يبدأ بـ الـ slug
+    brands.find(b => slugNorm.startsWith(normalize(b))) ??
+    null
+  )
+}
+
 export async function getProductById(id: number): Promise<Product | null> {
   const { data, error } = await supabase
     .from('products')

@@ -231,7 +231,8 @@ export default function CartDrawer() {
                     {/* Price + إزالة */}
                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end', flexShrink: 0 }}>
                       <span style={{ fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap', color: 'var(--ink)' }}>
-                        {fmt(item.qty * totals.unitPrice)}
+                        {(item.qty * totals.unitPrice).toLocaleString('en-US')}
+                        <span style={{ color: 'var(--mute)', fontSize: '0.68rem', fontWeight: 400, marginRight: '0.2rem' }}> د.ع</span>
                       </span>
                       <button
                         onClick={() => removeItem(key)}
@@ -331,7 +332,10 @@ export default function CartDrawer() {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, fontSize: '0.95rem', marginTop: 4 }}>
                     <span>الإجمالي</span>
-                    <span>{fmt(totals.total - couponDiscount)}</span>
+                    <span>
+                      {(totals.total - couponDiscount).toLocaleString('en-US')}
+                      <span style={{ color: 'var(--mute)', fontSize: '0.72rem', fontWeight: 400, marginRight: '0.2rem' }}> د.ع</span>
+                    </span>
                   </div>
                 </div>
 

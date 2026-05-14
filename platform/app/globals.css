@@ -410,24 +410,16 @@ body {
   transition: transform 0.2s;
 }
 
-/* ── Filter Chips Grid ── */
+/* ── Filter Chips Grid — صفين دائماً مع تمرير أفقي ── */
 .filter-chips-grid {
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 0.35rem;
   overflow-x: auto;
   scrollbar-width: none;
-  gap: 0.35rem;
-  padding-bottom: 2px;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
 }
 .filter-chips-grid::-webkit-scrollbar { display: none; }
-
-@media (min-width: 768px) {
-  .filter-chips-grid {
-    display: grid;
-    grid-template-rows: repeat(2, auto);
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
-    overflow-x: auto;
-  }
-}

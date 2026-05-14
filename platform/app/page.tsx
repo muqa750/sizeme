@@ -10,6 +10,7 @@ import ScrollRevealInit from '@/components/ScrollRevealInit'
 import DeliveryCountdown from '@/components/home/DeliveryCountdown'
 import CategoryCards from '@/components/home/CategoryCards'
 import HomeProductRow from '@/components/home/HomeProductRow'
+import BrandCards from '@/components/home/BrandCards'
 
 export default async function HomePage() {
   const [categories, newArrivals, bestSellers, settings] = await Promise.all([
@@ -96,6 +97,11 @@ export default async function HomePage() {
             />
           </div>
         )}
+
+        {/* ─── براندات اللحظة ─── */}
+        <div className="reveal">
+          <BrandCards />
+        </div>
 
         {/* ─── Guarantee ─── */}
         <div className="reveal"><GuaranteeSection /></div>

@@ -42,11 +42,18 @@ const fieldGroup = (half = false): React.CSSProperties => ({
 interface Props {
   product?: Product
   categories: Category[]
+  nextSortOrder?: number   // يُمرَّر فقط عند إضافة منتج جديد
   onClose: () => void
   onSaved: () => void
 }
 
-export default function ProductForm({ product, categories, onClose, onSaved }: Props) {
+// توليد SKU تلقائياً: أول حرفين من الماركة بحروف كبيرة + "-" + الترتيب
+function buildSku(brand: string, sortOrder: number): string {
+  const prefix = brand.trim().replace(/[^a-zA-Z]/g, '').slice(0, 2).toUpperCase()
+  return prefix ? `${prefix}-${sortOrder}` : ''
+}
+
+export default function ProductForm({ product, categories, nextSortOrder, onClose, onSaved }: Props) {
   const isEdit = Boolean(product)
   const [pending, startTransition] = useTransition()
   const [err, setErr]   = useState('')
@@ -63,9 +70,20 @@ export default function ProductForm({ product, categories, onClose, onSaved }: P
     img_key:     product?.img_key     ?? '',
     cat_seq:     product?.cat_seq     ?? '',
     status:      product?.status      ?? 'active',
-    sort_order:  product?.sort_order  ?? 0,
+    sort_order:  nextSortOrder ?? product?.sort_order ?? 0,
     colors:      product?.colors      ?? [] as string[],
   })
+
+  // ── عند تغيير الماركة في نموذج الإضافة → أعد توليد SKU تلقائياً ──────
+  function handleBrandChange(value: string) {
+    setForm(f => ({
+      ...f,
+      brand: value,
+      ...(!isEdit && nextSortOrder !== undefined
+        ? { sku: buildSku(value, nextSortOrder) }
+        : {}),
+    }))
+  }
 
   const [imgUploading, setImgUploading] = useState(false)
   const [imgPreview, setImgPreview]     = useState<string | null>(null)
@@ -157,7 +175,7 @@ export default function ProductForm({ product, categories, onClose, onSaved }: P
         <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
           <div style={fieldGroup(true)}>
             <span style={label}>الماركة *</span>
-            <input style={inp} value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))} placeholder="مثال: Lacoste" />
+            <input style={inp} value={form.brand} onChange={e => handleBrandChange(e.target.value)} placeholder="مثال: Lacoste" />
           </div>
           <div style={fieldGroup(true)}>
             <span style={label}>الموديل / السلسلة</span>
@@ -192,7 +210,13 @@ export default function ProductForm({ product, categories, onClose, onSaved }: P
           </div>
           <div style={fieldGroup(true)}>
             <span style={label}>كود المنتج (SKU) *</span>
-            <input style={inp} value={form.sku} onChange={e => setForm(f => ({ ...f, sku: e.target.value }))} placeholder="مثال: TS-LAC-001" />
+            <input
+              style={{ ...inp, background: !isEdit ? '#f9f9f9' : '#fff', color: !isEdit ? '#555' : '#1a1a1a' }}
+              value={form.sku}
+              onChange={e => setForm(f => ({ ...f, sku: e.target.value }))}
+              placeholder="يُولَّد تلقائياً عند كتابة الماركة"
+            />
+            {!isEdit && <span style={{ fontSize: 10, color: '#bbb', marginTop: 2 }}>يتولد تلقائياً — يمكن تعديله يدوياً</span>}
           </div>
         </div>
 
@@ -210,10 +234,13 @@ export default function ProductForm({ product, categories, onClose, onSaved }: P
           <div style={fieldGroup(true)}>
             <span style={label}>الترتيب (sort_order)</span>
             <input
-              type="number" style={inp}
+              type="number"
+              style={{ ...inp, background: !isEdit ? '#f0f0f0' : '#fff', color: '#555', cursor: !isEdit ? 'not-allowed' : 'text' }}
               value={form.sort_order}
-              onChange={e => setForm(f => ({ ...f, sort_order: Number(e.target.value) }))}
+              readOnly={!isEdit}
+              onChange={e => isEdit && setForm(f => ({ ...f, sort_order: Number(e.target.value) }))}
             />
+            {!isEdit && <span style={{ fontSize: 10, color: '#bbb', marginTop: 2 }}>يُعيَّن تلقائياً — غير قابل للتعديل</span>}
           </div>
         </div>
 

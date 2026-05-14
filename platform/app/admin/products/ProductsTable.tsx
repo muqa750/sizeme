@@ -34,6 +34,9 @@ export default function ProductsTable({ products: initial, categories }: Props) 
   const [pending, startTransition]    = useTransition()
   const [deletingId, setDeletingId]   = useState<number | null>(null)
 
+  // أعلى sort_order موجود + 1 → للمنتج الجديد
+  const nextSortOrder = Math.max(0, ...products.map(p => p.sort_order ?? 0)) + 1
+
   const filtered = query.trim()
     ? products.filter(p =>
         p.sku.toLowerCase().includes(query.toLowerCase()) ||
@@ -209,6 +212,7 @@ export default function ProductsTable({ products: initial, categories }: Props) 
         <ProductForm
           product={formProduct === 'new' ? undefined : formProduct}
           categories={categories}
+          nextSortOrder={formProduct === 'new' ? nextSortOrder : undefined}
           onClose={() => setFormProduct(null)}
           onSaved={handleSaved}
         />

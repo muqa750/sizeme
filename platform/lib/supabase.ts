@@ -4,8 +4,14 @@ import type { Database } from './types'
 const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Client للاستخدام في المتجر (browser)
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
+// Client للاستخدام في المتجر (browser + server)
+// cache: 'no-store' يمنع Next.js من تخزين بيانات Supabase — يضمن أحدث البيانات دائماً
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  global: {
+    fetch: (url: RequestInfo | URL, options: RequestInit = {}) =>
+      fetch(url, { ...options, cache: 'no-store' }),
+  },
+})
 
 // Client للاستخدام في لوحة التحكم (server-side فقط)
 // cache: 'no-store' يمنع Next.js من تخزين استجابات Supabase في الكاش

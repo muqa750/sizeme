@@ -156,7 +156,10 @@ export default function ProductCard({ product }: Props) {
               fontWeight: 500,
               letterSpacing: '0.02em',
             }}>
-              {fmt(price)}
+              {price.toLocaleString('en-US')}
+              <span style={{ color: 'var(--mute)', fontSize: '0.68rem', fontWeight: 400, marginRight: '0.2rem' }}>
+                {' '}د.ع
+              </span>
             </p>
           </div>
         </div>

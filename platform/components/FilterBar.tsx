@@ -71,29 +71,45 @@ export default function FilterBar({
   })
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', direction: 'rtl' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', direction: 'rtl', paddingTop: '1rem', paddingBottom: '1.25rem' }}>
 
-      {/* ── الماركات — صفين على desktop، صف واحد على موبايل ── */}
-      {brands.length > 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-            <span style={label}>الماركة</span>
-            <button style={chip(activeBrands.length === 0)} onClick={() => onBrand([])}>الكل</button>
+      {/* ── الماركات — صفين بحجم طبيعي لكل زر ── */}
+      {brands.length > 1 && (() => {
+        const mid  = Math.ceil(brands.length / 2)
+        const row1 = brands.slice(0, mid)
+        const row2 = brands.slice(mid)
+        const rowStyle: React.CSSProperties = {
+          display: 'flex', flexWrap: 'nowrap', gap: '0.35rem',
+          scrollbarWidth: 'none',
+        }
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', paddingRight: '1.25rem' }}>
+              <span style={label}>الماركة</span>
+              <button style={chip(activeBrands.length === 0)} onClick={() => onBrand([])}>الكل</button>
+            </div>
+            <div style={{ overflowX: 'auto', scrollbarWidth: 'none', display: 'flex', flexDirection: 'column', gap: '0.35rem', paddingRight: '1.25rem', paddingLeft: '1.25rem' } as React.CSSProperties}>
+              <div style={rowStyle}>
+                {row1.map(b => (
+                  <button key={b} style={chip(activeBrands.includes(b))} onClick={() => toggleBrand(b)}>{b}</button>
+                ))}
+              </div>
+              {row2.length > 0 && (
+                <div style={rowStyle}>
+                  {row2.map(b => (
+                    <button key={b} style={chip(activeBrands.includes(b))} onClick={() => toggleBrand(b)}>{b}</button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="filter-chips-grid">
-            {brands.map(b => (
-              <button key={b} style={chip(activeBrands.includes(b))} onClick={() => toggleBrand(b)}>
-                {b}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+        )
+      })()}
 
-      {/* ── الألوان — صف واحد دائماً مع تمرير ── */}
+      {/* ── الألوان — صف واحد مع تمرير ── */}
       {colors.length > 1 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', paddingRight: '1.25rem' }}>
             <span style={label}>اللون</span>
             <button style={chip(activeColors.length === 0)} onClick={() => onColor([])}>الكل</button>
           </div>
@@ -101,7 +117,9 @@ export default function FilterBar({
             display: 'flex',
             flexWrap: 'nowrap',
             overflowX: 'auto',
-            gap: '0.35rem',
+            gap: '0.4rem',
+            paddingRight: '1.25rem',
+            paddingLeft: '1.25rem',
             paddingBottom: '2px',
             scrollbarWidth: 'none',
             WebkitOverflowScrolling: 'touch',
@@ -116,8 +134,8 @@ export default function FilterBar({
                   onClick={() => toggleColor(c)}
                   style={{
                     flexShrink: 0,
-                    width: 56,
-                    height: 28,
+                    width: 64,
+                    height: 32,
                     borderRadius: '999px',
                     background: hex,
                     color: textColor,

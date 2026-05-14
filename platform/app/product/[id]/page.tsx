@@ -59,7 +59,8 @@ export default async function ProductPage({ params }: Props) {
             )}
 
             <p style={{ fontSize: '1.25rem', fontWeight: 500, marginBottom: '2rem' }}>
-              {fmt(price)}
+              {price.toLocaleString('en-US')}
+              <span style={{ color: 'var(--mute)', fontSize: '0.85rem', fontWeight: 400, marginRight: '0.25rem' }}> د.ع</span>
             </p>
 
             {/* اللون + المقاس + زر السلة (Client Component) */}

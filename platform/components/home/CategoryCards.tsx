@@ -26,7 +26,7 @@ const ACCESSORIES_PLACEHOLDER: Category = {
 function CategoryCard({ cat, isPlaceholder }: { cat: Category; isPlaceholder: boolean }) {
   const [imgFailed, setImgFailed] = useState(false)
   /* الـ id هو نفسه اسم الصورة: tshirt, polo, shirt, jeans, tracksuit */
-  const imgUrl = `${IMG_BASE}/${cat.id}.jpg`
+  const imgUrl = `${IMG_BASE}/${cat.id}.jpg?v=2`
 
   const imgEl = (
     <div
@@ -78,23 +78,10 @@ function CategoryCard({ cat, isPlaceholder }: { cat: Category; isPlaceholder: bo
     </div>
   )
 
-  const label = (
-    <p style={{
-      marginTop: '0.5rem',
-      fontSize: '0.85rem',
-      color: isPlaceholder ? 'var(--mute)' : 'var(--ink)',
-      letterSpacing: '0.03em',
-      textAlign: 'left',
-    }}>
-      {cat.name_ar}
-    </p>
-  )
-
   if (isPlaceholder) {
     return (
       <div style={{ cursor: 'default' }}>
         {imgEl}
-        {label}
       </div>
     )
   }
@@ -102,7 +89,6 @@ function CategoryCard({ cat, isPlaceholder }: { cat: Category; isPlaceholder: bo
   return (
     <Link href={`/category/${cat.id}`} style={{ textDecoration: 'none', display: 'block' }}>
       {imgEl}
-      {label}
     </Link>
   )
 }
