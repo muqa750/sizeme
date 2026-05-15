@@ -94,6 +94,10 @@ export default function ImageCropModal({ file, onConfirm, onCancel }: Props) {
     ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
     if (ptrs.current.size === 1) {
       dragStart.current = { x: e.clientX, y: e.clientY, ix: S.current.imgX, iy: S.current.imgY }
+    } else if (ptrs.current.size === 2) {
+      // ابدأ pinch بمسافة معروفة — يمنع قفزة scale في أول move
+      const pts = Array.from(ptrs.current.values())
+      lastDist.current = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y)
     }
   }
 
@@ -137,7 +141,15 @@ export default function ImageCropModal({ file, onConfirm, onCancel }: Props) {
 
   function onPtrUp(e: React.PointerEvent<HTMLDivElement>) {
     ptrs.current.delete(e.pointerId)
-    if (ptrs.current.size < 2) lastDist.current = 0
+    if (ptrs.current.size < 2) {
+      lastDist.current = 0
+      // إذا تبقى أصبع واحد بعد رفع الثاني، أعد تثبيت نقطة السحب عليه
+      // ← يمنع "قفزة" الصورة (التي كانت تظهر كتشويه) عند الانتقال من pinch إلى drag
+      if (ptrs.current.size === 1) {
+        const remaining = Array.from(ptrs.current.values())[0]
+        dragStart.current = { x: remaining.x, y: remaining.y, ix: S.current.imgX, iy: S.current.imgY }
+      }
+    }
   }
 
   // تكبير بعجلة الفأرة (ديسكتوب)
@@ -224,11 +236,18 @@ export default function ImageCropModal({ file, onConfirm, onCancel }: Props) {
             alt=""
             onLoad={onImgLoad}
             style={{
-              position:'absolute',
-              left: imgX, top: imgY,
-              width:  ready ? baseW * scale : 'auto',
-              height: ready ? baseH * scale : 'auto',
-              userSelect:'none', pointerEvents:'none', display:'block',
+              position: 'absolute',
+              left: 0, top: 0,
+              // الحجم الأساسي ثابت — التكبير عبر transform لضمان حفظ النسبة 100%
+              width:  ready ? baseW : 'auto',
+              height: ready ? baseH : 'auto',
+              // GPU-accelerated، يحفظ النسبة، لا يتأثر بـ Math.round
+              transform: ready ? `translate3d(${imgX}px, ${imgY}px, 0) scale(${scale})` : undefined,
+              transformOrigin: '0 0',
+              willChange: 'transform',
+              userSelect: 'none', pointerEvents: 'none', display: 'block',
+              // منع interpolation الذي قد يشوه الصورة عند التكبير
+              imageRendering: 'auto' as any,
             }}
             draggable={false}
           />

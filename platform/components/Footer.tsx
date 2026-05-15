@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import SuggestionModal from '@/components/SuggestionModal'
-import { subscribeNewsletter } from '@/lib/actions/newsletter'
 import { submitRating } from '@/lib/actions/ratings'
 
 const EMOJIS = [
@@ -35,21 +34,11 @@ const LANGS = [
 ]
 
 export default function Footer() {
-  const [contact, setContact] = useState('')
-  const [subStatus, setSubStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
-  const [rated, setRated] = useState(false)
-  const [selectedRating, setSelected] = useState<string | null>(null)
   const [suggOpen, setSuggOpen] = useState(false)
   const [activeLang, setActiveLang] = useState('ar')
   const [langOpen, setLangOpen] = useState(false)
-
-  async function handleNewsletter(e: React.FormEvent) {
-    e.preventDefault()
-    if (!contact.trim() || subStatus === 'loading') return
-    setSubStatus('loading')
-    const res = await subscribeNewsletter(contact)
-    setSubStatus(res.ok ? 'done' : 'error')
-  }
+  const [rated, setRated] = useState(false)
+  const [selectedRating, setSelected] = useState<string | null>(null)
 
   async function handleRate(value: string, score: number) {
     if (rated) return
@@ -207,135 +196,47 @@ export default function Footer() {
         {/* ── فاصل ── */}
         <div style={{ borderTop: '1px solid var(--line)' }} />
 
-        {/* ══ ٢ — النشرة البريدية + التقييم ══ */}
-        <div
-          style={{
-            maxWidth: '40rem',
-            margin: '0 auto',
-            padding: '2.5rem 1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2.5rem',
-            textAlign: 'center',
-          }}
-        >
-          {/* Newsletter */}
-          <div style={{ width: '100%' }}>
-            <p className="serif" style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>
-              انضم إلى عائلة Sizeme
-            </p>
-            <p style={{ fontSize: '0.78rem', color: 'var(--mute)', marginBottom: '1.25rem' }}>
-              لتصلك المجموعات الحصرية والعروض قبل الجميع
-            </p>
-
-            {subStatus === 'done' ? (
-              <p style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>
-                ✓ شكراً لاشتراكك! أنت الآن مشترك في النشرة البريدية.
+        {/* ══ ٢ — التقييم ══ */}
+        <div style={{
+          maxWidth: '32rem',
+          margin: '0 auto',
+          padding: '2rem 1.5rem',
+          textAlign: 'center',
+        }}>
+          {rated ? (
+            <div>
+              <div style={{ fontSize: '1.75rem', marginBottom: '0.4rem' }}>🌟</div>
+              <p style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--ink)' }}>شكراً لتقييمك!</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--mute)', marginTop: '0.25rem' }}>رأيك يصنع الفرق.</p>
+            </div>
+          ) : (
+            <>
+              <p style={{ fontSize: '0.8rem', color: 'var(--mute)', marginBottom: '0.875rem' }}>
+                كيف كانت تجربتك؟
               </p>
-            ) : (
-              <>
-                <form
-                  onSubmit={handleNewsletter}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    maxWidth: '22rem',
-                    margin: '0 auto',
-                    border: '1px solid var(--line)',
-                    borderRadius: '9999px',
-                    padding: '0.2rem',
-                    background: 'var(--paper)',
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-                  }}
-                >
-                  <input
-                    type="text"
-                    value={contact}
-                    onChange={e => setContact(e.target.value)}
-                    placeholder="بريدك الإلكتروني أو رقم الهاتف"
-                    disabled={subStatus === 'loading'}
-                    style={{
-                      flex: 1,
-                      border: 'none',
-                      outline: 'none',
-                      background: 'transparent',
-                      fontSize: '0.8rem',
-                      textAlign: 'center',
-                      padding: '0.5rem 0.75rem',
-                      fontFamily: 'inherit',
-                      color: 'var(--ink)',
-                      direction: 'rtl',
-                    }}
-                  />
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.625rem' }}>
+                {EMOJIS.map(e => (
                   <button
-                    type="submit"
-                    disabled={subStatus === 'loading'}
-                    style={{
-                      background: 'var(--ink)',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '9999px',
-                      padding: '0.5rem 1.25rem',
-                      fontSize: '0.72rem',
-                      letterSpacing: '0.06em',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      fontFamily: 'inherit',
-                      transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#000')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'var(--ink)')}
+                    key={e.value}
+                    aria-label={e.value}
+                    onClick={() => handleRate(e.value, e.score)}
+                    className="emoji-btn"
                   >
-                    {subStatus === 'loading' ? '...' : 'اشترك'}
-                  </button>
-                </form>
-                {subStatus === 'error' && (
-                  <p style={{ fontSize: '0.75rem', color: '#c0392b', marginTop: '0.5rem' }}>
-                    حدث خطأ، حاول مجدداً.
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Emoji rating */}
-          <div style={{ width: '100%' }}>
-            {rated ? (
-              <div>
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.4rem' }}>🌟</div>
-                <p style={{ fontWeight: 600, fontSize: '0.9rem' }}>شكراً لتقييمك!</p>
-                <p style={{ fontSize: '0.75rem', color: 'var(--mute)', marginTop: '0.25rem' }}>رأيك يصنع الفرق.</p>
-              </div>
-            ) : (
-              <>
-                <p style={{ fontSize: '0.8rem', color: 'var(--mute)', marginBottom: '0.875rem' }}>
-                  كيف كانت تجربتك؟
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.625rem' }}>
-                  {EMOJIS.map(e => (
-                    <button
-                      key={e.value}
-                      aria-label={e.value}
-                      onClick={() => handleRate(e.value, e.score)}
-                      className="emoji-btn"
+                    <span
+                      className="emoji-icon"
+                      style={{
+                        transform: selectedRating === e.value ? 'scale(1.35)' : 'scale(1)',
+                        transition: 'transform 0.2s',
+                        display: 'block',
+                      }}
                     >
-                      <span
-                        className="emoji-icon"
-                        style={{
-                          transform: selectedRating === e.value ? 'scale(1.35)' : 'scale(1)',
-                          transition: 'transform 0.2s',
-                          display: 'block',
-                        }}
-                      >
-                        {e.icon}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+                      {e.icon}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── فاصل ── */}
@@ -377,7 +278,7 @@ export default function Footer() {
         {/* ── فاصل ── */}
         <div style={{ borderTop: '1px solid var(--line)' }} />
 
-        {/* ══ ٤ — Copyright ══ */}
+        {/* ══ ٣ — Copyright ══ */}
         <div
           style={{
             maxWidth: '64rem',
@@ -397,45 +298,6 @@ export default function Footer() {
         </div>
 
       </footer>
-
-      <style>{`
-        /* Desktop */
-        .footer-cols {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2.5rem;
-          justify-items: center;
-        }
-        .footer-col {
-          display: flex;
-          flex-direction: column;
-          gap: 0.875rem;
-          text-align: right;
-          min-width: 140px;
-        }
-        .footer-col-title {
-          font-size: 0.68rem;
-          font-weight: 700;
-          color: var(--ink);
-          margin: 0 0 0.25rem;
-        }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-          .footer-cols {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-          }
-          .footer-col {
-            text-align: center;
-            align-items: center;
-            min-width: unset;
-          }
-          .footer-col:last-child {
-            grid-column: 1 / -1;
-          }
-        }
-      `}</style>
     </>
   )
 }

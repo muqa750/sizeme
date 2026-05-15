@@ -249,10 +249,10 @@ export async function getAnalyticsData() {
   const [ordersRes, itemsRes, newsletterRes] = await Promise.all([
     admin
       .from('orders')
-      .select('status, province, total, shipping, created_at, name'),
+      .select('order_id, status, province, total, shipping, created_at, name'),
     admin
       .from('order_items')
-      .select('brand, sub, sku, color, size, qty'),
+      .select('order_id, brand, sub, sku, color, size, qty'),
     admin
       .from('newsletter_subscribers')
       .select('id', { count: 'exact', head: true }),
@@ -260,6 +260,7 @@ export async function getAnalyticsData() {
 
   return {
     orders: (ordersRes.data ?? []) as Array<{
+      order_id: string
       status: string
       province: string
       total: number
@@ -268,6 +269,7 @@ export async function getAnalyticsData() {
       name: string
     }>,
     items: (itemsRes.data ?? []) as Array<{
+      order_id: string
       brand: string
       sub: string
       sku: string | null

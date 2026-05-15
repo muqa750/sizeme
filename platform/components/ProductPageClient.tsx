@@ -299,20 +299,6 @@ export default function ProductPageClient({ product, sizes, fallbackImgs }: Prop
         </button>
       </div>
 
-      <style>{`
-        @keyframes shake {
-          0%,100% { transform:translateX(0) }
-          20%      { transform:translateX(-6px) }
-          40%      { transform:translateX(6px) }
-          60%      { transform:translateX(-4px) }
-          80%      { transform:translateX(4px) }
-        }
-        /* الزر الـ inline يظهر على الديسكتوب فقط */
-        .product-cta-desktop { display: none; }
-        @media (min-width: 768px) {
-          .product-cta-desktop { display: block; }
-        }
-      `}</style>
     </>
   )
 }

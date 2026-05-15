@@ -57,8 +57,14 @@ export default async function AnalyticsPage({ searchParams }: Props) {
     : allOrders
   const items  = allItems // الأصناف لا تحمل تاريخاً — نُبقيها كاملة
 
-  // ── إجمالي القطع المباعة ──────────────────────────────────────────────────
-  const totalItemsSold = items.reduce((s, i) => s + (i.qty ?? 1), 0)
+  // ── إجمالي القطع المباعة — فقط من الطلبات المُسلّمة ─────────────────────
+  const deliveredOrderIds = new Set(
+    orders.filter(o => o.status === 'delivered').map(o => o.order_id)
+  )
+  const totalItemsSold = items.reduce(
+    (s, i) => s + (deliveredOrderIds.has(i.order_id) ? (i.qty ?? 1) : 0),
+    0
+  )
 
   // ── نسبة الإتمام ──────────────────────────────────────────────────────────
   const deliveredCount  = orders.filter(o => o.status === 'delivered').length

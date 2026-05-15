@@ -7,6 +7,7 @@ import TrustStrip from '@/components/home/TrustStrip'
 import GuaranteeSection from '@/components/home/GuaranteeSection'
 import ContactSection from '@/components/home/ContactSection'
 import RatingsSection from '@/components/home/RatingsSection'
+import NewsletterSection from '@/components/NewsletterSection'
 import ScrollRevealInit from '@/components/ScrollRevealInit'
 import DeliveryCountdown from '@/components/home/DeliveryCountdown'
 import CategoryCards from '@/components/home/CategoryCards'
@@ -110,6 +111,9 @@ export default async function HomePage() {
 
         {/* ─── Contact ─── */}
         <div className="reveal"><ContactSection /></div>
+
+        {/* ─── Newsletter ─── */}
+        <div className="reveal"><NewsletterSection /></div>
 
         {/* ─── Ratings ─── */}
         <div className="reveal"><RatingsSection /></div>

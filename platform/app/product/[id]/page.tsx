@@ -1,6 +1,5 @@
 import { getProductById, getCategories } from '@/lib/api'
 import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 import ProductPageClient from '@/components/ProductPageClient'
 import SimilarProducts from '@/components/SimilarProducts'
 import { notFound } from 'next/navigation'
@@ -37,10 +36,12 @@ export default async function ProductPage({ params }: Props) {
         </div>
 
         {/* ── قد يعجبك أيضاً ── */}
-        <SimilarProducts brand={product.brand} excludeId={product.id} />
+        <SimilarProducts
+          brand={product.brand}
+          categoryId={product.category_id}
+          excludeId={product.id}
+        />
       </main>
-
-      <Footer />
     </>
   )
 }

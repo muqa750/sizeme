@@ -6,6 +6,7 @@ import Footer from './Footer'
 import CartDrawer from './CartDrawer'
 import WhatsAppFloat from './WhatsAppFloat'
 import SplashLoader from './SplashLoader'
+import RouteProgress from './RouteProgress'
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -14,6 +15,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   return (
     <>
       <SplashLoader />
+      <RouteProgress />
       {!isAdmin && <AnnouncementBar />}
       {children}
       {!isAdmin && <Footer />}

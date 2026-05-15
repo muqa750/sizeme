@@ -277,7 +277,12 @@ export default function AnalyticsCharts({
           <KpiCard
             title="القطع المباعة"
             value={kpis.totalItemsSold.toLocaleString('en-US')}
-            sub="من جميع الطلبات"
+            sub="فقط من الطلبات المُسلّمة"
+            onClick={() => {
+              const el = document.getElementById('top-products-section')
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }}
+            linkLabel="عرض أكثر المنتجات مبيعاً"
           />
           <KpiCard
             title="نسبة الإتمام"
@@ -294,7 +299,7 @@ export default function AnalyticsCharts({
         </div>
 
         {/* Row 1: Top Products (SKU) | Top Brands */}
-        <div className="analytics-grid-2">
+        <div className="analytics-grid-2" id="top-products-section" style={{ scrollMarginTop: 16 }}>
           <ChartCard title="أكثر المنتجات مبيعاً — بالكود (SKU)">
             {topProducts.length === 0 ? <Empty /> : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
