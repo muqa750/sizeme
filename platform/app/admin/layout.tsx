@@ -17,7 +17,8 @@ const NAV_MAIN = [
 ]
 
 const NAV_ADMIN = [
-  { href: '/admin/management/settings', label: 'الإعدادات' },
+  { href: '/admin/management/brand-spotlight', label: 'براندات اللحظة' },
+  { href: '/admin/management/settings',        label: 'الإعدادات'      },
 ]
 
 const linkStyle = {

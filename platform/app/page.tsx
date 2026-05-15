@@ -1,5 +1,6 @@
 import { getCategories, getNewArrivals, getBestSellers } from '@/lib/api'
 import { getSettings } from '@/lib/admin-api'
+import { getBrandSpotlights } from '@/app/admin/management/brand-spotlight/actions'
 import Header from '@/components/Header'
 import HeroSection from '@/components/home/HeroSection'
 import TrustStrip from '@/components/home/TrustStrip'
@@ -13,11 +14,12 @@ import HomeProductRow from '@/components/home/HomeProductRow'
 import BrandCards from '@/components/home/BrandCards'
 
 export default async function HomePage() {
-  const [categories, newArrivals, bestSellers, settings] = await Promise.all([
+  const [categories, newArrivals, bestSellers, settings, brandSpots] = await Promise.all([
     getCategories(),
     getNewArrivals(6),
     getBestSellers(6),
     getSettings(),
+    getBrandSpotlights(),
   ])
 
   const heroVideoUrl       = settings.find(s => s.key === 'hero_video_url')?.value as string | undefined
@@ -100,7 +102,7 @@ export default async function HomePage() {
 
         {/* ─── براندات اللحظة ─── */}
         <div className="reveal">
-          <BrandCards />
+          <BrandCards spots={brandSpots} />
         </div>
 
         {/* ─── Guarantee ─── */}

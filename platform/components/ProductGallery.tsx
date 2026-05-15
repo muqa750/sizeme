@@ -59,8 +59,8 @@ export default function ProductGallery({ images, alt }: Props) {
           </div>
         )}
 
-        {/* Embla viewport */}
-        <div ref={emblaRef} className="overflow-hidden h-full w-full">
+        {/* Embla viewport — key يجبر على إعادة mount كاملة عند تغيير الصور */}
+        <div key={images.join('|')} ref={emblaRef} className="overflow-hidden h-full w-full">
           <div className="flex h-full touch-pan-y">
 
             {images.map((src, i) => (

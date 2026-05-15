@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import type { Product } from '@/lib/types'
-import { fmt, imgPath, COLOR_HEX } from '@/lib/utils'
+import { fmt, imgPath, variantImgUrl, COLOR_HEX } from '@/lib/utils'
 
 interface Props {
   product: Product
@@ -12,6 +12,17 @@ export default function ProductCard({ product }: Props) {
   const [imgError, setImgError] = useState(false)
   const [hovered, setHovered] = useState(false)
   const price = product.price ?? product.category?.price ?? 35000
+
+  // أولوية: img_key (رئيسية) أولاً → ثم أول صورة variant كـ fallback
+  const hasMainImg = Boolean(product.img_key && product.cat_seq)
+  const firstVariantUuid = product.variants
+    ? Object.values(product.variants)[0]?.images?.[0]
+    : undefined
+  const primarySrc = hasMainImg
+    ? imgPath(product.category_id, product.cat_seq, product.img_key, 1)
+    : firstVariantUuid
+    ? variantImgUrl(firstVariantUuid)
+    : imgPath(product.category_id, product.cat_seq, product.img_key, 1)
 
   return (
     <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
@@ -55,7 +66,7 @@ export default function ProductCard({ product }: Props) {
           {/* الصورة */}
           {!imgError && (
             <img
-              src={imgPath(product.category_id, product.cat_seq, product.img_key, 1)}
+              src={primarySrc}
               alt={`${product.brand} ${product.sub ?? ''}`}
               style={{
                 position: 'absolute',
