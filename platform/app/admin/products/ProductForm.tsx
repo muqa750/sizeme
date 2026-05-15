@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useTransition, useRef } from 'react'
-import { createProduct, updateProduct, uploadProductImage } from './actions'
-import type { Product, Category } from '@/lib/types'
+import { createProduct, updateProduct, uploadProductImage, uploadVariantImage } from './actions'
+import type { Product, Category, ProductVariant } from '@/lib/types'
+
+const VARIANT_IMG_BASE = 'https://dhjnlgwsyfsgzmyxnxxr.supabase.co/storage/v1/object/public/products/variants'
+function variantUrl(uuid: string) { return `${VARIANT_IMG_BASE}/${uuid}.jpg` }
 
 // ─── ثوابت ────────────────────────────────────────────────────────────────────
 const COLORS = [
@@ -71,6 +74,7 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
     cat_seq:     product?.cat_seq     ?? '',
     status:      product?.status      ?? 'active',
     sort_order:  nextSortOrder ?? product?.sort_order ?? 0,
+    price:       product?.price       ?? (null as number | null),
     colors:      product?.colors      ?? [] as string[],
   })
 
@@ -88,6 +92,14 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
   const [imgUploading, setImgUploading] = useState(false)
   const [imgPreview, setImgPreview]     = useState<string | null>(null)
 
+  // Variants: { color → { images: uuid[] } }
+  const [variants, setVariants] = useState<Record<string, ProductVariant>>(
+    (product?.variants as Record<string, ProductVariant>) ?? {}
+  )
+  // tracking which color is uploading
+  const [variantUploading, setVariantUploading] = useState<Record<string, boolean>>({})
+  const variantFileRefs = useRef<Record<string, HTMLInputElement | null>>({})
+
   // ── toggle color ─────────────────────────────────────────────────────────
   function toggleColor(c: string) {
     setForm(f => ({
@@ -95,6 +107,32 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
       colors: f.colors.includes(c)
         ? f.colors.filter(x => x !== c)
         : [...f.colors, c],
+    }))
+  }
+
+  // ── رفع صورة Variant ─────────────────────────────────────────────────────
+  async function handleVariantUpload(color: string, file: File) {
+    const currentImages = variants[color]?.images ?? []
+    if (currentImages.length >= 5) { setErr('الحد الأقصى 5 صور لكل لون'); return }
+
+    setVariantUploading(v => ({ ...v, [color]: true }))
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await uploadVariantImage(fd)
+    setVariantUploading(v => ({ ...v, [color]: false }))
+
+    if (!res.ok || !res.uuid) { setErr(res.error ?? 'فشل رفع الصورة'); return }
+
+    setVariants(prev => ({
+      ...prev,
+      [color]: { images: [...(prev[color]?.images ?? []), res.uuid!] },
+    }))
+  }
+
+  function removeVariantImage(color: string, uuid: string) {
+    setVariants(prev => ({
+      ...prev,
+      [color]: { images: (prev[color]?.images ?? []).filter(u => u !== uuid) },
     }))
   }
 
@@ -133,7 +171,9 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
       fd.append('cat_seq',     form.cat_seq)
       fd.append('status',      form.status)
       fd.append('sort_order',  String(form.sort_order))
+      if (form.price !== null) fd.append('price', String(form.price))
       fd.append('colors',      JSON.stringify(form.colors))
+      fd.append('variants',    JSON.stringify(variants))
 
       const res = isEdit
         ? await updateProduct(product!.id, fd)
@@ -244,6 +284,36 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
           </div>
         </div>
 
+        {/* Price */}
+        <div style={{ marginBottom: 14 }}>
+          <span style={label}>السعر (د.ع) — اتركه فارغاً لاستخدام سعر القسم</span>
+          <div style={{ position: 'relative' }}>
+            <input
+              type="number"
+              style={{ ...inp, paddingLeft: 44 }}
+              value={form.price ?? ''}
+              onChange={e => setForm(f => ({
+                ...f,
+                price: e.target.value ? Number(e.target.value) : null,
+              }))}
+              placeholder={`سعر القسم الافتراضي: ${
+                categories.find(c => c.id === form.category_id)?.price?.toLocaleString('en-US') ?? '35,000'
+              }`}
+            />
+            <span style={{
+              position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+              fontSize: 11, color: '#aaa', pointerEvents: 'none',
+            }}>
+              د.ع
+            </span>
+          </div>
+          {form.price && (
+            <span style={{ fontSize: 10, color: '#c9a84c', marginTop: 3, display: 'block' }}>
+              السعر الفعلي: {form.price.toLocaleString('en-US')} د.ع
+            </span>
+          )}
+        </div>
+
         {/* Status */}
         <div style={{ marginBottom: 14 }}>
           <span style={label}>الحالة</span>
@@ -298,6 +368,99 @@ export default function ProductForm({ product, categories, nextSortOrder, onClos
             })}
           </div>
         </div>
+
+        {/* Variants Gallery — صور لكل لون */}
+        {form.colors.length > 0 && (
+          <div style={{ marginBottom: 20, borderTop: '1px solid #f0f0f0', paddingTop: 14 }}>
+            <span style={{ ...label, fontSize: 12, color: '#555', marginBottom: 10, display: 'block' }}>
+              صور الألوان — حتى 5 صور لكل لون
+            </span>
+
+            {form.colors.map(color => {
+              const imgs = variants[color]?.images ?? []
+              const uploading = variantUploading[color] ?? false
+              const canAdd = imgs.length < 5 && !uploading
+
+              return (
+                <div key={color} style={{ marginBottom: 14 }}>
+                  {/* اسم اللون */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <span style={{
+                      width: 12, height: 12, borderRadius: '50%', flexShrink: 0,
+                      background: COLOR_HEX[color] ?? '#ccc',
+                      border: color === 'White' ? '1px solid #ccc' : 'none',
+                    }} />
+                    <span style={{ fontSize: 12, color: '#555', fontWeight: 500 }}>{color}</span>
+                    <span style={{ fontSize: 10, color: '#bbb' }}>({imgs.length}/5)</span>
+                  </div>
+
+                  {/* الصور الحالية + زر الإضافة */}
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                    {imgs.map(uuid => (
+                      <div key={uuid} style={{ position: 'relative', width: 60, height: 76 }}>
+                        <img
+                          src={variantUrl(uuid)}
+                          alt=""
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6, border: '1px solid #e8e8e8' }}
+                        />
+                        <button
+                          onClick={() => removeVariantImage(color, uuid)}
+                          style={{
+                            position: 'absolute', top: -6, left: -6,
+                            width: 18, height: 18, borderRadius: '50%',
+                            background: '#e74c3c', color: '#fff',
+                            border: 'none', cursor: 'pointer',
+                            fontSize: 11, lineHeight: 1, padding: 0,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}
+                          title="حذف"
+                        >✕</button>
+                      </div>
+                    ))}
+
+                    {/* زر رفع صورة جديدة */}
+                    {canAdd && (
+                      <>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          ref={el => { variantFileRefs.current[color] = el }}
+                          onChange={e => {
+                            const file = e.target.files?.[0]
+                            if (file) handleVariantUpload(color, file)
+                            e.target.value = ''
+                          }}
+                        />
+                        <button
+                          onClick={() => variantFileRefs.current[color]?.click()}
+                          style={{
+                            width: 60, height: 76,
+                            borderRadius: 6,
+                            border: '1.5px dashed #d0d0d0',
+                            background: '#fafafa',
+                            cursor: 'pointer',
+                            fontSize: 22, color: '#ccc',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                          title="أضف صورة"
+                        >
+                          +
+                        </button>
+                      </>
+                    )}
+                    {uploading && (
+                      <div style={{ width: 60, height: 76, borderRadius: 6, background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#bbb' }}>
+                        رفع...
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
 
         {/* Image Upload */}
         <div style={{ marginBottom: 20 }}>

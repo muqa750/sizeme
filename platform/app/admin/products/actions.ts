@@ -3,12 +3,44 @@
 import { createAdminClient } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
+// تحويل رسالة الخطأ إلى نص مفهوم (يمنع ظهور HTML كامل من Cloudflare/Supabase)
+function cleanError(msg: string): string {
+  if (!msg) return 'حدث خطأ غير معروف'
+  if (msg.includes('<!DOCTYPE') || msg.includes('<html')) return 'تعذّر الاتصال بالخادم — حاول مجدداً'
+  if (msg.includes('522') || msg.includes('timed out'))   return 'انتهت مهلة الاتصال — Supabase غير متاح مؤقتاً'
+  return msg.slice(0, 120)
+}
+
 const IMG_FOLDERS: Record<string, string> = {
   tshirt:    'imagestshirts',
   polo:      'imagespolo',
   shirt:     'imagesshirts',
   jeans:     'imagesjeans',
   tracksuit: 'imagestracksuit',
+}
+
+// ── رفع صورة Variant بـ UUID عشوائي ──────────────────────────────────────
+export async function uploadVariantImage(formData: FormData): Promise<{
+  ok: boolean
+  uuid?: string
+  error?: string
+}> {
+  const file = formData.get('file') as File | null
+  if (!file || file.size === 0) return { ok: false, error: 'لم يُرفع ملف' }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const admin = createAdminClient() as any
+  const uuid  = crypto.randomUUID()
+  const path  = `variants/${uuid}.jpg`
+  const buf   = Buffer.from(await file.arrayBuffer())
+
+  const contentType = file.type || 'image/jpeg'
+  const { error } = await admin.storage
+    .from('products')
+    .upload(path, buf, { contentType, upsert: false })
+
+  if (error) return { ok: false, error: error.message }
+  return { ok: true, uuid }
 }
 
 // ── رفع صورة إلى Supabase Storage ─────────────────────────────────────────
@@ -57,8 +89,12 @@ export async function createProduct(formData: FormData): Promise<{
   const cat_seq     = (formData.get('cat_seq')     as string).trim() || null
   const status      = (formData.get('status')      as string) || 'active'
   const sort_order  = Number(formData.get('sort_order') ?? 0)
-  const colorsRaw   = formData.get('colors') as string
-  const colors      = colorsRaw ? JSON.parse(colorsRaw) : []
+  const priceRaw    = formData.get('price') as string
+  const price       = priceRaw ? Number(priceRaw) : null
+  const colorsRaw   = formData.get('colors')   as string
+  const variantsRaw = formData.get('variants') as string
+  const colors      = colorsRaw   ? JSON.parse(colorsRaw)   : []
+  const variants    = variantsRaw ? JSON.parse(variantsRaw) : {}
 
   if (!brand || !category_id || !sku) {
     return { ok: false, error: 'الماركة، القسم، والكود مطلوبة' }
@@ -72,13 +108,15 @@ export async function createProduct(formData: FormData): Promise<{
     sku,
     img_key: img_key || 'default',
     cat_seq,
+    price,
     colors,
+    variants,
     status,
     sort_order,
     added_at: new Date().toISOString(),
   })
 
-  if (error) return { ok: false, error: error.message }
+  if (error) return { ok: false, error: cleanError(error.message) }
 
   revalidatePath('/admin/products')
   revalidatePath('/')
@@ -102,8 +140,12 @@ export async function updateProduct(id: number, formData: FormData): Promise<{
   const cat_seq     = (formData.get('cat_seq')     as string).trim() || null
   const status      = (formData.get('status')      as string) || 'active'
   const sort_order  = Number(formData.get('sort_order') ?? 0)
-  const colorsRaw   = formData.get('colors') as string
-  const colors      = colorsRaw ? JSON.parse(colorsRaw) : []
+  const priceRaw    = formData.get('price') as string
+  const price       = priceRaw ? Number(priceRaw) : null
+  const colorsRaw   = formData.get('colors')   as string
+  const variantsRaw = formData.get('variants') as string
+  const colors      = colorsRaw   ? JSON.parse(colorsRaw)   : []
+  const variants    = variantsRaw ? JSON.parse(variantsRaw) : undefined
 
   if (!brand || !category_id || !sku) {
     return { ok: false, error: 'الماركة، القسم، والكود مطلوبة' }
@@ -111,13 +153,14 @@ export async function updateProduct(id: number, formData: FormData): Promise<{
 
   const updateData: Record<string, unknown> = {
     brand, sub, description, category_id, sku, cat_seq,
-    colors, status, sort_order, updated_at: new Date().toISOString(),
+    price, colors, status, sort_order, updated_at: new Date().toISOString(),
   }
+  if (variants !== undefined) updateData.variants = variants
   if (img_key) updateData.img_key = img_key
 
   const { error } = await admin.from('products').update(updateData).eq('id', id)
 
-  if (error) return { ok: false, error: error.message }
+  if (error) return { ok: false, error: cleanError(error.message) }
 
   revalidatePath('/admin/products')
   revalidatePath('/')

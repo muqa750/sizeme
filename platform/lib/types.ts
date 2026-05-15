@@ -90,6 +90,11 @@ export interface Category {
   created_at: string
 }
 
+// صور لون واحد (يُخزَّن كـ JSONB في Supabase)
+export interface ProductVariant {
+  images: string[]   // مصفوفة من UUID — المسار: variants/{uuid}.jpg في Storage
+}
+
 export interface Product {
   id: number
   sku: string
@@ -99,7 +104,9 @@ export interface Product {
   category_id: string
   img_key: string
   cat_seq: string | null
+  price?: number | null          // سعر المنتج — يُقدَّم على سعر القسم
   colors: string[]
+  variants?: Record<string, ProductVariant>   // { "Black": { images: ["uuid1","uuid2"] } }
   status: 'active' | 'best-seller' | 'new' | 'hidden'
   sort_order: number
   added_at: string | null

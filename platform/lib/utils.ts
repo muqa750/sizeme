@@ -35,6 +35,11 @@ const IMG_FOLDERS: Record<string, string> = {
   tracksuit: 'imagestracksuit',
 }
 
+// رابط صورة variant (مخزَّنة بـ UUID في مجلد variants/)
+export function variantImgUrl(uuid: string): string {
+  return `${STORAGE_BASE}/variants/${uuid}.jpg`
+}
+
 export function imgPath(
   categoryId: string,
   catSeq: string | null,

@@ -11,7 +11,7 @@ interface Props {
 export default function ProductCard({ product }: Props) {
   const [imgError, setImgError] = useState(false)
   const [hovered, setHovered] = useState(false)
-  const price = product.category?.price ?? 35000
+  const price = product.price ?? product.category?.price ?? 35000
 
   return (
     <Link href={`/product/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
@@ -22,7 +22,7 @@ export default function ProductCard({ product }: Props) {
       >
         {/* ── الصورة ── */}
         <div style={{
-          aspectRatio: '3/4',
+          aspectRatio: '4/5',
           background: '#f5f5f5',
           overflow: 'hidden',
           position: 'relative',
